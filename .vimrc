@@ -1,10 +1,10 @@
 " General {
   set background=dark         " Assume a dark background
 
-	filetype plugin indent on   " Automatically detect file types.
-	syntax on                   " Syntax highlighting
-	set mousehide               " Hide the mouse cursor while typing
-	scriptencoding utf-8
+  filetype plugin indent on   " Automatically detect file types.
+  syntax on                   " Syntax highlighting
+  set mousehide               " Hide the mouse cursor while typing
+  scriptencoding utf-8
 
   if has('clipboard')
     if has('unnamedplus')  " When possible use + register for copy-paste
@@ -14,15 +14,15 @@
     endif
   endif
 
-	set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
-	set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
-	set virtualedit=onemore             " Allow for cursor beyond last character
-	set history=1000                    " Store a ton of history (default is 20)
-	set spell                           " Spell checking on
-	set hidden                          " Allow buffer switching without saving
-	set iskeyword-=.                    " '.' is an end of word designator
-	set iskeyword-=#                    " '#' is an end of word designator
-	set iskeyword-=-                    " '-' is an end of word designator
+  set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
+  set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
+  set virtualedit=onemore             " Allow for cursor beyond last character
+  set history=1000                    " Store a ton of history (default is 20)
+  set spell                           " Spell checking on
+  set hidden                          " Allow buffer switching without saving
+  set iskeyword-=.                    " '.' is an end of word designator
+  set iskeyword-=#                    " '#' is an end of word designator
+  set iskeyword-=-                    " '-' is an end of word designator
 
   set directory^=$HOME/.vim/swap//
 " }
@@ -73,7 +73,7 @@
 
 
 " UI {
-	colorscheme gruvbox
+  colorscheme gruvbox
   set tabpagemax=15               " Only show 15 tabs
   set showmode                    " Display the current mode
   set cursorline                  " Highlight current line
@@ -118,15 +118,15 @@
 " }
 
 " Formatting {
-	set nowrap                      " Do not wrap long lines
-	set autoindent                  " Indent at the same level of the previous line
-	set shiftwidth=2                " Use indents of 4 spaces
-	set expandtab                   " Tabs are spaces, not tabs
-	set tabstop=2                   " An indentation every four columns
-	set softtabstop=2               " Let backspace delete indent
-	set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
-	set splitright                  " Puts new vsplit windows to the right of the current
-	set splitbelow                  " Puts new split windows to the bottom of the current
+  set nowrap                      " Do not wrap long lines
+  set autoindent                  " Indent at the same level of the previous line
+  set shiftwidth=2                " Use indents of 4 spaces
+  set expandtab                   " Tabs are spaces, not tabs
+  set tabstop=2                   " An indentation every four columns
+  set softtabstop=2               " Let backspace delete indent
+  set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
+  set splitright                  " Puts new vsplit windows to the right of the current
+  set splitbelow                  " Puts new split windows to the bottom of the current
 " }
 
 " Key Mappings {
