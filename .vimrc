@@ -33,6 +33,7 @@
   Plug 'mileszs/ack.vim'
   Plug 'flazz/vim-colorschemes'
   Plug 'tpope/vim-fugitive'
+  Plug 'junegunn/gv.vim'
   Plug 'fatih/vim-go'
   Plug 'dense-analysis/ale'
   Plug 'jiangmiao/auto-pairs'
