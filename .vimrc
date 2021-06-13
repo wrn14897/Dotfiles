@@ -48,6 +48,7 @@
   Plug 'Shougo/neosnippet-snippets'
   Plug 'powerline/fonts'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+  Plug 'junegunn/fzf.vim'
   Plug 'yuezk/vim-js'
   Plug 'maxmellon/vim-jsx-pretty'
   Plug 'leafgarland/typescript-vim'
@@ -140,7 +141,7 @@
   nnoremap <C-c> :noh<return><C-c>
   nnoremap H gT
   nnoremap L gt
-  nnoremap tt  :tabedit<return>:FZF<CR>
+  nnoremap tt  :tabedit<return>:Files<CR>
   nnoremap tw  :tabclose<return>
 
   " Yank from the cursor to the end of the line, to be consistent with C and D.
@@ -173,13 +174,14 @@
       let g:ackprg = 'ag --vimgrep'
     endif
     cnoreabbrev Ack Ack!
-    map <c-f> :Ack<Space>
+    map <leader>a :Ack<Space>
   " }
 
   " fzf {
-    nnoremap <c-p> :FZF<CR>
-    let g:fzf_preview_window = 'right:50%'
-    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
+    let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
+    nnoremap <c-p> :Files<CR>
+    nnoremap <c-f> :Rg<CR>
   " }
 
   " Nerdtree {
