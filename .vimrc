@@ -171,9 +171,8 @@
     elseif executable('ag')
       let g:ackprg = 'ag --vimgrep'
     endif
-    map <c-f> :Ack<Space>
     cnoreabbrev Ack Ack!
-    nnoremap <Leader>a :Ack!<Space>
+    map <c-f> :Ack<Space>
   " }
 
   " fzf {
