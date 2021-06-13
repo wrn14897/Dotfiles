@@ -47,7 +47,7 @@
   Plug 'Shougo/neosnippet.vim'
   Plug 'Shougo/neosnippet-snippets'
   Plug 'powerline/fonts'
-  Plug 'junegunn/fzf'
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'yuezk/vim-js'
   Plug 'maxmellon/vim-jsx-pretty'
   Plug 'leafgarland/typescript-vim'
@@ -140,7 +140,7 @@
   nnoremap <C-c> :noh<return><C-c>
   nnoremap H gT
   nnoremap L gt
-  nnoremap tt  :tabedit<return>:Fzf<CR>
+  nnoremap tt  :tabedit<return>:FZF<CR>
   nnoremap tw  :tabclose<return>
 
   " Yank from the cursor to the end of the line, to be consistent with C and D.
@@ -178,6 +178,8 @@
 
   " fzf {
     nnoremap <c-p> :FZF<CR>
+    let g:fzf_preview_window = 'right:50%'
+    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
   " }
 
   " Nerdtree {
