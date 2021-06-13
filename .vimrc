@@ -32,6 +32,7 @@
   call plug#begin('~/.vim/plugged')
   Plug 'airblade/vim-rooter'
   Plug 'mileszs/ack.vim'
+  Plug 'romainl/vim-qf'
   Plug 'flazz/vim-colorschemes'
   Plug 'tpope/vim-fugitive'
   Plug 'junegunn/gv.vim'
