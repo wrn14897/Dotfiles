@@ -30,6 +30,7 @@
 
 " Plugin List (vim-plug) {
   call plug#begin('~/.vim/plugged')
+  Plug 'airblade/vim-rooter'
   Plug 'mileszs/ack.vim'
   Plug 'flazz/vim-colorschemes'
   Plug 'tpope/vim-fugitive'
@@ -161,20 +162,22 @@
 " }
 
 " Plugin Configs {
+  " Rooter {
+    let g:rooter_patterns = ['.git']
+  " }
   " Ack {
     if executable('rg')
       let g:ackprg = 'rg -S --no-heading --vimgrep'
     elseif executable('ag')
       let g:ackprg = 'ag --vimgrep'
     endif
-    command! -nargs=1 Ag execute "Ack! <args> " . Find_git_root()
-    map <c-f> :Ag<Space>
+    map <c-f> :Ack<Space>
+    cnoreabbrev Ack Ack!
     nnoremap <Leader>a :Ack!<Space>
   " }
 
   " fzf {
-    command! Fzf execute "FZF " . Find_git_root()
-    nnoremap <c-p> :Fzf<CR>
+    nnoremap <c-p> :FZF<CR>
   " }
 
   " Nerdtree {
@@ -250,8 +253,3 @@
   " }
 
 " }
-
-" Custom Functions
-function! Find_git_root()
-  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
-endfunction
