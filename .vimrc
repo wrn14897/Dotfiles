@@ -179,9 +179,24 @@
 
   " fzf {
     let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
-    let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
-    nnoremap <c-p> :Files<CR>
+    " let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:50%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
+    let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
+    let $FZF_DEFAULT_COMMAND="rg --files --hidden"
+    nnoremap <c-p> :GFiles<CR>
     nnoremap <c-f> :Rg<CR>
+    nnoremap <Leader>b :Buffers<CR>
+    nnoremap <Leader>s :BLines<CR>
+
+    " Advanced ripgrep integration
+    function! RipgrepFzf(query, fullscreen)
+      let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+      let initial_command = printf(command_fmt, shellescape(a:query))
+      let reload_command = printf(command_fmt, '{q}')
+      let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+      call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+    endfunction
+
+    command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
   " }
 
   " Nerdtree {
