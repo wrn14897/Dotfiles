@@ -25,8 +25,8 @@
   set iskeyword-=-                    " '-' is an end of word designator
 
   set directory^=$HOME/.vim/swap//
+  set tags=./tags,tags;$HOME
 " }
-
 
 " Plugin List (vim-plug) {
   call plug#begin('~/.vim/plugged')
@@ -163,6 +163,10 @@
   let &t_EI = "\<Esc>[2 q"
 " }
 
+" Snippets {
+  nnoremap ,html :-1read $HOME/.vim/snippets/html<CR>3j2f<i
+" }
+
 " Plugin Configs {
   " Rooter {
     let g:rooter_patterns = ['.git']
@@ -211,6 +215,7 @@
   " }
 
   " Fugitive {
+  "
     nnoremap <silent> <leader>gs :Git<CR>
     nnoremap <silent> <leader>gd :Gvdiffsplit<CR>
     nnoremap <silent> <leader>gc :Git commit<CR>
