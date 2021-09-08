@@ -72,6 +72,7 @@
   Plug 'michaeljsmith/vim-indent-object'
   Plug 'kana/vim-textobj-user'
   Plug 'preservim/vim-textobj-sentence'
+  Plug 'jesseleite/vim-agriculture'
   call plug#end()
 " }
 
@@ -201,6 +202,12 @@
     endfunction
 
     command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+  " }
+
+  " Vim Agriculture {
+    nmap <Leader>/ <Plug>RgRawSearch
+    vmap <Leader>/ <Plug>RgRawVisualSelection
+    nmap <Leader>* <Plug>RgRawWordUnderCursor
   " }
 
   " Nerdtree {
