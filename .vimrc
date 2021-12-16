@@ -30,6 +30,11 @@
 
 " Plugin List (vim-plug) {
   call plug#begin('~/.vim/plugged')
+  if has('nvim')
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'kevinhwang91/nvim-bqf'
+  endif
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'airblade/vim-rooter'
   Plug 'mileszs/ack.vim'
   Plug 'romainl/vim-qf'
@@ -41,11 +46,6 @@
   Plug 'jiangmiao/auto-pairs'
   Plug 'rhysd/conflict-marker.vim'
   Plug 'nathanaelkane/vim-indent-guides'
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-  Plug 'Shougo/neosnippet.vim'
-  Plug 'Shougo/neosnippet-snippets'
   Plug 'powerline/fonts'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
@@ -169,9 +169,14 @@
 " }
 
 " Plugin Configs {
+  " Coc {
+    let g:coc_global_extensions = ['coc-json', 'coc-pyright', 'coc-tsserver', 'coc-html']
+  " }
+
   " Rooter {
     let g:rooter_patterns = ['.git']
   " }
+
   " Ack {
     if executable('rg')
       let g:ackprg = 'rg -S --no-heading --vimgrep'
@@ -236,13 +241,8 @@
     nnoremap <silent> <leader>gg :SignifyToggle<CR>
   " }
 
-  " deoplete {
-    let g:deoplete#enable_at_startup = 1
-    " <TAB>: completion.
-    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-  " }
-
   " ALE {
+    let g:ale_disable_lsp = 1
     let g:ale_sign_error = '✘'
     let g:ale_sign_warning = '⚠'
     highlight ALEErrorSign ctermbg=NONE ctermfg=red
