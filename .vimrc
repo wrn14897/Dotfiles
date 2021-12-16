@@ -33,6 +33,7 @@
   if has('nvim')
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'kevinhwang91/nvim-bqf'
+    Plug 'antoinemadec/coc-fzf'
   endif
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'airblade/vim-rooter'
@@ -207,6 +208,11 @@
     endfunction
 
     command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
   " }
 
   " Vim Agriculture {
