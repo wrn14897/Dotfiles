@@ -1,5 +1,5 @@
 # vimrc
-My vim config files
+My vim config files (NeoVIM compatible)
 
 1. Install vim-plug
 ```
@@ -35,3 +35,8 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 
 # tmux
 1. Copy .tmux.conf to $HOME
+
+
+# alacritty
+1. Install FiraCode font (https://github.com/tonsky/FiraCode)
+2. Copy `.confgs/alacritty`
