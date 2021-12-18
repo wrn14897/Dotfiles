@@ -9,10 +9,9 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 
 2. Install ripgrep (https://github.com/BurntSushi/ripgrep)
 
-3. Install fzf (https://github.com/junegunn/fzf)
+3. Install fzf (https://github.com/junegunn/fzf) and bat (https://github.com/sharkdp/bat)
 
-4. Vim8.1 with Python 3.6.1+ (for [deoplete.nvim](https://github.com/Shougo/deoplete.nvim))
-  - Run `pip3 install --user pynvim`
+4. Install node (nvm -> https://github.com/nvm-sh/nvm)
 
 5. Copy .vimrc to HOME dir
 
@@ -30,7 +29,7 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 3. Install 3rd party plugins 
   - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
   - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
-  - autojump (brew)
+  - [zsh-autojump](https://github.com/wting/autojump) (brew)
 4. Copy alias files (`.bash_aliases`, `.docker_aliases`) to $HOME
 
 
