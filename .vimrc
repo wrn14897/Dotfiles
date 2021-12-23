@@ -142,7 +142,7 @@
   nnoremap <C-c> :noh<return><C-c>
   nnoremap H gT
   nnoremap L gt
-  nnoremap tt  :tabedit<return>:Files<CR>
+  nnoremap tt  :tabedit<return>:CocCommand fzf-preview.FromResources project_mru git<CR>
   nnoremap tw  :tabclose<return>
 
   " Yank from the cursor to the end of the line, to be consistent with C and D.
