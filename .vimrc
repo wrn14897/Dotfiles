@@ -73,7 +73,6 @@
   Plug 'michaeljsmith/vim-indent-object'
   Plug 'kana/vim-textobj-user'
   Plug 'preservim/vim-textobj-sentence'
-  Plug 'jesseleite/vim-agriculture'
   call plug#end()
 " }
 
@@ -171,7 +170,7 @@
 
 " Plugin Configs {
   " Coc {
-    let g:coc_global_extensions = ['coc-json', 'coc-pyright', 'coc-tsserver', 'coc-html']
+    let g:coc_global_extensions = ['coc-json', 'coc-pyright', 'coc-tsserver', 'coc-html', 'coc-fzf-preview']
   " }
 
   " Rooter {
@@ -189,36 +188,27 @@
   " }
 
   " fzf {
-    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
-    " let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:50%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
     let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
     let $FZF_DEFAULT_COMMAND="rg --files --hidden"
-    nnoremap <c-p> :GFiles<CR>
-    nnoremap <c-f> :Rg<CR>
-    nnoremap <Leader>b :Buffers<CR>
-    nnoremap <Leader>s :BLines<CR>
+  " }
 
-    " Advanced ripgrep integration
-    function! RipgrepFzf(query, fullscreen)
-      let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
-      let initial_command = printf(command_fmt, shellescape(a:query))
-      let reload_command = printf(command_fmt, '{q}')
-      let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-      call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-    endfunction
+  " fzf-preview {
+    let g:fzf_preview_command = 'bat --theme=gruvbox-dark --color=always --plain {-1}'
 
-    command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+    nnoremap <c-p> :CocCommand fzf-preview.FromResources project_mru git<CR>
+    nnoremap <c-f> :CocCommand fzf-preview.ProjectGrep<Space>
+
+    nmap <Leader>f [fzf-p]
+    xmap <Leader>f [fzf-p]
+
+    nnoremap <silent> [fzf-p]b :<C-u>CocCommand fzf-preview.Buffers<CR>
+    nnoremap <silent> [fzf-p]m :<C-u>CocCommand fzf-preview.Marks<CR>
+    nnoremap <silent> [fzf-p]/ :<C-u>CocCommand fzf-preview.Lines --add-fzf-arg=--no-sort --add-fzf-arg=--query="'"<CR>
 
     nmap <silent> gd <Plug>(coc-definition)
     nmap <silent> gy <Plug>(coc-type-definition)
     nmap <silent> gi <Plug>(coc-implementation)
     nmap <silent> gr <Plug>(coc-references)
-  " }
-
-  " Vim Agriculture {
-    nmap <Leader>/ <Plug>RgRawSearch
-    vmap <Leader>/ <Plug>RgRawVisualSelection
-    nmap <Leader>* <Plug>RgRawWordUnderCursor
   " }
 
   " Nerdtree {
