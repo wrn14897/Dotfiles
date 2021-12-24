@@ -192,11 +192,26 @@
     let $FZF_DEFAULT_COMMAND="rg --files --hidden"
   " }
 
+  " fzf.vim {
+    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
+
+    " Advanced ripgrep integration
+    function! RipgrepFzf(query, fullscreen)
+      let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+      let initial_command = printf(command_fmt, shellescape(a:query))
+      let reload_command = printf(command_fmt, '{q}')
+      let spec = {'options': '--delimiter : --nth 4..'}
+      call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+    endfunction
+
+    command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+    nnoremap <c-f> :Rg<CR>
+  " }
+
   " fzf-preview {
     let g:fzf_preview_command = 'bat --theme=gruvbox-dark --color=always --plain {-1}'
 
     nnoremap <c-p> :CocCommand fzf-preview.FromResources project_mru git<CR>
-    nnoremap <c-f> :CocCommand fzf-preview.ProjectGrep<Space>
 
     nmap <Leader>f [fzf-p]
     xmap <Leader>f [fzf-p]
