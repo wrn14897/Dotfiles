@@ -170,7 +170,13 @@
 
 " Plugin Configs {
   " Coc {
-    let g:coc_global_extensions = ['coc-json', 'coc-pyright', 'coc-tsserver', 'coc-html', 'coc-fzf-preview']
+    let g:coc_global_extensions = [
+          \ 'coc-json',
+          \ 'coc-pyright',
+          \ 'coc-tsserver',
+          \ 'coc-fzf-preview',
+          \ 'coc-diagnostic'
+          \ ]
   " }
 
   " Rooter {
@@ -227,7 +233,7 @@
   " }
 
   " Nerdtree {
-    nnoremap <C-e> :NERDTreeToggle<CR>
+    nnoremap <expr> <C-e> g:NERDTree.IsOpen() ? ':NERDTreeClose<CR>' : @% == '' ? ':NERDTree<CR>' : ':NERDTreeFind<CR>'
     let NERDTreeShowBookmarks=1
     let NERDTreeChDirMode=0
     let NERDTreeQuitOnOpen=1
