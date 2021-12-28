@@ -41,6 +41,7 @@
   Plug 'romainl/vim-qf'
   Plug 'flazz/vim-colorschemes'
   Plug 'tpope/vim-fugitive'
+  Plug 'tpope/vim-rhubarb'
   Plug 'junegunn/gv.vim'
   Plug 'fatih/vim-go'
   Plug 'dense-analysis/ale'
@@ -73,6 +74,8 @@
   Plug 'michaeljsmith/vim-indent-object'
   Plug 'kana/vim-textobj-user'
   Plug 'preservim/vim-textobj-sentence'
+  Plug 'vim-ruby/vim-ruby'
+  Plug 'tpope/vim-rails'
   call plug#end()
 " }
 
@@ -155,13 +158,16 @@
   cmap w!! w !sudo tee % >/dev/null
 
   " Easier horizontal scrolling
-  map zl zL
-  map zh zH
+  noremap zl zL
+  noremap zh zH
 
   " Cursor
   let &t_SI = "\<Esc>[6 q"
   let &t_SR = "\<Esc>[4 q"
   let &t_EI = "\<Esc>[2 q"
+
+  " Macro
+  xnoremap <silent> . :normal .<CR>
 " }
 
 " Snippets {
@@ -174,6 +180,7 @@
           \ 'coc-json',
           \ 'coc-pyright',
           \ 'coc-tsserver',
+          \ 'coc-solargraph',
           \ 'coc-fzf-preview',
           \ 'coc-diagnostic'
           \ ]
@@ -191,6 +198,7 @@
     endif
     cnoreabbrev Ack Ack!
     map <leader>a :Ack<Space>
+
   " }
 
   " fzf {
@@ -225,6 +233,7 @@
     nnoremap <silent> [fzf-p]b :<C-u>CocCommand fzf-preview.Buffers<CR>
     nnoremap <silent> [fzf-p]m :<C-u>CocCommand fzf-preview.Marks<CR>
     nnoremap <silent> [fzf-p]/ :<C-u>CocCommand fzf-preview.Lines --add-fzf-arg=--no-sort --add-fzf-arg=--query="'"<CR>
+    nnoremap <silent> [fzf-p]gl :<C-u>CocCommand fzf-preview.GitLogs<CR>
 
     nmap <silent> gd <Plug>(coc-definition)
     nmap <silent> gy <Plug>(coc-type-definition)
@@ -256,6 +265,8 @@
     nnoremap <silent> <leader>ge :Gedit<CR>
     nnoremap <silent> <leader>gi :Git add -p %<CR>
     nnoremap <silent> <leader>gg :SignifyToggle<CR>
+    " Open visual selection in the browser
+    vnoremap <Leader>gb :Gbrowse<CR>
   " }
 
   " ALE {
