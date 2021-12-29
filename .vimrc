@@ -34,6 +34,7 @@
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'kevinhwang91/nvim-bqf'
     Plug 'antoinemadec/coc-fzf'
+    Plug 'lukas-reineke/indent-blankline.nvim'
   endif
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'airblade/vim-rooter'
@@ -70,6 +71,7 @@
   Plug 'christoomey/vim-sort-motion'
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
+  Plug 'edkolev/tmuxline.vim'
   Plug 'gko/vim-coloresque'
   Plug 'michaeljsmith/vim-indent-object'
   Plug 'kana/vim-textobj-user'
@@ -313,9 +315,14 @@
 
   " Airline {
     let g:airline_theme = 'base16_gruvbox_dark_hard'
-    let g:airline_left_sep='›'
-    let g:airline_right_sep='‹'
+    let g:airline_powerline_fonts = 1
     let g:airline#extensions#ale#enabled = 1
+    let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+    if !exists('g:airline_symbols')
+      let g:airline_symbols = {}
+    endif
+    let g:airline_symbols.colnr = ':'
+    let g:airline_symbols.maxlinenr = ''
   " }
 
   " GoLang {
