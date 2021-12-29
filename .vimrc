@@ -148,6 +148,10 @@
   nnoremap tt  :tabedit<return>:CocCommand fzf-preview.FromResources project_mru git<CR>
   nnoremap tw  :tabclose<return>
 
+  inoremap jk <esc>
+  inoremap <esc> <nop>
+
+  
   " Yank from the cursor to the end of the line, to be consistent with C and D.
   nnoremap Y y$
 
@@ -160,6 +164,10 @@
   " Easier horizontal scrolling
   noremap zl zL
   noremap zh zH
+
+  " Edit/Source vimrc file
+  nnoremap <leader>ev :vsplit $MYVIMRC<CR>
+  nnoremap <leader>sv :source $MYVIMRC<CR>
 
   " Cursor
   let &t_SI = "\<Esc>[6 q"
@@ -177,12 +185,19 @@
 " Plugin Configs {
   " Coc {
     let g:coc_global_extensions = [
-          \ 'coc-json',
-          \ 'coc-pyright',
-          \ 'coc-tsserver',
-          \ 'coc-solargraph',
+          \ 'coc-clangd',
+          \ 'coc-css',
+          \ 'coc-diagnostic',
           \ 'coc-fzf-preview',
-          \ 'coc-diagnostic'
+          \ 'coc-go',
+          \ 'coc-html',
+          \ 'coc-json',
+          \ 'coc-markdownlint',
+          \ 'coc-phpls',
+          \ 'coc-pyright',
+          \ 'coc-sh',
+          \ 'coc-solargraph',
+          \ 'coc-tsserver'
           \ ]
   " }
 
