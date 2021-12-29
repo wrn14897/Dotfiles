@@ -39,4 +39,5 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 
 # alacritty
 1. Install FiraCode font (https://github.com/tonsky/FiraCode)
-2. Copy `.confgs/alacritty`
+2. Install Powerline fonts (https://github.com/powerline/fonts)
+3. Copy `.confgs/alacritty`
