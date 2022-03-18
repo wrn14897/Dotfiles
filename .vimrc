@@ -45,7 +45,6 @@
   Plug 'tpope/vim-rhubarb'
   Plug 'junegunn/gv.vim'
   Plug 'fatih/vim-go'
-  Plug 'dense-analysis/ale'
   Plug 'jiangmiao/auto-pairs'
   Plug 'rhysd/conflict-marker.vim'
   Plug 'nathanaelkane/vim-indent-guides'
@@ -187,6 +186,8 @@
 " Plugin Configs {
   " Coc {
     let g:coc_global_extensions = [
+          \ 'coc-eslint',
+          \ 'coc-prettier',
           \ 'coc-clangd',
           \ 'coc-css',
           \ 'coc-diagnostic',
@@ -201,6 +202,9 @@
           \ 'coc-solargraph',
           \ 'coc-tsserver'
           \ ]
+    nmap <silent> <C-j> <Plug>(coc-diagnostic-next)
+    nmap <silent> <C-k> <Plug>(coc-diagnostic-prev)
+    command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
   " }
 
   " Rooter {
@@ -287,22 +291,22 @@
   " }
 
   " ALE {
-    let g:ale_disable_lsp = 1
-    let g:ale_sign_error = '✘'
-    let g:ale_sign_warning = '⚠'
-    highlight ALEErrorSign ctermbg=NONE ctermfg=red
-    highlight ALEWarningSign ctermbg=NONE ctermfg=yellow
-    let g:ale_echo_msg_error_str = 'E'
-    let g:ale_echo_msg_warning_str = 'W'
-    let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-    let g:ale_python_flake8_executable = 'python3'
-    let g:ale_python_flake8_options = '-m flake8'
-    let g:ale_linters = {}
-    let g:ale_linters.typescript = ['eslint', 'tsserver']
-    let g:ale_javascript_eslint_executable = 'eslint_d --cache'
-    let g:ale_typescript_prettier_use_local_config = 1
-    nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-    nmap <silent> <C-j> <Plug>(ale_next_wrap)
+    " let g:ale_disable_lsp = 1
+    " let g:ale_sign_error = '✘'
+    " let g:ale_sign_warning = '⚠'
+    " highlight ALEErrorSign ctermbg=NONE ctermfg=red
+    " highlight ALEWarningSign ctermbg=NONE ctermfg=yellow
+    " let g:ale_echo_msg_error_str = 'E'
+    " let g:ale_echo_msg_warning_str = 'W'
+    " let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+    " let g:ale_python_flake8_executable = 'python3'
+    " let g:ale_python_flake8_options = '-m flake8'
+    " let g:ale_linters = {}
+    " let g:ale_linters.typescript = ['eslint', 'tsserver']
+    " let g:ale_javascript_eslint_executable = 'eslint_d --cache'
+    " let g:ale_typescript_prettier_use_local_config = 1
+    " nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+    " nmap <silent> <C-j> <Plug>(ale_next_wrap)
   " }
 
   " TagBar {
@@ -316,7 +320,7 @@
   " Airline {
     let g:airline_theme = 'base16_gruvbox_dark_hard'
     let g:airline_powerline_fonts = 1
-    let g:airline#extensions#ale#enabled = 1
+    " let g:airline#extensions#ale#enabled = 1
     let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
     if !exists('g:airline_symbols')
       let g:airline_symbols = {}
