@@ -254,7 +254,7 @@
     nnoremap <silent> [fzf-p]b :<C-u>CocCommand fzf-preview.Buffers<CR>
     nnoremap <silent> [fzf-p]m :<C-u>CocCommand fzf-preview.Marks<CR>
     nnoremap <silent> [fzf-p]/ :<C-u>CocCommand fzf-preview.Lines --add-fzf-arg=--no-sort --add-fzf-arg=--query="'"<CR>
-    nnoremap <silent> [fzf-p]gl :<C-u>CocCommand fzf-preview.GitLogs<CR>
+    nnoremap <silent> <Leader>gl :<C-u>CocCommand fzf-preview.GitLogs<CR>
 
     nmap <silent> gd <Plug>(coc-definition)
     nmap <silent> gy <Plug>(coc-type-definition)
@@ -279,7 +279,7 @@
     nnoremap <silent> <leader>gd :Gvdiffsplit<CR>
     nnoremap <silent> <leader>gc :Git commit<CR>
     nnoremap <silent> <leader>gb :Git blame<CR>
-    nnoremap <silent> <leader>gl :Gclog<CR>
+    " nnoremap <silent> <leader>gl :Gclog<CR>
     nnoremap <silent> <leader>gp :Git push<CR>
     nnoremap <silent> <leader>gr :Gread<CR>
     nnoremap <silent> <leader>gw :Gwrite<CR>
