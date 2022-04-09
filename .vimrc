@@ -77,6 +77,8 @@
   Plug 'preservim/vim-textobj-sentence'
   Plug 'vim-ruby/vim-ruby'
   Plug 'tpope/vim-rails'
+  Plug 'powerman/vim-plugin-AnsiEsc'
+  Plug 'preservim/vimux'
   call plug#end()
 " }
 
@@ -274,7 +276,6 @@
   " }
 
   " Fugitive {
-  "
     nnoremap <silent> <leader>gs :Git<CR>
     nnoremap <silent> <leader>gd :Gvdiffsplit<CR>
     nnoremap <silent> <leader>gc :Git commit<CR>
@@ -337,4 +338,9 @@
     let g:go_fmt_command = "goimports"
   " }
 
+  " vimux {
+    map <Leader>vp :VimuxPromptCommand<CR>
+    map <Leader>vs :VimuxInterruptRunner<CR>
+    map <Leader>vl :VimuxRunLastCommand<CR>
+  " }
 " }
