@@ -154,11 +154,6 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
-# kitty terminal
-autoload -Uz compinit
-compinit
-kitty + complete setup zsh | source /dev/stdin
-
 # bat
 export BAT_THEME="gruvbox-dark"
 
