@@ -275,18 +275,23 @@
     let g:nerdtree_tabs_open_on_gui_startup=0
   " }
 
+  " Signify {
+    " Faster sign updates on CursorHold/CursorHoldI
+    set updatetime=100
+    nnoremap <leader>gu :SignifyHunkUndo<CR>
+  " }
+
   " Fugitive {
     nnoremap <silent> <leader>gs :Git<CR>
     nnoremap <silent> <leader>gd :Gvdiffsplit<CR>
     nnoremap <silent> <leader>gc :Git commit<CR>
     nnoremap <silent> <leader>gb :Git blame<CR>
     " nnoremap <silent> <leader>gl :Gclog<CR>
-    nnoremap <silent> <leader>gp :Git push<CR>
+    " nnoremap <silent> <leader>gp :Git push<CR>
     nnoremap <silent> <leader>gr :Gread<CR>
     nnoremap <silent> <leader>gw :Gwrite<CR>
     nnoremap <silent> <leader>ge :Gedit<CR>
     nnoremap <silent> <leader>gi :Git add -p %<CR>
-    nnoremap <silent> <leader>gg :SignifyToggle<CR>
     " Open visual selection in the browser
     vnoremap <Leader>gb :Gbrowse<CR>
   " }
