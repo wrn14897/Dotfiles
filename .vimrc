@@ -62,6 +62,7 @@
   Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
   Plug 'mbbill/undotree'
   Plug 'godlygeek/tabular'
+  Plug 'wellle/targets.vim'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-repeat'
   Plug 'luochen1990/rainbow'
