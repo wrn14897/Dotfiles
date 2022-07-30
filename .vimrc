@@ -44,28 +44,19 @@
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-rhubarb'
   Plug 'junegunn/gv.vim'
-  Plug 'fatih/vim-go'
   Plug 'jiangmiao/auto-pairs'
   Plug 'rhysd/conflict-marker.vim'
-  Plug 'nathanaelkane/vim-indent-guides'
   Plug 'powerline/fonts'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
-  Plug 'yuezk/vim-js'
-  Plug 'maxmellon/vim-jsx-pretty'
-  Plug 'leafgarland/typescript-vim'
-  Plug 'peitalin/vim-jsx-typescript'
-  Plug 'elzr/vim-json'
   Plug 'tpope/vim-commentary'
-  Plug 'preservim/nerdtree'
+  Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle'] }
   Plug 'Xuyuanp/nerdtree-git-plugin'
-  Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
   Plug 'mbbill/undotree'
   Plug 'godlygeek/tabular'
   Plug 'wellle/targets.vim'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-repeat'
-  Plug 'luochen1990/rainbow'
   Plug 'mhinz/vim-signify'
   Plug 'preservim/tagbar'
   Plug 'christoomey/vim-sort-motion'
@@ -76,10 +67,10 @@
   Plug 'michaeljsmith/vim-indent-object'
   Plug 'kana/vim-textobj-user'
   Plug 'preservim/vim-textobj-sentence'
-  Plug 'vim-ruby/vim-ruby'
-  Plug 'tpope/vim-rails'
   Plug 'powerman/vim-plugin-AnsiEsc'
   Plug 'preservim/vimux'
+  Plug 'mhinz/vim-startify'
+  Plug 'dstein64/vim-startuptime'
   call plug#end()
 " }
 
@@ -249,7 +240,7 @@
   " fzf-preview {
     let g:fzf_preview_command = 'bat --theme=gruvbox-dark --color=always --plain {-1}'
 
-    nnoremap <c-p> :CocCommand fzf-preview.FromResources project_mru git<CR>
+    nnoremap <c-p> :CocCommand fzf-preview.ProjectFiles<CR>
 
     nmap <Leader>f [fzf-p]
     xmap <Leader>f [fzf-p]
@@ -266,7 +257,7 @@
   " }
 
   " Nerdtree {
-    nnoremap <expr> <C-e> g:NERDTree.IsOpen() ? ':NERDTreeClose<CR>' : @% == '' ? ':NERDTree<CR>' : ':NERDTreeFind<CR>'
+    nnoremap <C-e> :NERDTreeToggle<CR>
     let NERDTreeShowBookmarks=1
     let NERDTreeChDirMode=0
     let NERDTreeQuitOnOpen=1
@@ -337,11 +328,11 @@
   " }
 
   " GoLang {
-    let g:go_version_warning = 0
-    autocmd FileType go nmap <leader>b  <Plug>(go-build)
-    autocmd FileType go nmap <leader>r  <Plug>(go-run)
-    autocmd FileType go nmap <leader>t  <Plug>(go-test)
-    let g:go_fmt_command = "goimports"
+    " let g:go_version_warning = 0
+    " autocmd FileType go nmap <leader>b  <Plug>(go-build)
+    " autocmd FileType go nmap <leader>r  <Plug>(go-run)
+    " autocmd FileType go nmap <leader>t  <Plug>(go-test)
+    " let g:go_fmt_command = "goimports"
   " }
 
   " vimux {
