@@ -12,10 +12,13 @@ alias dkflush='docker rm `docker ps --no-trunc -aq`'
 alias dkflush2='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
 alias dkt='docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"'
 alias dkps="docker ps --format '{{.ID}} ~ {{.Names}} ~ {{.Status}} ~ {{.Image}}'"
-alias dc='docker-compose'
-alias dcl="docker-compose logs"
-alias dclf="docker-compose logs -f"
+alias dc='docker compose'
+alias dcl="docker compose logs"
+alias dclf="docker compose logs -f"
 alias drr="docker run --rm"
+
+alias k="kubectl"
+alias mk="minikube"
 
 dkln() {
   docker logs -f `docker ps | grep $1 | awk '{print $1}'`

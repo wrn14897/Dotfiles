@@ -29,6 +29,5 @@ require'nvim-treesitter.configs'.setup {
 }
 
 require('indent_blankline').setup()
-
 EOF
 

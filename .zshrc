@@ -69,7 +69,6 @@ ZSH_THEME="avit"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  autojump
   docker
   git
   python
@@ -158,3 +157,21 @@ fi
 export BAT_THEME="gruvbox-dark"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+
+# github
+compctl -K _gh gh
+
+# kubectl
+source <(kubectl completion zsh)
+compdef __start_kubectl k
+source <(minikube completion zsh)
+
+# aws
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/bin/terraform terraform
