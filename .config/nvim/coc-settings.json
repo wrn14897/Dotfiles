@@ -1,6 +1,7 @@
 {
   "diagnostic.displayByAle": false,
   "solargraph.useBundler": false,
+  "suggest.noselect": true,
   "languageserver": {
     "dockerfile": {
       "command": "docker-langserver",
