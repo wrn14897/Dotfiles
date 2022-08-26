@@ -194,6 +194,7 @@
           \ 'coc-pyright',
           \ 'coc-sh',
           \ 'coc-solargraph',
+          \ 'coc-rust-analyzer',
           \ 'coc-tsserver'
           \ ]
     nmap <silent> <C-j> <Plug>(coc-diagnostic-next)
