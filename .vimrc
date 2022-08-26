@@ -303,7 +303,8 @@
     nnoremap <silent> <leader>ge :Gedit<CR>
     nnoremap <silent> <leader>gi :Git add -p %<CR>
     " Open visual selection in the browser
-    vnoremap <Leader>gb :Gbrowse<CR>
+    vnoremap <Leader>gbr :GBrowse<CR>
+    vnoremap <Leader>gb :GV<CR>
   " }
 
   " ALE {
