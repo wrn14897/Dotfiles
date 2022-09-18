@@ -16,6 +16,8 @@ require('packer').startup(function()
     run = ':TSUpdate'
   }
 
+  use 'ryanoasis/vim-devicons'
+
   use 'andymass/vim-matchup'
 
   use 'kevinhwang91/nvim-bqf'
@@ -50,7 +52,7 @@ require('packer').startup(function()
   use 'powerline/fonts'
 
   use {'junegunn/fzf', run = function()
-      vim.fn['fzf#install']()
+    vim.fn['fzf#install']()
   end
   }
 
@@ -99,7 +101,7 @@ require('packer').startup(function()
     'goolord/alpha-nvim',
     requires = { 'kyazdani42/nvim-web-devicons' },
     config = function ()
-        require'alpha'.setup(require'alpha.themes.dashboard'.config)
+      require'alpha'.setup(require'alpha.themes.dashboard'.config)
     end
   }
 
@@ -107,6 +109,10 @@ require('packer').startup(function()
     'nvim-lualine/lualine.nvim',
     requires = { 'kyazdani42/nvim-web-devicons', opt = true }
   }
+
+  --- ********************************************
+  --- ************ Plugin Setups ****************
+  --- ********************************************
   --- lualine
   require('lualine').setup {
     options = {
@@ -146,9 +152,8 @@ require('packer').startup(function()
     tabline = {},
     winbar = {},
     inactive_winbar = {},
-    extensions = {'fugitive', 'nerdtree', 'quickfix'}
+    extensions = {'quickfix', 'nerdtree', 'fugitive'}
   }
-
   --- nvim-treesitter
   require('nvim-treesitter.configs').setup {
     -- One of "all", "maintained" (parsers with maintainers), or a list of languages
@@ -173,7 +178,7 @@ require('packer').startup(function()
       -- Instead of true it can also be a list of languages
       additional_vim_regex_highlighting = false,
     },
-     rainbow = {
+    rainbow = {
       enable = true,
       -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
       extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
@@ -332,19 +337,6 @@ require('packer').startup(function()
 
   --- TagBar
   utils.nmap('<leader>tt', ':TagbarToggle<CR>')
-
-  --- Airline
-  -- vim.g.airline_theme = 'base16_gruvbox_dark_hard'
-  -- vim.g.airline_powerline_fonts = 1
-  -- -- let g:airline#extensions#ale#enabled = 1
-  -- vim.cmd([[
-  --   let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-  --   if !exists('g:airline_symbols')
-  --     let g:airline_symbols = {}
-  --   endif
-  -- ]])
-  -- vim.g.airline_symbols.colnr = ':'
-  -- vim.g.airline_symbols.maxlinenr = ''
 
   --- vimux
   utils.nmap('<Leader>vp', ':VimuxPromptCommand<CR>');
