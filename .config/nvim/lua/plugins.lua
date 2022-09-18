@@ -16,6 +16,8 @@ require('packer').startup(function()
     run = ':TSUpdate'
   }
 
+  use 'andymass/vim-matchup'
+
   use 'kevinhwang91/nvim-bqf'
 
   use 'antoinemadec/coc-fzf'
@@ -47,9 +49,9 @@ require('packer').startup(function()
 
   use 'powerline/fonts'
 
-  use {
-    'junegunn/fzf',
-    run = './install --bin'
+  use {'junegunn/fzf', run = function()
+      vim.fn['fzf#install']()
+  end
   }
 
   use 'junegunn/fzf.vim'
@@ -79,12 +81,6 @@ require('packer').startup(function()
 
   use 'christoomey/vim-sort-motion'
 
-  use 'vim-airline/vim-airline'
-
-  use 'vim-airline/vim-airline-themes'
-
-  use 'edkolev/tmuxline.vim'
-
   use 'gko/vim-coloresque'
 
   use 'michaeljsmith/vim-indent-object'
@@ -97,9 +93,61 @@ require('packer').startup(function()
 
   use 'preservim/vimux'
 
-  use 'mhinz/vim-startify'
-
   use 'dstein64/vim-startuptime'
+
+  use {
+    'goolord/alpha-nvim',
+    requires = { 'kyazdani42/nvim-web-devicons' },
+    config = function ()
+        require'alpha'.setup(require'alpha.themes.dashboard'.config)
+    end
+  }
+
+  use {
+    'nvim-lualine/lualine.nvim',
+    requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+  }
+  --- lualine
+  require('lualine').setup {
+    options = {
+      icons_enabled = true,
+      theme = 'gruvbox_dark',
+      component_separators = { left = '', right = ''},
+      section_separators = { left = '', right = ''},
+      disabled_filetypes = {
+        statusline = {},
+        winbar = {},
+      },
+      ignore_focus = {},
+      always_divide_middle = true,
+      globalstatus = false,
+      refresh = {
+        statusline = 1000,
+        tabline = 1000,
+        winbar = 1000,
+      }
+    },
+    sections = {
+      lualine_a = {'mode'},
+      lualine_b = {'branch', 'diff', 'diagnostics'},
+      lualine_c = {'filename'},
+      lualine_x = {'encoding', 'fileformat', 'filetype'},
+      lualine_y = {'progress'},
+      lualine_z = {'location'}
+    },
+    inactive_sections = {
+      lualine_a = {},
+      lualine_b = {},
+      lualine_c = {'filename'},
+      lualine_x = {'location'},
+      lualine_y = {},
+      lualine_z = {}
+    },
+    tabline = {},
+    winbar = {},
+    inactive_winbar = {},
+    extensions = {'fugitive', 'nerdtree', 'quickfix'}
+  }
 
   --- nvim-treesitter
   require('nvim-treesitter.configs').setup {
@@ -125,6 +173,17 @@ require('packer').startup(function()
       -- Instead of true it can also be a list of languages
       additional_vim_regex_highlighting = false,
     },
+     rainbow = {
+      enable = true,
+      -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+      extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+      max_file_lines = nil, -- Do not enable for files with more than n lines, int
+      -- colors = {}, -- table of hex strings
+      -- termcolors = {} -- table of colour name strings
+    },
+    matchup = {
+      enable = true
+    },
   }
 
   --- indent_blankline
@@ -148,27 +207,44 @@ require('packer').startup(function()
 
   --- Coc
   vim.g.coc_global_extensions = {
-    'coc-eslint',
-    'coc-prettier',
     'coc-clangd',
     'coc-css',
     'coc-diagnostic',
+    'coc-eslint',
     'coc-fzf-preview',
+    'coc-git',
     'coc-go',
     'coc-html',
     'coc-json',
     'coc-markdownlint',
     'coc-phpls',
+    'coc-prettier',
     'coc-pyright',
+    'coc-rust-analyzer',
     'coc-sh',
     'coc-solargraph',
-    'coc-rust-analyzer',
     'coc-sumneko-lua',
     'coc-tsserver'
   }
   utils.nmap('<C-j>', '<Plug>(coc-diagnostic-next)')
   utils.nmap('<C-k>', '<Plug>(coc-diagnostic-prev)')
-  --- Map function and class text objects
+
+  --- **************
+  --- coc-git
+  --- **************
+  --- show chunk diff at current position
+  utils.nmap('gs', '<Plug>(coc-git-chunkinfo)')
+  --- show commit contains current position
+  -- utils.nmap('gc', '<Plug>(coc-git-commit)')
+  --- navigate conflicts of current buffer
+  utils.nmap('[c', '<Plug>(coc-git-prevconflict)')
+  utils.nmap(']c', '<Plug>(coc-git-nextconflict)')
+  --- create text object for git chunks
+  utils.omap('ig', '<Plug>(coc-git-chunk-inner)')
+  utils.xmap('ig', '<Plug>(coc-git-chunk-inner)')
+  utils.omap('ag', '<Plug>(coc-git-chunk-outer)')
+  utils.xmap('ag', '<Plug>(coc-git-chunk-outer)')
+
   --- NOTE: Requires 'textDocument.documentSymbol' support from the language server.
   utils.xmap('if', '<Plug>(coc-funcobj-i)')
   utils.omap('if', '<Plug>(coc-funcobj-i)')
@@ -257,21 +333,18 @@ require('packer').startup(function()
   --- TagBar
   utils.nmap('<leader>tt', ':TagbarToggle<CR>')
 
-  --- Rainbow
-  vim.g.rainbow_active = 1
-
   --- Airline
-  vim.g.airline_theme = 'base16_gruvbox_dark_hard'
-  vim.g.airline_powerline_fonts = 1
-  -- let g:airline#extensions#ale#enabled = 1
-  vim.cmd([[
-    let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-    if !exists('g:airline_symbols')
-      let g:airline_symbols = {}
-    endif
-  ]])
-  vim.g.airline_symbols.colnr = ':'
-  vim.g.airline_symbols.maxlinenr = ''
+  -- vim.g.airline_theme = 'base16_gruvbox_dark_hard'
+  -- vim.g.airline_powerline_fonts = 1
+  -- -- let g:airline#extensions#ale#enabled = 1
+  -- vim.cmd([[
+  --   let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+  --   if !exists('g:airline_symbols')
+  --     let g:airline_symbols = {}
+  --   endif
+  -- ]])
+  -- vim.g.airline_symbols.colnr = ':'
+  -- vim.g.airline_symbols.maxlinenr = ''
 
   --- vimux
   utils.nmap('<Leader>vp', ':VimuxPromptCommand<CR>');

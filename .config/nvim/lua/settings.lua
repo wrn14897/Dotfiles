@@ -17,7 +17,6 @@ vim.cmd([[
 " }
 
 " UI {
-  colorscheme gruvbox
   highlight clear SignColumn      " SignColumn should match background
   highlight clear LineNr          " Current line number row will have same background color in relative mode
 
@@ -48,7 +47,6 @@ vim.o.t_SR = "<Esc>[4 q"
 vim.o.t_EI = "<Esc>[2 q"
 
 vim.opt.encoding = "utf-8"
-vim.opt.background = "dark"
 vim.opt.mousehide = true
 vim.opt.shortmess :append('filmnrxoOtT') --- Abbrev. of messages (avoids 'hit enter')
 vim.opt.viewoptions = "folds,options,cursor,unix,slash" --- Better Unix / Windows compatibility
@@ -60,6 +58,8 @@ vim.opt.iskeyword:remove({'.', '#', '-'})
 vim.opt.tags = "./tags,tags;$HOME"
 
 --- UI 
+vim.o.background = "dark" -- or "light" for light mode
+vim.cmd([[ colorscheme gruvbox ]])
 vim.opt.tabpagemax = 15 --- Only show 15 tabs
 vim.opt.showmode = true --- Display the current mode
 vim.opt.cursorline = true --- Highlight current line
