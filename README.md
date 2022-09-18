@@ -1,10 +1,9 @@
-# vimrc
-My vim config files (NeoVIM compatible)
+# nvim
 
-1. Install vim-plug
+1. Install nvim-packer
 ```
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+ ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 ```
 
 2. Install ripgrep (https://github.com/BurntSushi/ripgrep)
@@ -13,9 +12,9 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 
 4. Install node (nvm -> https://github.com/nvm-sh/nvm)
 
-5. Copy .vimrc to HOME dir
+5. Copy everything in `/.config/nvim`
 
-6. Open vim and do `:PlugInstall`
+6. Open nvim and do `:PackerInstall`
 
 7. Ready to rock !!
 
@@ -41,5 +40,8 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 
 # alacritty
 1. Install FiraCode font (https://github.com/tonsky/FiraCode)
-2. Install Powerline fonts (https://github.com/powerline/fonts)
+2. Install FiraCode Nerd Font
+  - Download fonts https://www.nerdfonts.com/font-downloads
+  - Unzip and copy to ~/.fonts
+  - Run the command `fc-cache -fv` to manually rebuild the font cache
 3. Copy `.confgs/alacritty`
