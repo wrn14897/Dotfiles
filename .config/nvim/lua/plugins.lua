@@ -18,6 +18,11 @@ require('packer').startup(function()
 
   use 'ryanoasis/vim-devicons'
 
+  use {
+    'romgrk/barbar.nvim',
+    requires = {'kyazdani42/nvim-web-devicons'}
+  }
+
   use 'andymass/vim-matchup'
 
   use 'kevinhwang91/nvim-bqf'
@@ -234,22 +239,6 @@ require('packer').startup(function()
   utils.nmap('<C-j>', '<Plug>(coc-diagnostic-next)')
   utils.nmap('<C-k>', '<Plug>(coc-diagnostic-prev)')
 
-  --- **************
-  --- coc-git
-  --- **************
-  --- show chunk diff at current position
-  utils.nmap('gs', '<Plug>(coc-git-chunkinfo)')
-  --- show commit contains current position
-  -- utils.nmap('gc', '<Plug>(coc-git-commit)')
-  --- navigate conflicts of current buffer
-  utils.nmap('[c', '<Plug>(coc-git-prevconflict)')
-  utils.nmap(']c', '<Plug>(coc-git-nextconflict)')
-  --- create text object for git chunks
-  utils.omap('ig', '<Plug>(coc-git-chunk-inner)')
-  utils.xmap('ig', '<Plug>(coc-git-chunk-inner)')
-  utils.omap('ag', '<Plug>(coc-git-chunk-outer)')
-  utils.xmap('ag', '<Plug>(coc-git-chunk-outer)')
-
   --- NOTE: Requires 'textDocument.documentSymbol' support from the language server.
   utils.xmap('if', '<Plug>(coc-funcobj-i)')
   utils.omap('if', '<Plug>(coc-funcobj-i)')
@@ -261,10 +250,6 @@ require('packer').startup(function()
   utils.omap('ac', '<Plug>(coc-classobj-a)')
   vim.cmd([[
     command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
-    " Add (Neo)Vim's native statusline support.
-    " NOTE: Please see `:h coc-status` for integrations with external plugins that
-    " provide custom statusline: lightline.vim, vim-airline.
-    set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
   ]])
 
   --- Rooter
