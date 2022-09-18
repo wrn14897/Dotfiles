@@ -1,3 +1,46 @@
+--- TODO: Migrate this to lua
+vim.cmd([[
+" General {
+  filetype plugin indent on   " Automatically detect file types.
+  syntax on                   " Syntax highlighting
+
+  if has('clipboard')
+    if has('unnamedplus')  " When possible use + register for copy-paste
+      set clipboard=unnamed,unnamedplus
+    else         " On mac and Windows, use * register for copy-paste
+      set clipboard=unnamed
+    endif
+  endif
+
+  set directory^=$HOME/.vim/swap//
+  set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
+" }
+
+" UI {
+  colorscheme gruvbox
+  highlight clear SignColumn      " SignColumn should match background
+  highlight clear LineNr          " Current line number row will have same background color in relative mode
+
+  if has('cmdline_info')
+    set ruler                   " Show the ruler
+    set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
+    set showcmd                 " Show partial commands in status line and
+    " Selected characters/lines in visual mode
+  endif
+
+  if has('statusline')
+    set laststatus=2
+    " Broken down into easily includeable segments
+    set statusline=%<%f\                     " Filename
+    set statusline+=%w%h%m%r                 " Options
+    set statusline+=%{fugitive#statusline()} " Git Hotness
+    set statusline+=\ [%{&ff}/%Y]            " Filetype
+    set statusline+=\ [%{getcwd()}]          " Current dir
+    set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
+  endif
+" }
+]])
+
 --- General
 vim.g.mapleader = ','
 vim.o.t_SI = "<Esc>[6 q"

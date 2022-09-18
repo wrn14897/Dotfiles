@@ -1,53 +1,31 @@
-function map(mode, shortcut, command)
-  vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true, silent = true })
-end
+local utils = require('utils')
 
-function nmap(shortcut, command)
-  map('n', shortcut, command)
-end
+utils.nmap('j', 'gj')
+utils.nmap('k', 'gk')
+utils.nmap('<C-c>', ':noh<return><C-c>')
+utils.nmap('H', 'gT')
+utils.nmap('L', 'gt')
+utils.nmap('tt', ':tabedit<return>:CocCommand fzf-preview.FromResources project_mru git<CR>')
+utils.nmap('tw', ':tabclose<return>')
+utils.imap('jk', '<esc>')
+utils.imap('<esc>', '<nop>')
+--- Yank from the cursor to the end of the line, to be consistent with C and D.
+utils.nmap('Y', 'y$')
 
-function imap(shortcut, command)
-  map('i', shortcut, command)
-end
+--- Find merge conflict markers
+utils.nmap('<leader>fc', '/\v^[<|=>]{7}( .*|$)<CR>')
 
-function vmap(shortcut, command)
-  map('v', shortcut, command)
-end
+--- For when you forget to sudo.. Really Write the file.
+utils.cmap('w!!', 'w !sudo tee % >/dev/null')
 
-function cmap(shortcut, command)
-  map('c', shortcut, command)
-end
+--- Easier horizontal scrolling
+utils.nmap('zl', 'zL')
+utils.nmap('zh', 'zH')
 
-function tmap(shortcut, command)
-  map('t', shortcut, command)
-end
+--- Edit/Source vimrc file
+utils.nmap('<leader>ev', ':vsplit $MYVIMRC<CR>')
+utils.nmap('<leader>sv', ':source $MYVIMRC<CR>')
 
-nmap('j', 'gj')
-nmap('k', 'gk')
-nmap('<C-c>', ':noh<return><C-c>')
-nmap('H', 'gT')
-nmap('L', 'gt')
-nmap('tt', ':tabedit<return>:CocCommand fzf-preview.FromResources project_mru git<CR>')
-nmap('tw', ':tabclose<return>')
-imap('jk', '<esc>')
-imap('<esc>', '<nop>')
--- " Yank from the cursor to the end of the line, to be consistent with C and D.
-nmap('Y', 'y$')
-
--- " Find merge conflict markers
-nmap('<leader>fc', '/\v^[<|=>]{7}( .*|$)<CR>')
-
--- " For when you forget to sudo.. Really Write the file.
-cmap('w!!', 'w !sudo tee % >/dev/null')
-
--- " Easier horizontal scrolling
-nmap('zl', 'zL')
-nmap('zh', 'zH')
-
--- " Edit/Source vimrc file
-nmap('<leader>ev', ':vsplit $MYVIMRC<CR>')
-nmap('<leader>sv', ':source $MYVIMRC<CR>')
-
--- " Macro
-vim.cmd([[ xnoremap <silent> . :normal .<CR> ]])
+--- Macro
+utils.xmap('.', ':normal .<CR>')
 
