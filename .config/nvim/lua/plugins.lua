@@ -98,9 +98,9 @@ require('packer').startup(function()
 
   use 'powerman/vim-plugin-AnsiEsc'
 
-  use 'preservim/vimux'
+  use 'lewis6991/impatient.nvim'
 
-  use 'dstein64/vim-startuptime'
+  use 'preservim/vimux'
 
   use {
     'goolord/alpha-nvim',
