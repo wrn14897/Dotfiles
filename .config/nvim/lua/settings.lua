@@ -20,7 +20,7 @@ vim.o.t_SI = "<Esc>[6 q"
 vim.o.t_SR = "<Esc>[4 q"
 vim.o.t_EI = "<Esc>[2 q"
 
-set.directory = "$HOME/.local/state/nvim/swap//" --- default
+set.directory = "~/.local/state/nvim/swap//" --- default
 set.encoding = "utf-8"
 set.mousehide = true
 set.shortmess :append('filmnrxoOtT') --- Abbrev. of messages (avoids 'hit enter')
