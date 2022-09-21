@@ -41,6 +41,7 @@ set.cursorline = true --- Highlight current line
 set.backspace = "indent,eol,start" --- Backspace for dummies
 set.linespace = 0 --- No extra spaces between rows
 set.number = true --- Line numbers on
+set.relativenumber = true --- Show relative line number
 set.showmatch = true --- Show matching brackets/parenthesis
 set.incsearch = true --- Find as you type search
 set.hlsearch = true --- Highlight search terms
