@@ -18,11 +18,6 @@ require('packer').startup(function()
 
   use 'ryanoasis/vim-devicons'
 
-  use {
-    'romgrk/barbar.nvim',
-    requires = {'kyazdani42/nvim-web-devicons'}
-  }
-
   use 'andymass/vim-matchup'
 
   use 'kevinhwang91/nvim-bqf'
@@ -160,31 +155,6 @@ require('packer').startup(function()
     extensions = {'quickfix', 'nerdtree', 'fugitive'}
   }
   
-  --- barbar
-  require'bufferline'.setup {
-    -- Enable/disable animations
-    animation = false,
-
-    -- Enable/disable auto-hiding the tab bar when there is a single buffer
-    auto_hide = false,
-
-    -- Enable/disable current/total tabpages indicator (top right corner)
-    tabpages = true,
-
-    -- Enable/disable close button
-    closable = false,
-
-    -- Enables/disable clickable tabs
-    --  - left-click: go to buffer
-    --  - middle-click: delete buffer
-    clickable = false,
-
-    -- Enable/disable icons
-    -- if set to 'numbers', will show buffer index in the tabline
-    -- if set to 'both', will show buffer index and icons in the tabline
-    icons = true,
-  }
-
   --- nvim-treesitter
   require('nvim-treesitter.configs').setup {
     -- One of "all", "maintained" (parsers with maintainers), or a list of languages
@@ -228,12 +198,6 @@ require('packer').startup(function()
   --- ********************************************
   --- ************ Plugin Configs ****************
   --- ********************************************
-  --- barbar
-  utils.nmap('H', '<Cmd>BufferPrevious<CR>')
-  utils.nmap('L', '<Cmd>BufferNext<CR>')
-  utils.nmap('tt', ':tabedit<return>:CocCommand fzf-preview.FromResources project_mru git<CR>')
-  utils.nmap('tw', '<Cmd>BufferClose<CR>')
-
   --- Nerdtree
   utils.nmap('<C-e>', ':NERDTreeToggle<CR>')
   utils.nmap('<leader>nf', ':NERDTreeFind<CR>')

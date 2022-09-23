@@ -14,6 +14,12 @@ utils.nmap('<leader>fc', '/\v^[<|=>]{7}( .*|$)<CR>')
 --- For when you forget to sudo.. Really Write the file.
 utils.cmap('w!!', 'w !sudo tee % >/dev/null')
 
+--- Tabs
+utils.nmap('H', 'gT')
+utils.nmap('L', 'gt')
+utils.nmap('tt', ':tabedit<return>::Files<CR>')
+utils.nmap('tw', ':tabclose<return>')
+
 --- Easier horizontal scrolling
 utils.nmap('zl', 'zL')
 utils.nmap('zh', 'zH')
