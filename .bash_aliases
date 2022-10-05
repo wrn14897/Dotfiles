@@ -1,3 +1,6 @@
+# fzf
+alias sd="cd ~ && cd \$(find * -type d | fzf)"
+
 # VIM
 alias cleanVIMSwaps='rm -rf /home/warren/.local/share/nvim/swap/*.sw[a-p]'
 alias v='nvim'
