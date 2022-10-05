@@ -22,8 +22,6 @@ require('packer').startup(function()
 
   use 'kevinhwang91/nvim-bqf'
 
-  use 'antoinemadec/coc-fzf'
-
   use 'lukas-reineke/indent-blankline.nvim'
 
   use {
@@ -41,9 +39,11 @@ require('packer').startup(function()
 
   use 'tpope/vim-fugitive'
 
-  use 'tpope/vim-rhubarb'
+  use 'lewis6991/gitsigns.nvim'
 
   use 'junegunn/gv.vim'
+
+  use 'tpope/vim-rhubarb'
 
   use 'jiangmiao/auto-pairs'
 
@@ -57,6 +57,8 @@ require('packer').startup(function()
   }
 
   use 'junegunn/fzf.vim'
+
+  use 'antoinemadec/coc-fzf'
 
   use 'tpope/vim-commentary'
 
@@ -195,6 +197,49 @@ require('packer').startup(function()
   --- indent_blankline
   require('indent_blankline').setup()
 
+  --- gitsigns
+  require('gitsigns').setup {
+    signs = {
+      add          = {hl = 'GitSignsAdd'   , text = '│', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
+      change       = {hl = 'GitSignsChange', text = '│', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+      delete       = {hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+      topdelete    = {hl = 'GitSignsDelete', text = '‾', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+      changedelete = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+    },
+    signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
+    numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
+    linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
+    word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
+    watch_gitdir = {
+      interval = 1000,
+      follow_files = true
+    },
+    attach_to_untracked = true,
+    current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+    current_line_blame_opts = {
+      virt_text = true,
+      virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+      delay = 1000,
+      ignore_whitespace = false,
+    },
+    current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
+    sign_priority = 6,
+    update_debounce = 100,
+    status_formatter = nil, -- Use default
+    max_file_length = 40000, -- Disable if file is longer than this (in lines)
+    preview_config = {
+      -- Options passed to nvim_open_win
+      border = 'single',
+      style = 'minimal',
+      relative = 'cursor',
+      row = 0,
+      col = 1
+    },
+    yadm = {
+      enable = false
+    },
+  }
+
   --- ********************************************
   --- ************ Plugin Configs ****************
   --- ********************************************
@@ -234,7 +279,12 @@ require('packer').startup(function()
   }
   utils.nmap('<C-j>', '<Plug>(coc-diagnostic-next)')
   utils.nmap('<C-k>', '<Plug>(coc-diagnostic-prev)')
-
+  utils.nmap('gd', '<Plug>(coc-definition)')
+  utils.nmap('gy', '<Plug>(coc-type-definition)')
+  utils.nmap('gi', '<Plug>(coc-implementation)')
+  utils.nmap('gr', '<Plug>(coc-references)')
+  --- Apply AutoFix to problem on the current line.
+  utils.nmap('<leader>qf', '<Plug>(coc-fix-current)')
   --- NOTE: Requires 'textDocument.documentSymbol' support from the language server.
   utils.xmap('if', '<Plug>(coc-funcobj-i)')
   utils.omap('if', '<Plug>(coc-funcobj-i)')
@@ -244,9 +294,22 @@ require('packer').startup(function()
   utils.omap('ic', '<Plug>(coc-classobj-i)')
   utils.xmap('ac', '<Plug>(coc-classobj-a)')
   utils.omap('ac', '<Plug>(coc-classobj-a)')
+
+  function _G.show_docs()
+      local cw = vim.fn.expand('<cword>')
+      if vim.fn.index({'vim', 'help'}, vim.bo.filetype) >= 0 then
+          vim.api.nvim_command('h ' .. cw)
+      elseif vim.api.nvim_eval('coc#rpc#ready()') then
+          vim.fn.CocActionAsync('doHover')
+      else
+          vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
+      end
+  end
   vim.cmd([[
     command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
   ]])
+  --- Use K to show documentation in preview window.
+  utils.nmap('K', '<CMD>lua _G.show_docs()<CR>')
 
   --- Rooter
   vim.g.rooter_patterns = {'.git'}
@@ -291,10 +354,6 @@ require('packer').startup(function()
   utils.nmap('<Leader>fm', ':<C-u>CocCommand fzf-preview.Marks<CR>')
   utils.nmap('<Leader>f/', ':<C-u>CocCommand fzf-preview.Lines --add-fzf-arg=--no-sort --add-fzf-arg=--query="\'"<CR>')
   utils.nmap('<Leader>gl', ':<C-u>CocCommand fzf-preview.GitLogs<CR>')
-  utils.nmap('gd', '<Plug>(coc-definition)')
-  utils.nmap('gy', '<Plug>(coc-type-definition)')
-  utils.nmap('gi', '<Plug>(coc-implementation)')
-  utils.nmap('gr', '<Plug>(coc-references)')
 
   --- Signify
   -- Faster sign updates on CursorHold/CursorHoldI
