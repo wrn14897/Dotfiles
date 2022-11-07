@@ -16,5 +16,7 @@
         "storagePath": "/tmp/intelephense"
       }
     }
-  }
+  },
+  "coc.preferences.extensionUpdateCheck": "never",
+  "coc.preferences.useQuickfixForLocations": true
 }
