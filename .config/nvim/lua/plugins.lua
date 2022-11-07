@@ -31,8 +31,6 @@ require('packer').startup(function()
 
   use 'airblade/vim-rooter'
 
-  use 'mileszs/ack.vim'
-
   use 'romainl/vim-qf'
 
   use 'flazz/vim-colorschemes'
@@ -56,9 +54,11 @@ require('packer').startup(function()
   end
   }
 
-  use 'junegunn/fzf.vim'
-
-  use 'antoinemadec/coc-fzf'
+  use {
+    'ibhagwan/fzf-lua',
+    -- optional for icon support
+    requires = { 'kyazdani42/nvim-web-devicons' }
+  }
 
   use 'tpope/vim-commentary'
 
@@ -113,6 +113,13 @@ require('packer').startup(function()
   --- ********************************************
   --- ************ Plugin Setups ****************
   --- ********************************************
+  --- fzf-lua
+  require'fzf-lua'.setup {
+    winopts = {
+      height = 0.9,
+      width = 0.9,
+    }
+  }
   --- lualine
   require('lualine').setup {
     options = {
@@ -293,7 +300,6 @@ require('packer').startup(function()
     'coc-css',
     'coc-diagnostic',
     'coc-eslint',
-    'coc-fzf-preview',
     'coc-git',
     'coc-go',
     'coc-html',
@@ -345,46 +351,16 @@ require('packer').startup(function()
   --- Rooter
   vim.g.rooter_patterns = {'.git'}
 
-  --- Ack
-  vim.cmd([[
-    if executable('rg')
-      let g:ackprg = 'rg -S --no-heading --vimgrep'
-    elseif executable('ag')
-      let g:ackprg = 'ag --vimgrep'
-    endif
-    cnoreabbrev Ack Ack!
-  ]])
-  utils.nmap('<leader>a', ':Ack<Space>')
-
-  --- fzf
-  vim.env.FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
-  vim.env.FZF_DEFAULT_COMMAND = 'rg --files --hidden'
-  --- fzf.vim
-  local fzf_layout = {}
-  fzf_layout.window = {}
-  fzf_layout.window.height = 0.9
-  fzf_layout.window.width = 0.9
-  vim.g.fzf_layout = fzf_layout
-  vim.cmd([[
-    " Advanced ripgrep integration
-    function! RipgrepFzf(query, fullscreen)
-      let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
-      let initial_command = printf(command_fmt, shellescape(a:query))
-      let reload_command = printf(command_fmt, '{q}')
-      let spec = {'options': '--delimiter : --nth 4..'}
-      call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-    endfunction
-
-    command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
-  ]])
-  utils.nmap('<c-f>', ':Rg<CR>')
-  utils.nmap('<c-p>', ':Files<CR>')
-  --- fzf-preview
-  vim.g.fzf_preview_command = 'bat --theme=gruvbox-dark --color=always --plain {-1}'
-  utils.nmap('<Leader>fb', ':<C-u>CocCommand fzf-preview.Buffers<CR>')
-  utils.nmap('<Leader>fm', ':<C-u>CocCommand fzf-preview.Marks<CR>')
-  utils.nmap('<Leader>f/', ':<C-u>CocCommand fzf-preview.Lines --add-fzf-arg=--no-sort --add-fzf-arg=--query="\'"<CR>')
-  utils.nmap('<Leader>gl', ':<C-u>CocCommand fzf-preview.GitLogs<CR>')
+  --- fzf-lua
+  utils.nmap('<c-f>', ':FzfLua grep_project<CR>')
+  utils.nmap('<c-p>', ':FzfLua files<CR>')
+  utils.nmap('<Leader>fw', ':FzfLua grep_cWORD<CR>')
+  utils.nmap('<Leader>fb', ':FzfLua buffers<CR>')
+  utils.nmap('<Leader>fm', ':FzfLua marks<CR>')
+  utils.nmap('<Leader>fr', ':FzfLua registers<CR>')
+  utils.nmap('<Leader>f/', ':FzfLua lines<CR>')
+  utils.nmap('<Leader>ft', ':FzfLua tabs<CR>')
+  utils.nmap('<Leader>gl', ':FzfLua git_commits<CR>')
 
   --- Fugitive
   utils.nmap('<leader>gs', ':Git<CR>')

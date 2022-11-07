@@ -2,7 +2,6 @@ local utils = require('utils')
 
 utils.nmap('j', 'gj')
 utils.nmap('k', 'gk')
-utils.nmap('<C-c>', ':noh<return><C-c>')
 utils.imap('jk', '<esc>')
 utils.imap('<esc>', '<nop>')
 --- Yank from the cursor to the end of the line, to be consistent with C and D.
@@ -17,7 +16,7 @@ utils.cmap('w!!', 'w !sudo tee % >/dev/null')
 --- Tabs
 utils.nmap('H', 'gT')
 utils.nmap('L', 'gt')
-utils.nmap('tt', ':tabedit<return>::Files<CR>')
+utils.nmap('tt', ':tabedit<return>::FzfLua files<CR>')
 utils.nmap('tw', ':tabclose<return>')
 
 --- Easier horizontal scrolling
