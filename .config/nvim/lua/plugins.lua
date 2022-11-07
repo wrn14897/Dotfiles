@@ -79,8 +79,6 @@ require('packer').startup(function()
 
   use 'tpope/vim-repeat'
 
-  use 'mhinz/vim-signify'
-
   use 'preservim/tagbar'
 
   use 'christoomey/vim-sort-motion'
@@ -238,6 +236,39 @@ require('packer').startup(function()
     yadm = {
       enable = false
     },
+    on_attach = function(bufnr)
+      local gs = package.loaded.gitsigns
+
+      local function map(mode, l, r, opts)
+        opts = opts or {}
+        opts.buffer = bufnr
+        vim.keymap.set(mode, l, r, opts)
+      end
+
+      -- Navigation
+      map('n', ']c', function()
+        if vim.wo.diff then return ']c' end
+        vim.schedule(function() gs.next_hunk() end)
+        return '<Ignore>'
+      end, {expr=true})
+
+      map('n', '[c', function()
+        if vim.wo.diff then return '[c' end
+        vim.schedule(function() gs.prev_hunk() end)
+        return '<Ignore>'
+      end, {expr=true})
+
+      -- Actions
+      map({'n', 'v'}, '<leader>hs', ':Gitsigns stage_hunk<CR>')
+      map({'n', 'v'}, '<leader>hr', ':Gitsigns reset_hunk<CR>')
+      map('n', '<leader>hS', gs.stage_buffer)
+      map('n', '<leader>hu', gs.undo_stage_hunk)
+      map('n', '<leader>hR', gs.reset_buffer)
+      map('n', '<leader>hp', gs.preview_hunk)
+
+      -- Text object
+      map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+    end
   }
 
   --- ********************************************
@@ -354,11 +385,6 @@ require('packer').startup(function()
   utils.nmap('<Leader>fm', ':<C-u>CocCommand fzf-preview.Marks<CR>')
   utils.nmap('<Leader>f/', ':<C-u>CocCommand fzf-preview.Lines --add-fzf-arg=--no-sort --add-fzf-arg=--query="\'"<CR>')
   utils.nmap('<Leader>gl', ':<C-u>CocCommand fzf-preview.GitLogs<CR>')
-
-  --- Signify
-  -- Faster sign updates on CursorHold/CursorHoldI
-  vim.opt.updatetime = 100
-  utils.nmap('<leader>gu', ':SignifyHunkUndo<CR>')
 
   --- Fugitive
   utils.nmap('<leader>gs', ':Git<CR>')
