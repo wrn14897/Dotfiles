@@ -354,7 +354,7 @@ require('packer').startup(function()
   --- fzf-lua
   utils.nmap('<c-f>', ':FzfLua grep_project<CR>')
   utils.nmap('<c-p>', ':FzfLua files<CR>')
-  utils.nmap('<Leader>fw', ':FzfLua grep_cWORD<CR>')
+  utils.nmap('<Leader>fw', ':FzfLua grep_cword<CR>')
   utils.nmap('<Leader>fb', ':FzfLua buffers<CR>')
   utils.nmap('<Leader>fm', ':FzfLua marks<CR>')
   utils.nmap('<Leader>fr', ':FzfLua registers<CR>')
