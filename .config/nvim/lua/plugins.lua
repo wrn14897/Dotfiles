@@ -118,6 +118,11 @@ require('packer').startup(function()
     winopts = {
       height = 0.9,
       width = 0.9,
+    },
+    keymap = {
+      fzf = {
+        ["ctrl-z"] = "abort",
+      }
     }
   }
   --- lualine
@@ -361,6 +366,7 @@ require('packer').startup(function()
   utils.nmap('<Leader>f/', ':FzfLua lines<CR>')
   utils.nmap('<Leader>ft', ':FzfLua tabs<CR>')
   utils.nmap('<Leader>gl', ':FzfLua git_commits<CR>')
+  utils.nmap('<Leader>fgs', ':FzfLua git_status<CR>')
 
   --- Fugitive
   utils.nmap('<leader>gs', ':Git<CR>')
