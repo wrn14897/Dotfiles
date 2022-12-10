@@ -127,6 +127,9 @@ require('packer').startup(function()
     keymap = {
       fzf = {
         ["ctrl-z"] = "abort",
+        ["ctrl-k"] = "unix-line-discard",
+        ["ctrl-d"] = "preview-page-down",
+        ["ctrl-u"] = "preview-page-up",
       }
     },
     git = {
