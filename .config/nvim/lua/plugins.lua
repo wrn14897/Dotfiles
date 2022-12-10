@@ -119,10 +119,23 @@ require('packer').startup(function()
       height = 0.9,
       width = 0.9,
     },
+    previewers = {
+      git_diff = {
+        pager = "delta --width=$FZF_PREVIEW_COLUMNS",
+      },
+    },
     keymap = {
       fzf = {
         ["ctrl-z"] = "abort",
       }
+    },
+    git = {
+      commits = {
+        preview_pager = "delta --width=$FZF_PREVIEW_COLUMNS",
+      },
+      bcommits = {
+        preview_pager = "delta --width=$FZF_PREVIEW_COLUMNS",
+      },
     }
   }
   --- lualine
@@ -366,7 +379,7 @@ require('packer').startup(function()
   utils.nmap('<Leader>f/', ':FzfLua lines<CR>')
   utils.nmap('<Leader>ft', ':FzfLua tabs<CR>')
   utils.nmap('<Leader>gl', ':FzfLua git_commits<CR>')
-  utils.nmap('<Leader>fgs', ':FzfLua git_status<CR>')
+  utils.nmap('<Leader>gbl', ':FzfLua git_bcommits<CR>')
 
   --- Fugitive
   utils.nmap('<leader>gs', ':Git<CR>')

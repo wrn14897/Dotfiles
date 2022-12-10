@@ -10,13 +10,17 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 
 3. Install fzf (https://github.com/junegunn/fzf) and bat (https://github.com/sharkdp/bat)
 
-4. Install node (nvm -> https://github.com/nvm-sh/nvm)
+4. Install git-delta (https://github.com/dandavison/delta)
 
-5. Copy everything in `/.config/nvim`
+5. Install fd (https://github.com/sharkdp/fd)
 
-6. Open nvim and do `:PackerInstall`
+6. Install node (nvm -> https://github.com/nvm-sh/nvm)
 
-7. Ready to rock !!
+7. Copy everything in `/.config/nvim`
+
+8. Open nvim and do `:PackerInstall`
+
+9. Ready to rock !!
 
 
 # oh-my-zsh
