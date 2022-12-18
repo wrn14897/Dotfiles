@@ -11,9 +11,16 @@ require('packer').startup(function()
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  use {
+  use { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate'
+    run = function()
+      pcall(require('nvim-treesitter.install').update { with_sync = true })
+    end,
+  }
+
+  use { -- Additional text objects via treesitter
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    after = 'nvim-treesitter',
   }
 
   use 'ryanoasis/vim-devicons'
@@ -186,37 +193,65 @@ require('packer').startup(function()
   --- nvim-treesitter
   require('nvim-treesitter.configs').setup {
     -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-    ensure_installed = "all",
+    ensure_installed = { 'go', 'lua', 'python', 'rust', 'typescript', 'help' },
 
     -- Install languages synchronously (only applied to `ensure_installed`)
     sync_install = false,
 
-    -- List of parsers to ignore installing
-    ignore_install = {},
-
-    highlight = {
-      -- `false` will disable the whole extension
+    highlight = { enable = true },
+    indent = { enable = true },
+    incremental_selection = {
       enable = true,
-
-      -- list of language that will be disabled
-      disable = {},
-
-      -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-      -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-      -- Using this option may slow down your editor, and you may see some duplicate highlights.
-      -- Instead of true it can also be a list of languages
-      additional_vim_regex_highlighting = false,
+      keymaps = {
+        init_selection = '<c-space>',
+        node_incremental = '<c-space>',
+        scope_incremental = '<c-s>',
+        node_decremental = '<c-backspace>',
+      },
     },
-    rainbow = {
-      enable = true,
-      -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
-      extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-      max_file_lines = nil, -- Do not enable for files with more than n lines, int
-      -- colors = {}, -- table of hex strings
-      -- termcolors = {} -- table of colour name strings
-    },
-    matchup = {
-      enable = true
+    textobjects = {
+      select = {
+        enable = true,
+        lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+        keymaps = {
+          -- You can use the capture groups defined in textobjects.scm
+          ['aa'] = '@parameter.outer',
+          ['ia'] = '@parameter.inner',
+          ['af'] = '@function.outer',
+          ['if'] = '@function.inner',
+          ['ac'] = '@class.outer',
+          ['ic'] = '@class.inner',
+        },
+      },
+      move = {
+        enable = true,
+        set_jumps = true, -- whether to set jumps in the jumplist
+        goto_next_start = {
+          [']m'] = '@function.outer',
+          [']]'] = '@class.outer',
+        },
+        goto_next_end = { --ignore-scripts
+          [']M'] = '@function.outer',
+          [']['] = '@class.outer',
+        },
+        goto_previous_start = {
+          ['[m'] = '@function.outer',
+          ['[['] = '@class.outer',
+        },
+        goto_previous_end = {
+          ['[M'] = '@function.outer',
+          ['[]'] = '@class.outer',
+        },
+      },
+      swap = {
+        enable = true,
+        swap_next = {
+          ['<leader>a'] = '@parameter.inner',
+        },
+        swap_previous = {
+          ['<leader>A'] = '@parameter.inner',
+        },
+      },
     },
   }
 
@@ -347,15 +382,6 @@ require('packer').startup(function()
   utils.nmap('gr', '<Plug>(coc-references)')
   --- Apply AutoFix to problem on the current line.
   utils.nmap('<leader>qf', '<Plug>(coc-fix-current)')
-  --- NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-  utils.xmap('if', '<Plug>(coc-funcobj-i)')
-  utils.omap('if', '<Plug>(coc-funcobj-i)')
-  utils.xmap('af', '<Plug>(coc-funcobj-a)')
-  utils.omap('af', '<Plug>(coc-funcobj-a)')
-  utils.xmap('ic', '<Plug>(coc-classobj-i)')
-  utils.omap('ic', '<Plug>(coc-classobj-i)')
-  utils.xmap('ac', '<Plug>(coc-classobj-a)')
-  utils.omap('ac', '<Plug>(coc-classobj-a)')
 
   vim.cmd([[
     inoremap <silent><expr> <C-c> coc#pum#visible() ? coc#pum#confirm() : "\<C-c>"
