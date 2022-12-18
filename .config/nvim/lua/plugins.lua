@@ -379,12 +379,8 @@ require('packer').startup(function()
   vim.keymap.set('n', '<C-j>', vim.diagnostic.goto_next, { noremap=true, silent=true })
 
   local on_attach = function(_, bufnr)
-    local nmap = function(keys, func, desc)
-      if desc then
-        desc = 'LSP: ' .. desc
-      end
-
-      vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+    local nmap = function(keys, func)
+      vim.keymap.set('n', keys, func, { buffer = bufnr, noremap=true, silent=true })
     end
     nmap('<leader>rn', vim.lsp.buf.rename)
     nmap('<leader>ca', vim.lsp.buf.code_action)
