@@ -1,5 +1,6 @@
 local utils = require('utils')
 
+-- Automatically source and re-compile packer whenever you save this file
 vim.cmd([[
   augroup packer_user_config
     autocmd!
@@ -10,6 +11,23 @@ vim.cmd([[
 require('packer').startup(function()
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
+
+  use { -- LSP Configuration & Plugins
+    'neovim/nvim-lspconfig',
+    requires = {
+      -- Automatically install LSPs to stdpath for neovim
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+
+      -- Useful status updates for LSP
+      'j-hui/fidget.nvim',
+    },
+  }
+
+  use { -- Autocompletion
+    'hrsh7th/nvim-cmp',
+    requires = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
+  }
 
   use { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -31,10 +49,10 @@ require('packer').startup(function()
 
   use 'lukas-reineke/indent-blankline.nvim'
 
-  use {
-    'neoclide/coc.nvim',
-    branch = 'release'
-  }
+  -- use {
+  --   'neoclide/coc.nvim',
+  --   branch = 'release'
+  -- }
 
   use 'airblade/vim-rooter'
 
@@ -148,6 +166,32 @@ require('packer').startup(function()
       },
     }
   }
+  utils.nmap('<c-f>', ':FzfLua grep_project<CR>')
+  utils.nmap('<c-p>', ':FzfLua files<CR>')
+  utils.nmap('<Leader>fw', ':FzfLua grep_cword<CR>')
+  utils.nmap('<Leader>fb', ':FzfLua buffers<CR>')
+  utils.nmap('<Leader>fm', ':FzfLua marks<CR>')
+  utils.nmap('<Leader>fr', ':FzfLua registers<CR>')
+  utils.nmap('<Leader>f/', ':FzfLua lines<CR>')
+  utils.nmap('<Leader>ft', ':FzfLua tabs<CR>')
+  utils.nmap('<Leader>gl', ':FzfLua git_commits<CR>')
+  utils.nmap('<Leader>gbl', ':FzfLua git_bcommits<CR>')
+
+  --- Fugitive
+  utils.nmap('<leader>gs', ':Git<CR>')
+  utils.nmap('<leader>gd', ':Gvdiffsplit<CR>')
+  utils.nmap('<leader>gc', ':Git commit<CR>')
+  utils.nmap('<leader>gb', ':Git blame<CR>')
+  -- nnoremap <silent> <leader>gl :Gclog<CR>
+  -- nnoremap <silent> <leader>gp :Git push<CR>
+  utils.nmap('<leader>gr', ':Gread<CR>')
+  utils.nmap('<leader>gw', ':Gwrite<CR>')
+  utils.nmap('<leader>ge', ':Gedit<CR>')
+  utils.nmap('<leader>gi', ':Git add -p %<CR>')
+  -- Open visual selection in the browser
+  utils.vmap('br', ':GBrowse<CR>')
+  utils.vmap('b', ':GV<CR>')
+
   --- lualine
   require('lualine').setup {
     options = {
@@ -189,7 +233,7 @@ require('packer').startup(function()
     inactive_winbar = {},
     extensions = {'quickfix', 'nerdtree', 'fugitive'}
   }
-  
+
   --- nvim-treesitter
   require('nvim-treesitter.configs').setup {
     -- One of "all", "maintained" (parsers with maintainers), or a list of languages
@@ -334,9 +378,136 @@ require('packer').startup(function()
     end
   }
 
-  --- ********************************************
-  --- ************ Plugin Configs ****************
-  --- ********************************************
+  -- LSP settings.
+  -- Diagnostic keymaps
+  vim.keymap.set('n', '<C-k>', vim.diagnostic.goto_prev, { noremap=true, silent=true })
+  vim.keymap.set('n', '<C-j>', vim.diagnostic.goto_next, { noremap=true, silent=true })
+
+  local on_attach = function(_, bufnr)
+    local nmap = function(keys, func, desc)
+      if desc then
+        desc = 'LSP: ' .. desc
+      end
+
+      vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+    end
+    nmap('<leader>rn', vim.lsp.buf.rename)
+    nmap('<leader>ca', vim.lsp.buf.code_action)
+
+    nmap('gd', vim.lsp.buf.definition)
+    nmap('gr', require('fzf-lua').lsp_references)
+    nmap('gI', vim.lsp.buf.implementation)
+    nmap('<leader>D', vim.lsp.buf.type_definition)
+    nmap('<leader>ds', require('fzf-lua').lsp_document_symbols)
+    nmap('<leader>ws', require('fzf-lua').lsp_live_workspace_symbols)
+
+    -- See `:help K` for why this keymap
+    nmap('K', vim.lsp.buf.hover)
+
+    -- Create a command `:Format` local to the LSP buffer
+    -- vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+    --   if vim.lsp.buf.format then
+    --     vim.lsp.buf.format()
+    --   elseif vim.lsp.buf.formatting then
+    --     vim.lsp.buf.formatting()
+    --   end
+    -- end, { desc = 'Format current buffer with LSP' })
+  end
+
+  -- Setup mason so it can manage external tooling
+  require('mason').setup()
+
+  -- Enable the following language servers
+  local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'sumneko_lua', 'gopls' }
+
+  -- Ensure the servers above are installed
+  require('mason-lspconfig').setup {
+    ensure_installed = servers,
+  }
+
+  -- nvim-cmp supports additional completion capabilities
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
+  for _, lsp in ipairs(servers) do
+    require('lspconfig')[lsp].setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+    }
+  end
+
+  -- Turn on lsp status information
+  require('fidget').setup()
+
+  -- Make runtime files discoverable to the server
+  local runtime_path = vim.split(package.path, ';')
+  table.insert(runtime_path, 'lua/?.lua')
+  table.insert(runtime_path, 'lua/?/init.lua')
+
+  require('lspconfig').sumneko_lua.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+      Lua = {
+        runtime = {
+          -- Tell the language server which version of Lua you're using (most likely LuaJIT)
+          version = 'LuaJIT',
+          -- Setup your lua path
+          path = runtime_path,
+        },
+        diagnostics = {
+          globals = { 'vim' },
+        },
+        workspace = { library = vim.api.nvim_get_runtime_file('', true) },
+        -- Do not send telemetry data containing a randomized but unique identifier
+        telemetry = { enable = false },
+      },
+    },
+  }
+
+  -- nvim-cmp setup
+  local cmp = require 'cmp'
+  local luasnip = require 'luasnip'
+
+  cmp.setup {
+    snippet = {
+      expand = function(args)
+        luasnip.lsp_expand(args.body)
+      end,
+    },
+    mapping = cmp.mapping.preset.insert {
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<CR>'] = cmp.mapping.confirm {
+        behavior = cmp.ConfirmBehavior.Replace,
+        select = true,
+      },
+      ['<Tab>'] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        elseif luasnip.expand_or_jumpable() then
+          luasnip.expand_or_jump()
+        else
+          fallback()
+        end
+      end, { 'i', 's' }),
+      ['<S-Tab>'] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        elseif luasnip.jumpable(-1) then
+          luasnip.jump(-1)
+        else
+          fallback()
+        end
+      end, { 'i', 's' }),
+    },
+    sources = {
+      { name = 'nvim_lsp' },
+      { name = 'luasnip' },
+    },
+  }
+
   --- Nerdtree
   utils.nmap('<C-e>', ':NERDTreeToggle<CR>')
   utils.nmap('<leader>nf', ':NERDTreeFind<CR>')
@@ -350,89 +521,6 @@ require('packer').startup(function()
     let NERDTreeKeepTreeInNewTab=1
   ]])
 
-  --- Coc
-  vim.o.backup = false
-  vim.o.writebackup = false
-  vim.o.updatetime = 300
-  vim.o.signcolumn = "yes"
-  vim.g.coc_global_extensions = {
-    'coc-clangd',
-    'coc-css',
-    'coc-diagnostic',
-    'coc-eslint',
-    'coc-git',
-    'coc-go',
-    'coc-html',
-    'coc-json',
-    'coc-markdownlint',
-    'coc-phpls',
-    'coc-prettier',
-    'coc-pyright',
-    'coc-rust-analyzer',
-    'coc-sh',
-    'coc-solargraph',
-    'coc-sumneko-lua',
-    'coc-tsserver'
-  }
-  utils.nmap('<C-j>', '<Plug>(coc-diagnostic-next)')
-  utils.nmap('<C-k>', '<Plug>(coc-diagnostic-prev)')
-  utils.nmap('gd', '<Plug>(coc-definition)')
-  utils.nmap('gy', '<Plug>(coc-type-definition)')
-  utils.nmap('gi', '<Plug>(coc-implementation)')
-  utils.nmap('gr', '<Plug>(coc-references)')
-  --- Apply AutoFix to problem on the current line.
-  utils.nmap('<leader>qf', '<Plug>(coc-fix-current)')
-
-  vim.cmd([[
-    inoremap <silent><expr> <C-c> coc#pum#visible() ? coc#pum#confirm() : "\<C-c>"
-  ]])
-
-  function _G.show_docs()
-      local cw = vim.fn.expand('<cword>')
-      if vim.fn.index({'vim', 'help'}, vim.bo.filetype) >= 0 then
-          vim.api.nvim_command('h ' .. cw)
-      elseif vim.api.nvim_eval('coc#rpc#ready()') then
-          vim.fn.CocActionAsync('doHover')
-      else
-          vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
-      end
-  end
-  vim.cmd([[
-    command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
-  ]])
-  --- Use K to show documentation in preview window.
-  utils.nmap('K', '<CMD>lua _G.show_docs()<CR>')
-
-  --- Rooter
-  vim.g.rooter_patterns = {'.git'}
-
-  --- fzf-lua
-  utils.nmap('<c-f>', ':FzfLua grep_project<CR>')
-  utils.nmap('<c-p>', ':FzfLua files<CR>')
-  utils.nmap('<Leader>fw', ':FzfLua grep_cword<CR>')
-  utils.nmap('<Leader>fb', ':FzfLua buffers<CR>')
-  utils.nmap('<Leader>fm', ':FzfLua marks<CR>')
-  utils.nmap('<Leader>fr', ':FzfLua registers<CR>')
-  utils.nmap('<Leader>f/', ':FzfLua lines<CR>')
-  utils.nmap('<Leader>ft', ':FzfLua tabs<CR>')
-  utils.nmap('<Leader>gl', ':FzfLua git_commits<CR>')
-  utils.nmap('<Leader>gbl', ':FzfLua git_bcommits<CR>')
-
-  --- Fugitive
-  utils.nmap('<leader>gs', ':Git<CR>')
-  utils.nmap('<leader>gd', ':Gvdiffsplit<CR>')
-  utils.nmap('<leader>gc', ':Git commit<CR>')
-  utils.nmap('<leader>gb', ':Git blame<CR>')
-  -- nnoremap <silent> <leader>gl :Gclog<CR>
-  -- nnoremap <silent> <leader>gp :Git push<CR>
-  utils.nmap('<leader>gr', ':Gread<CR>')
-  utils.nmap('<leader>gw', ':Gwrite<CR>')
-  utils.nmap('<leader>ge', ':Gedit<CR>')
-  utils.nmap('<leader>gi', ':Git add -p %<CR>')
-  -- Open visual selection in the browser
-  utils.vmap('br', ':GBrowse<CR>')
-  utils.vmap('b', ':GV<CR>')
-
   --- TagBar
   utils.nmap('<leader>tt', ':TagbarToggle<CR>')
 
@@ -440,5 +528,9 @@ require('packer').startup(function()
   utils.nmap('<Leader>vp', ':VimuxPromptCommand<CR>');
   utils.nmap('<Leader>vs', ':VimuxInterruptRunner<CR>');
   utils.nmap('<Leader>vl', ':VimuxRunLastCommand<CR>');
+
+  --- Rooter
+  vim.g.rooter_patterns = {'.git'}
+
 end)
 
