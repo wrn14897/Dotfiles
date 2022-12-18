@@ -49,11 +49,6 @@ require('packer').startup(function()
 
   use 'lukas-reineke/indent-blankline.nvim'
 
-  -- use {
-  --   'neoclide/coc.nvim',
-  --   branch = 'release'
-  -- }
-
   use 'airblade/vim-rooter'
 
   use 'romainl/vim-qf'
