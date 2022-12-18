@@ -18,5 +18,5 @@
     }
   },
   "coc.preferences.extensionUpdateCheck": "never",
-  "coc.preferences.useQuickfixForLocations": true
+  "coc.preferences.useQuickfixForLocations": false
 }

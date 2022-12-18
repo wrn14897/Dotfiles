@@ -316,6 +316,10 @@ require('packer').startup(function()
   ]])
 
   --- Coc
+  vim.o.backup = false
+  vim.o.writebackup = false
+  vim.o.updatetime = 300
+  vim.o.signcolumn = "yes"
   vim.g.coc_global_extensions = {
     'coc-clangd',
     'coc-css',
@@ -352,6 +356,10 @@ require('packer').startup(function()
   utils.omap('ic', '<Plug>(coc-classobj-i)')
   utils.xmap('ac', '<Plug>(coc-classobj-a)')
   utils.omap('ac', '<Plug>(coc-classobj-a)')
+
+  vim.cmd([[
+    inoremap <silent><expr> <C-c> coc#pum#visible() ? coc#pum#confirm() : "\<C-c>"
+  ]])
 
   function _G.show_docs()
       local cw = vim.fn.expand('<cword>')
