@@ -409,7 +409,15 @@ require('packer').startup(function()
   require('mason').setup()
 
   -- Enable the following language servers
-  local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'sumneko_lua', 'gopls' }
+  local servers = {
+    'clangd',
+    'rust_analyzer',
+    'pyright',
+    'tsserver',
+    'sumneko_lua',
+    'dockerls',
+    'diagnosticls',
+  }
 
   -- Ensure the servers above are installed
   require('mason-lspconfig').setup {
@@ -454,6 +462,53 @@ require('packer').startup(function()
         telemetry = { enable = false },
       },
     },
+  }
+
+  require('lspconfig').diagnosticls.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+    init_options = {
+      filetypes = {
+        javascript = "eslint",
+        typescript = "eslint",
+        javascriptreact = "eslint",
+        typescriptreact = "eslint"
+      },
+      linters = {
+        eslint = {
+          sourceName = "eslint",
+          command = "./node_modules/.bin/eslint",
+          rootPatterns = {
+            '.eslintrc',
+            '.eslintrc.cjs',
+            '.eslintrc.js',
+            '.eslintrc.json',
+            '.eslintrc.yaml',
+            '.eslintrc.yml',
+          },
+          debounce = 100,
+          args = {
+            "--cache",
+            "--stdin",
+            "--stdin-filename",
+            "%filepath",
+            "--format",
+            "json"
+          },
+          parseJson = {
+            errorsRoot = "[0].messages",
+            line = "line",
+            column = "column",
+            endLine = "endLine",
+            endColumn = "endColumn",
+            message = '[eslint] ${message} [${ruleId}]',
+            security = "severity"
+          },
+          securities = { ['1'] = 'warning', ['2'] = 'error' },
+        },
+      }
+    }
   }
 
   -- nvim-cmp setup
