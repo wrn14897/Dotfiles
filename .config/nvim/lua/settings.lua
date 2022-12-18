@@ -1,13 +1,14 @@
-vim.cmd([[
-  highlight clear SignColumn      " SignColumn should match background
-  highlight clear LineNr          " Current line number row will have same background color in relative mode
-]])
-
+vim.cmd(
+  [[
+    highlight clear SignColumn      " SignColumn should match background
+    highlight clear LineNr          " Current line number row will have same background color in relative mode
+  ]]
+)
 
 local set = vim.opt
 
-if vim.fn.has('clipboard') then
-  if vim.fn.has('unnamedplus') then
+if vim.fn.has("clipboard") then
+  if vim.fn.has("unnamedplus") then
     set.clipboard = "unnamed,unnamedplus"
   else
     set.clipboard = "unnamed"
@@ -15,23 +16,23 @@ if vim.fn.has('clipboard') then
 end
 
 --- General
-vim.g.mapleader = ','
+vim.g.mapleader = ","
 vim.o.t_SI = "<Esc>[6 q"
 vim.o.t_SR = "<Esc>[4 q"
 vim.o.t_EI = "<Esc>[2 q"
 
 set.encoding = "utf-8"
 set.mousehide = true
-set.shortmess :append('filmnrxoOtT') --- Abbrev. of messages (avoids 'hit enter')
+set.shortmess:append("filmnrxoOtT") --- Abbrev. of messages (avoids 'hit enter')
 set.viewoptions = "folds,options,cursor,unix,slash" --- Better Unix / Windows compatibility
 set.virtualedit = "onemore" --- Allow for cursor beyond last character
 set.history = 1000 --- Store a ton of history (default is 20)
 set.spell = true --- Spell checking on
 set.hidden = true --- Allow buffer switching without saving
-set.iskeyword:remove({'.', '#', '-'})
+set.iskeyword:remove({".", "#", "-"})
 set.tags = "./tags,tags;$HOME"
 
---- UI 
+--- UI
 vim.o.background = "dark" --- or "light" for light mode
 vim.cmd([[ colorscheme gruvbox ]])
 set.tabpagemax = 15 --- Only show 15 tabs
