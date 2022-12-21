@@ -11,7 +11,7 @@ vim.cmd(
 )
 
 require("packer").startup(
-  function()
+  function(use)
     -- Packer can manage itself
     use "wbthomason/packer.nvim"
 
@@ -46,6 +46,8 @@ require("packer").startup(
       "nvim-treesitter/nvim-treesitter-textobjects",
       after = "nvim-treesitter"
     }
+
+    use "folke/lsp-colors.nvim"
 
     use "ryanoasis/vim-devicons"
 
@@ -139,6 +141,11 @@ require("packer").startup(
     }
 
     use {"mhartington/formatter.nvim"}
+
+    use {
+      "folke/trouble.nvim",
+      requires = "kyazdani42/nvim-web-devicons"
+    }
 
     --- ********************************************
     --- ************ Plugin Setups ****************
@@ -592,7 +599,7 @@ require("packer").startup(
     }
 
     --- Formatter
-    function format_prettier()
+    local function format_prettier()
       return {
         exe = "npx",
         args = {"prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0)},
@@ -636,6 +643,9 @@ require("packer").startup(
         let NERDTreeKeepTreeInNewTab=1
       ]]
     )
+
+    --- Trouble
+    utils.nmap("<leader>xx", ":TroubleToggle<CR>")
 
     --- TagBar
     utils.nmap("<leader>tt", ":TagbarToggle<CR>")
