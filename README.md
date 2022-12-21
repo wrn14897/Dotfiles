@@ -1,5 +1,4 @@
 # nvim
-
 1. Install nvim-packer
 ```
 git clone --depth 1 https://github.com/wbthomason/packer.nvim\
@@ -21,6 +20,9 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 8. Open nvim and do `:PackerInstall`
 
 9. Ready to rock !!
+
+# Linter / Formatter
+1. Install `eslint_d` (https://www.npmjs.com/package/eslint_d)
 
 
 # oh-my-zsh
