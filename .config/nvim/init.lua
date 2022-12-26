@@ -1,4 +1,4 @@
 require('impatient').enable_profile()
-require('settings')
-require('mappings')
+require('set')
+require('remap')
 require('plugins')
