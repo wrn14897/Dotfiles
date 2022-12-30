@@ -1,4 +1,4 @@
-require('impatient').enable_profile()
-require('set')
-require('remap')
-require('plugins')
+require("impatient").enable_profile()
+require("set")
+require("remap")
+require("plugins")

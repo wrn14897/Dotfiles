@@ -1,18 +1,16 @@
-vim.cmd(
-  [[
+vim.cmd([[
     highlight clear SignColumn      " SignColumn should match background
     highlight clear LineNr          " Current line number row will have same background color in relative mode
-  ]]
-)
+  ]])
 
 local set = vim.opt
 
 if vim.fn.has("clipboard") then
-  if vim.fn.has("unnamedplus") then
-    set.clipboard = "unnamed,unnamedplus"
-  else
-    set.clipboard = "unnamed"
-  end
+	if vim.fn.has("unnamedplus") then
+		set.clipboard = "unnamed,unnamedplus"
+	else
+		set.clipboard = "unnamed"
+	end
 end
 
 --- General
@@ -29,7 +27,7 @@ set.virtualedit = "onemore" --- Allow for cursor beyond last character
 set.history = 1000 --- Store a ton of history (default is 20)
 set.spell = true --- Spell checking on
 set.hidden = true --- Allow buffer switching without saving
-set.iskeyword:remove({".", "#", "-"})
+set.iskeyword:remove({ ".", "#", "-" })
 set.tags = "./tags,tags;$HOME"
 
 --- UI
