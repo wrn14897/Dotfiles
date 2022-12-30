@@ -581,20 +581,21 @@ require("packer").startup(function(use)
 	})
 
 	--- Formatter
-	local function format_prettier()
-		return {
-			exe = "npx",
-			args = { "prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0) },
-			stdin = true,
-		}
-	end
 	require("formatter").setup({
 		logging = true,
 		filetype = {
-			typescript = { format_prettier },
-			typescriptreact = { format_prettier },
-			javascript = { format_prettier },
-			javascriptreact = { format_prettier },
+      typescript = {
+				require("formatter.filetypes.typescript").prettierd,
+      },
+      typescriptreact = {
+				require("formatter.filetypes.typescriptreact").prettierd,
+      },
+      javascript = {
+				require("formatter.filetypes.javascript").prettierd,
+      },
+      javascriptreact = {
+				require("formatter.filetypes.javascriptreact").prettierd,
+      },
 			html = {
 				require("formatter.filetypes.html").tidy,
 			},

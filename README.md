@@ -28,7 +28,7 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
     - python: flake8
 2. Formatter configs (https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes)
     - lua: stylua
-    - js/ts: prettier
+    - js/ts: prettierd
     - json: jq
     - html: tidy
     - rust: rustfmt
