@@ -89,13 +89,6 @@ require("packer").startup(function(use)
 
 	use("tpope/vim-commentary")
 
-	use({
-		"preservim/nerdtree",
-		cmd = { "NERDTreeToggle", "NERDTreeFind" },
-	})
-
-	use("Xuyuanp/nerdtree-git-plugin")
-
 	use("mbbill/undotree")
 
 	use("godlygeek/tabular")
@@ -133,6 +126,16 @@ require("packer").startup(function(use)
 	})
 
 	use({
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v2.x",
+		requires = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+			"MunifTanjim/nui.nvim",
+		},
+	})
+
+	use({
 		"nvim-lualine/lualine.nvim",
 		requires = { "kyazdani42/nvim-web-devicons", opt = true },
 	})
@@ -143,6 +146,8 @@ require("packer").startup(function(use)
 		"folke/trouble.nvim",
 		requires = "kyazdani42/nvim-web-devicons",
 	})
+
+	use({ "aduros/ai.vim" })
 
 	--- ********************************************
 	--- ************ Plugin Setups ****************
@@ -240,7 +245,7 @@ require("packer").startup(function(use)
 		tabline = {},
 		winbar = {},
 		inactive_winbar = {},
-		extensions = { "quickfix", "nerdtree", "fugitive" },
+		extensions = { "quickfix", "fugitive", "neo-tree" },
 	})
 
 	--- nvim-treesitter
@@ -399,11 +404,18 @@ require("packer").startup(function(use)
 		end,
 	})
 
-	-- LSP settings.
+  -- Diagnostics
+	-- Floating message
+	vim.diagnostic.config({
+		float = { source = "always", border = border },
+		virtual_text = false,
+		signs = true,
+	})
 	-- Diagnostic keymaps
 	vim.keymap.set("n", "<C-k>", vim.diagnostic.goto_prev, { noremap = true, silent = true })
 	vim.keymap.set("n", "<C-j>", vim.diagnostic.goto_next, { noremap = true, silent = true })
 
+	-- LSP settings.
 	local on_attach = function(_, bufnr)
 		local nmap = function(keys, func)
 			vim.keymap.set("n", keys, func, { buffer = bufnr, noremap = true, silent = true })
@@ -584,18 +596,18 @@ require("packer").startup(function(use)
 	require("formatter").setup({
 		logging = true,
 		filetype = {
-      typescript = {
+			typescript = {
 				require("formatter.filetypes.typescript").prettierd,
-      },
-      typescriptreact = {
+			},
+			typescriptreact = {
 				require("formatter.filetypes.typescriptreact").prettierd,
-      },
-      javascript = {
+			},
+			javascript = {
 				require("formatter.filetypes.javascript").prettierd,
-      },
-      javascriptreact = {
+			},
+			javascriptreact = {
 				require("formatter.filetypes.javascriptreact").prettierd,
-      },
+			},
 			html = {
 				require("formatter.filetypes.html").tidy,
 			},
@@ -614,18 +626,23 @@ require("packer").startup(function(use)
 		},
 	})
 
-	--- Nerdtree
-	utils.nmap("<C-e>", ":NERDTreeToggle<CR>")
-	utils.nmap("<leader>nf", ":NERDTreeFind<CR>")
-	vim.g.nerdtree_tabs_open_on_gui_startup = 0
-	vim.cmd([[
-        let NERDTreeShowBookmarks=1
-        let NERDTreeChDirMode=0
-        let NERDTreeQuitOnOpen=1
-        let NERDTreeMouseMode=2
-        let NERDTreeShowHidden=1
-        let NERDTreeKeepTreeInNewTab=1
-      ]])
+	--- NeoTree
+	utils.nmap("<C-e>", ":NeoTreeFocusToggle<CR>")
+	require("neo-tree").setup({
+		close_if_last_window = false,
+		enable_diagnostics = true,
+		enable_git_status = true,
+		popup_border_style = "rounded",
+		sort_case_insensitive = false,
+		filesystem = {
+			filtered_items = {
+				hide_dotfiles = false,
+				hide_gitignored = false,
+			},
+      follow_current_file = true,
+		},
+		window = { width = 30 },
+	})
 
 	--- Trouble
 	utils.nmap("<leader>xx", ":TroubleToggle<CR>")
