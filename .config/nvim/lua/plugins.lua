@@ -404,7 +404,7 @@ require("packer").startup(function(use)
 		end,
 	})
 
-  -- Diagnostics
+	-- Diagnostics
 	-- Floating message
 	vim.diagnostic.config({
 		float = { source = "always", border = border },
@@ -617,6 +617,9 @@ require("packer").startup(function(use)
 			lua = {
 				require("formatter.filetypes.lua").stylua,
 			},
+			yaml = {
+				require("formatter.filetypes.yaml").yamlfmt,
+			},
 			python = {
 				require("formatter.filetypes.python").black,
 			},
@@ -639,7 +642,7 @@ require("packer").startup(function(use)
 				hide_dotfiles = false,
 				hide_gitignored = false,
 			},
-      follow_current_file = true,
+			follow_current_file = true,
 		},
 		window = { width = 30 },
 	})
