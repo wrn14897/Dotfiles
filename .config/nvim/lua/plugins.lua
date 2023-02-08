@@ -68,11 +68,20 @@ require("packer").startup(function(use)
 
 	use("tpope/vim-rhubarb")
 
-	use("jiangmiao/auto-pairs")
+	use({
+		"windwp/nvim-autopairs",
+		config = function()
+			require("nvim-autopairs").setup({})
+		end,
+	})
 
-	use("rhysd/conflict-marker.vim")
-
-	use("powerline/fonts")
+	use({
+		"akinsho/git-conflict.nvim",
+		tag = "*",
+		config = function()
+			require("git-conflict").setup()
+		end,
+	})
 
 	use({
 		"junegunn/fzf",
@@ -119,7 +128,7 @@ require("packer").startup(function(use)
 
 	use({
 		"goolord/alpha-nvim",
-		requires = { "kyazdani42/nvim-web-devicons" },
+		requires = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("alpha").setup(require("alpha.themes.startify").config)
 		end,
@@ -190,7 +199,6 @@ require("packer").startup(function(use)
 	utils.nmap("<Leader>ft", ":FzfLua tabs<CR>")
 	utils.nmap("<Leader>fw", ":FzfLua grep_cword<CR>")
 	utils.nmap("<Leader>gbl", ":FzfLua git_bcommits<CR>")
-	utils.nmap("<Leader>gl", ":FzfLua git_commits<CR>")
 
 	--- Fugitive
 	utils.nmap("<leader>gs", ":Git<CR>")
@@ -203,6 +211,7 @@ require("packer").startup(function(use)
 	utils.nmap("<leader>gw", ":Gwrite<CR>")
 	utils.nmap("<leader>ge", ":Gedit<CR>")
 	utils.nmap("<leader>gi", ":Git add -p %<CR>")
+	utils.nmap("<Leader>gl", ":GV!<CR>")
 	-- Open visual selection in the browser
 	utils.vmap("br", ":GBrowse<CR>")
 	utils.vmap("b", ":GV<CR>")
