@@ -128,9 +128,10 @@ require("packer").startup(function(use)
 
 	use({
 		"goolord/alpha-nvim",
+    commit = "21a0f2520ad3a7c32c0822f943368dc063a569fb",
 		requires = { "nvim-tree/nvim-web-devicons" },
 		config = function()
-			require("alpha").setup(require("alpha.themes.startify").config)
+			require("alpha").setup(require("alpha.themes.theta").config)
 		end,
 	})
 
