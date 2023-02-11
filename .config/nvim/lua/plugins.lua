@@ -21,6 +21,8 @@ require("packer").startup(function(use)
 			"williamboman/mason-lspconfig.nvim",
 			-- Useful status updates for LSP
 			"j-hui/fidget.nvim",
+			-- Additional lua configuration, makes nvim stuff amazing
+			"folke/neodev.nvim",
 		},
 	})
 
@@ -127,11 +129,42 @@ require("packer").startup(function(use)
 	use("preservim/vimux")
 
 	use({
-		"goolord/alpha-nvim",
-    commit = "21a0f2520ad3a7c32c0822f943368dc063a569fb",
-		requires = { "nvim-tree/nvim-web-devicons" },
+		"echasnovski/mini.nvim",
 		config = function()
-			require("alpha").setup(require("alpha.themes.theta").config)
+			require("mini.cursorword").setup()
+			local starter = require("mini.starter")
+			starter.setup({
+				content_hooks = {
+					starter.gen_hook.adding_bullet(""),
+					starter.gen_hook.aligning("center", "center"),
+				},
+				evaluate_single = true,
+				footer = os.date(),
+				header = table.concat({
+					[[                                     ]],
+					[[      __                _            ]],
+					[[   /\ \ \___  ___/\   /(_)_ __ ___   ]],
+					[[  /  \/ / _ \/ _ \ \ / | | '_ ` _ \  ]],
+					[[ / /\  |  __| (_) \ V /| | | | | | | ]],
+					[[ \_\ \/ \___|\___/ \_/ |_|_| |_| |_| ]],
+					[[                                     ]],
+				}, "\n"),
+				query_updaters = [[abcdefghilmoqrstuvwxyz0123456789_-,.ABCDEFGHIJKLMOQRSTUVWXYZ]],
+				items = {
+					{ action = "PackerSync", name = "U: Update Plugins", section = "Plugins" },
+					{ action = "enew", name = "E: New Buffer", section = "Builtin actions" },
+					{ action = "qall!", name = "Q: Quit Neovim", section = "Builtin actions" },
+				},
+			})
+			vim.cmd([[
+        augroup MiniStarterJK
+          au!
+          au User MiniStarterOpened nmap <buffer> j <Cmd>lua MiniStarter.update_current_item('next')<CR>
+          au User MiniStarterOpened nmap <buffer> k <Cmd>lua MiniStarter.update_current_item('prev')<CR>
+          au User MiniStarterOpened nmap <buffer> <C-p> <Cmd>FzfLua files<CR>
+          au User MiniStarterOpened nmap <buffer> <leader>gs <Cmd>Git<CR>
+        augroup END
+      ]])
 		end,
 	})
 
@@ -415,17 +448,6 @@ require("packer").startup(function(use)
 		end,
 	})
 
-	-- Diagnostics
-	-- Floating message
-	vim.diagnostic.config({
-		float = { source = "always", border = border },
-		virtual_text = false,
-		signs = true,
-	})
-	-- Diagnostic keymaps
-	vim.keymap.set("n", "<C-k>", vim.diagnostic.goto_prev, { noremap = true, silent = true })
-	vim.keymap.set("n", "<C-j>", vim.diagnostic.goto_next, { noremap = true, silent = true })
-
 	-- LSP settings.
 	local on_attach = function(_, bufnr)
 		local nmap = function(keys, func)
@@ -454,65 +476,55 @@ require("packer").startup(function(use)
 		-- end, { desc = 'Format current buffer with LSP' })
 	end
 
-	-- Setup mason so it can manage external tooling
-	require("mason").setup()
-
 	-- Enable the following language servers
 	local servers = {
-		"clangd",
-		"rust_analyzer",
-		"pyright",
-		"tsserver",
-		"sumneko_lua",
-		"dockerls",
-		"diagnosticls",
+		clangd = {},
+		rust_analyzer = {},
+		pyright = {},
+		tsserver = {},
+		dockerls = {},
+		diagnosticls = {},
+		sumneko_lua = {
+			Lua = {
+				workspace = { checkThirdParty = false },
+				telemetry = { enable = false },
+				completion = {
+					callSnippet = "Replace",
+				},
+			},
+		},
 	}
+	-- Setup neovim lua configuration
+	require("neodev").setup()
 
-	-- Ensure the servers above are installed
-	require("mason-lspconfig").setup({
-		ensure_installed = servers,
-	})
-
-	-- nvim-cmp supports additional completion capabilities
+	-- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-	for _, lsp in ipairs(servers) do
-		require("lspconfig")[lsp].setup({
-			on_attach = on_attach,
-			capabilities = capabilities,
-		})
-	end
+	-- Setup mason so it can manage external tooling
+	require("mason").setup()
+
+	-- Ensure the servers above are installed
+	local mason_lspconfig = require("mason-lspconfig")
+
+	mason_lspconfig.setup({
+		ensure_installed = vim.tbl_keys(servers),
+	})
+
+	mason_lspconfig.setup_handlers({
+		function(server_name)
+			require("lspconfig")[server_name].setup({
+				capabilities = capabilities,
+				on_attach = on_attach,
+				settings = servers[server_name],
+			})
+		end,
+	})
 
 	-- Turn on lsp status information
 	require("fidget").setup()
 
-	-- Make runtime files discoverable to the server
-	local runtime_path = vim.split(package.path, ";")
-	table.insert(runtime_path, "lua/?.lua")
-	table.insert(runtime_path, "lua/?/init.lua")
-
-	require("lspconfig").sumneko_lua.setup({
-		on_attach = on_attach,
-		capabilities = capabilities,
-		settings = {
-			Lua = {
-				runtime = {
-					-- Tell the language server which version of Lua you're using (most likely LuaJIT)
-					version = "LuaJIT",
-					-- Setup your lua path
-					path = runtime_path,
-				},
-				diagnostics = {
-					globals = { "vim" },
-				},
-				workspace = { library = vim.api.nvim_get_runtime_file("", true) },
-				-- Do not send telemetry data containing a randomized but unique identifier
-				telemetry = { enable = false },
-			},
-		},
-	})
-
+	-- Diagnostics
 	require("lspconfig").diagnosticls.setup({
 		on_attach = on_attach,
 		capabilities = capabilities,
@@ -559,6 +571,15 @@ require("packer").startup(function(use)
 			},
 		},
 	})
+	-- Floating message
+	vim.diagnostic.config({
+		float = { source = "always", border = border },
+		virtual_text = false,
+		signs = true,
+	})
+	-- Diagnostic keymaps
+	vim.keymap.set("n", "<C-k>", vim.diagnostic.goto_prev, { noremap = true, silent = true })
+	vim.keymap.set("n", "<C-j>", vim.diagnostic.goto_next, { noremap = true, silent = true })
 
 	-- nvim-cmp setup
 	local cmp = require("cmp")
