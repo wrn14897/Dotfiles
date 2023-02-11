@@ -186,11 +186,6 @@ require("packer").startup(function(use)
 	use({ "mhartington/formatter.nvim" })
 
 	use({
-		"folke/trouble.nvim",
-		requires = "kyazdani42/nvim-web-devicons",
-	})
-
-	use({
 		"iamcco/markdown-preview.nvim",
 		run = function()
 			vim.fn["mkdp#util#install"]()
@@ -232,6 +227,7 @@ require("packer").startup(function(use)
 	utils.nmap("<c-p>", ":FzfLua files<CR>")
 	utils.nmap("<Leader>f/", ":FzfLua lines<CR>")
 	utils.nmap("<Leader>fb", ":FzfLua buffers<CR>")
+	utils.nmap("<Leader>fd", ":FzfLua diagnostics_workspace<CR>")
 	utils.nmap("<Leader>fh", ":FzfLua help_tags<CR>")
 	utils.nmap("<Leader>fm", ":FzfLua marks<CR>")
 	utils.nmap("<Leader>fr", ":FzfLua registers<CR>")
@@ -300,7 +296,7 @@ require("packer").startup(function(use)
 	--- nvim-treesitter
 	require("nvim-treesitter.configs").setup({
 		-- One of "all", "maintained" (parsers with maintainers), or a list of languages
-		ensure_installed = { "go", "lua", "python", "rust", "typescript", "help" },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'vim' },
 		-- Install languages synchronously (only applied to `ensure_installed`)
 		sync_install = false,
 		highlight = { enable = true },
@@ -458,27 +454,20 @@ require("packer").startup(function(use)
 		local nmap = function(keys, func)
 			vim.keymap.set("n", keys, func, { buffer = bufnr, noremap = true, silent = true })
 		end
+
 		nmap("<leader>rn", vim.lsp.buf.rename)
 		nmap("<leader>ca", vim.lsp.buf.code_action)
 
-		nmap("gd", vim.lsp.buf.definition)
-		nmap("gr", require("fzf-lua").lsp_references)
-		nmap("gI", vim.lsp.buf.implementation)
 		nmap("<leader>D", vim.lsp.buf.type_definition)
 		nmap("<leader>ds", require("fzf-lua").lsp_document_symbols)
 		nmap("<leader>ws", require("fzf-lua").lsp_live_workspace_symbols)
+		nmap("gI", vim.lsp.buf.implementation)
+		nmap("gd", vim.lsp.buf.definition)
+		nmap("gr", require("fzf-lua").lsp_references)
 
 		-- See `:help K` for why this keymap
 		nmap("K", vim.lsp.buf.hover)
 
-		-- Create a command `:Format` local to the LSP buffer
-		-- vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-		--   if vim.lsp.buf.format then
-		--     vim.lsp.buf.format()
-		--   elseif vim.lsp.buf.formatting then
-		--     vim.lsp.buf.formatting()
-		--   end
-		-- end, { desc = 'Format current buffer with LSP' })
 	end
 
 	-- Enable the following language servers
@@ -683,9 +672,6 @@ require("packer").startup(function(use)
 		},
 		window = { width = 30 },
 	})
-
-	--- Trouble
-	utils.nmap("<leader>xx", ":TroubleToggle<CR>")
 
 	--- TagBar
 	utils.nmap("<leader>tt", ":TagbarToggle<CR>")
