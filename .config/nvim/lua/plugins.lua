@@ -190,7 +190,12 @@ require("packer").startup(function(use)
 		requires = "kyazdani42/nvim-web-devicons",
 	})
 
-	use({ "aduros/ai.vim" })
+	use({
+		"iamcco/markdown-preview.nvim",
+		run = function()
+			vim.fn["mkdp#util#install"]()
+		end,
+	})
 
 	--- ********************************************
 	--- ************ Plugin Setups ****************
