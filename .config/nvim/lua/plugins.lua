@@ -192,9 +192,12 @@ require("packer").startup(function(use)
 		end,
 	})
 
+	use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" })
+
 	--- ********************************************
 	--- ************ Plugin Setups ****************
 	--- ********************************************
+
 	--- fzf-lua
 	require("fzf-lua").setup({
 		winopts = {
@@ -246,7 +249,7 @@ require("packer").startup(function(use)
 	utils.nmap("<leader>gw", ":Gwrite<CR>")
 	utils.nmap("<leader>ge", ":Gedit<CR>")
 	utils.nmap("<leader>gi", ":Git add -p %<CR>")
-	utils.nmap("<Leader>gl", ":GV!<CR>")
+	utils.nmap("<Leader>gl", ":DiffviewFileHistory %<CR>")
 	-- Open visual selection in the browser
 	utils.vmap("br", ":GBrowse<CR>")
 	utils.vmap("b", ":GV<CR>")
@@ -296,7 +299,7 @@ require("packer").startup(function(use)
 	--- nvim-treesitter
 	require("nvim-treesitter.configs").setup({
 		-- One of "all", "maintained" (parsers with maintainers), or a list of languages
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'vim' },
+		ensure_installed = { "c", "cpp", "go", "lua", "python", "rust", "typescript", "help", "vim" },
 		-- Install languages synchronously (only applied to `ensure_installed`)
 		sync_install = false,
 		highlight = { enable = true },
@@ -467,7 +470,6 @@ require("packer").startup(function(use)
 
 		-- See `:help K` for why this keymap
 		nmap("K", vim.lsp.buf.hover)
-
 	end
 
 	-- Enable the following language servers
@@ -478,7 +480,7 @@ require("packer").startup(function(use)
 		tsserver = {},
 		dockerls = {},
 		diagnosticls = {},
-		sumneko_lua = {
+		lua_ls = {
 			Lua = {
 				workspace = { checkThirdParty = false },
 				telemetry = { enable = false },
