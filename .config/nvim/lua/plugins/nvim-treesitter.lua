@@ -1,4 +1,12 @@
-require("nvim-treesitter.configs").setup({
+-- Plugin: nvim-treesitter
+-- url: https://github.com/nvim-treesitter/nvim-treesitter
+
+local status_ok, treesitter = pcall(require, "nvim-treesitter.configs")
+if not status_ok then
+	return
+end
+
+treesitter.setup({
 	-- One of "all", "maintained" (parsers with maintainers), or a list of languages
 	ensure_installed = { "c", "cpp", "go", "lua", "python", "rust", "typescript", "help", "vim", "wgsl" },
 	-- Install languages synchronously (only applied to `ensure_installed`)

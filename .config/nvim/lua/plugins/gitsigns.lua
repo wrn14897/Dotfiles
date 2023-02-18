@@ -1,4 +1,12 @@
-require("gitsigns").setup({
+-- Plugin: gitsigns
+-- url: https://github.com/lewis6991/gitsigns.nvim
+
+local status_ok, gitsigns = pcall(require, "gitsigns")
+if not status_ok then
+	return
+end
+
+gitsigns.setup({
 	signs = {
 		add = { hl = "GitSignsAdd", text = "│", numhl = "GitSignsAddNr", linehl = "GitSignsAddLn" },
 		change = { hl = "GitSignsChange", text = "│", numhl = "GitSignsChangeNr", linehl = "GitSignsChangeLn" },

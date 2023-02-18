@@ -1,3 +1,39 @@
+-- Plugin: nvim-lspconfig
+-- url: https://github.com/neovim/nvim-lspconfig
+
+-- For configuration see the Wiki: https://github.com/neovim/nvim-lspconfig/wiki
+-- Autocompletion settings of "nvim-cmp" are defined in plugins/nvim-cmp.lua
+
+local lsp_status_ok, lspconfig = pcall(require, "lspconfig")
+if not lsp_status_ok then
+	return
+end
+
+local cmp_status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+if not cmp_status_ok then
+	return
+end
+
+local fzf_status_ok, fzf_lua = pcall(require, "fzf-lua")
+if not fzf_status_ok then
+	return
+end
+
+local mason_status_ok, mason = pcall(require, "mason")
+if not mason_status_ok then
+	return
+end
+
+local mason_lspconfig_status_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
+if not mason_lspconfig_status_ok then
+	return
+end
+
+local fidget_status_ok, fidget = pcall(require, "fidget")
+if not fidget_status_ok then
+	return
+end
+
 local on_attach = function(_, bufnr)
 	local nmap = function(keys, func)
 		vim.keymap.set("n", keys, func, { buffer = bufnr, noremap = true, silent = true })
@@ -7,11 +43,11 @@ local on_attach = function(_, bufnr)
 	nmap("<leader>ca", vim.lsp.buf.code_action)
 
 	nmap("<leader>D", vim.lsp.buf.type_definition)
-	nmap("<leader>ds", require("fzf-lua").lsp_document_symbols)
-	nmap("<leader>ws", require("fzf-lua").lsp_live_workspace_symbols)
+	nmap("<leader>ds", fzf_lua.lsp_document_symbols)
+	nmap("<leader>ws", fzf_lua.lsp_live_workspace_symbols)
 	nmap("gI", vim.lsp.buf.implementation)
 	nmap("gd", vim.lsp.buf.definition)
-	nmap("gr", require("fzf-lua").lsp_references)
+	nmap("gr", fzf_lua.lsp_references)
 
 	-- See `:help K` for why this keymap
 	nmap("K", vim.lsp.buf.hover)
@@ -36,18 +72,13 @@ local servers = {
 		},
 	},
 }
--- Setup neovim lua configuration
-require("neodev").setup()
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 
 -- Setup mason so it can manage external tooling
-require("mason").setup()
-
--- Ensure the servers above are installed
-local mason_lspconfig = require("mason-lspconfig")
+mason.setup()
 
 mason_lspconfig.setup({
 	ensure_installed = vim.tbl_keys(servers),
@@ -55,7 +86,7 @@ mason_lspconfig.setup({
 
 mason_lspconfig.setup_handlers({
 	function(server_name)
-		require("lspconfig")[server_name].setup({
+		lspconfig[server_name].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
 			settings = servers[server_name],
@@ -64,7 +95,7 @@ mason_lspconfig.setup_handlers({
 })
 
 -- Turn on lsp status information
-require("fidget").setup()
+fidget.setup()
 
 -- Diagnostics
 -- Floating message
@@ -76,46 +107,3 @@ vim.diagnostic.config({
 -- Diagnostic keymaps
 vim.keymap.set("n", "<C-k>", vim.diagnostic.goto_prev, { noremap = true, silent = true })
 vim.keymap.set("n", "<C-j>", vim.diagnostic.goto_next, { noremap = true, silent = true })
-
--- nvim-cmp setup
-local cmp = require("cmp")
-local luasnip = require("luasnip")
-
-cmp.setup({
-	snippet = {
-		expand = function(args)
-			luasnip.lsp_expand(args.body)
-		end,
-	},
-	mapping = cmp.mapping.preset.insert({
-		["<C-d>"] = cmp.mapping.scroll_docs(-4),
-		["<C-f>"] = cmp.mapping.scroll_docs(4),
-		["<C-Space>"] = cmp.mapping.complete(),
-		["<CR>"] = cmp.mapping.confirm({
-			behavior = cmp.ConfirmBehavior.Replace,
-			select = true,
-		}),
-		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_next_item()
-			elseif luasnip.expand_or_jumpable() then
-				luasnip.expand_or_jump()
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
-		["<S-Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_prev_item()
-			elseif luasnip.jumpable(-1) then
-				luasnip.jump(-1)
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
-	}),
-	sources = {
-		{ name = "nvim_lsp" },
-		{ name = "luasnip" },
-	},
-})

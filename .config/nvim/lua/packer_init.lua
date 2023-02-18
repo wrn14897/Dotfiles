@@ -28,7 +28,7 @@ if not status_ok then
 	return
 end
 
-require("packer").startup(function(use)
+return packer.startup(function(use)
 	-- Packer can manage itself
 	use("wbthomason/packer.nvim")
 
@@ -74,12 +74,7 @@ require("packer").startup(function(use)
 
 	use("kevinhwang91/nvim-bqf")
 
-	use({
-		"lukas-reineke/indent-blankline.nvim",
-		config = function()
-			require("indent_blankline").setup()
-		end,
-	})
+	use("lukas-reineke/indent-blankline.nvim")
 
 	use({
 		"ahmedkhalf/project.nvim",

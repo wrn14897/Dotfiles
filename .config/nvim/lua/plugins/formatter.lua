@@ -1,4 +1,12 @@
-require("formatter").setup({
+-- Plugin: formatter
+-- url: https://github.com/mhartington/formatter.nvim
+
+local status_ok, formatter = pcall(require, "formatter")
+if not status_ok then
+	return
+end
+
+formatter.setup({
 	logging = true,
 	filetype = {
 		typescript = {

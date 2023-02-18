@@ -1,9 +1,21 @@
-require("mini.cursorword").setup()
-local starter = require("mini.starter")
-starter.setup({
+-- Plugin: mini.nvim
+-- url: https://github.com/echasnovski/mini.nvim
+
+local mini_cursorword_status_ok, mini_cursorword = pcall(require, "mini.cursorword")
+if not mini_cursorword_status_ok then
+	return
+end
+
+local mini_starter_status_ok, mini_starter = pcall(require, "mini.starter")
+if not mini_starter_status_ok then
+	return
+end
+
+mini_cursorword.setup()
+mini_starter.setup({
 	content_hooks = {
-		starter.gen_hook.adding_bullet(""),
-		starter.gen_hook.aligning("center", "center"),
+		mini_starter.gen_hook.adding_bullet(""),
+		mini_starter.gen_hook.aligning("center", "center"),
 	},
 	evaluate_single = true,
 	footer = os.date(),
