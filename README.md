@@ -1,5 +1,4 @@
 # nvim
-
 1. Install nvim-packer
 ```
 git clone --depth 1 https://github.com/wbthomason/packer.nvim\
@@ -21,6 +20,19 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 8. Open nvim and do `:PackerInstall`
 
 9. Ready to rock !!
+
+
+# Linter / Formatter
+1. Linter configs
+    - js/ts: `eslint_d` (https://www.npmjs.com/package/eslint_d)
+    - python: flake8
+2. Formatter configs (https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes)
+    - lua: stylua
+    - js/ts: prettierd
+    - json: jq
+    - html: tidy
+    - rust: rustfmt
+    - python: black
 
 
 # oh-my-zsh
