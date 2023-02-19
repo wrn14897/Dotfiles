@@ -76,12 +76,12 @@ return packer.startup(function(use)
 
 	use("lukas-reineke/indent-blankline.nvim")
 
-	use({
-		"ahmedkhalf/project.nvim",
-		config = function()
-			require("project_nvim").setup()
-		end,
-	})
+  use({
+    "airblade/vim-rooter",
+    config = function()
+      vim.g.rooter_patterns = { ".git" }
+    end,
+  })
 
 	use("romainl/vim-qf")
 
