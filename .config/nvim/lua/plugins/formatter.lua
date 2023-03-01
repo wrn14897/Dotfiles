@@ -39,5 +39,8 @@ formatter.setup({
 		rust = {
 			require("formatter.filetypes.rust").rustfmt,
 		},
+    sql = {
+			require("formatter.filetypes.sql").pgformat,
+    }
 	},
 })

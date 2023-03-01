@@ -70,7 +70,7 @@ utils.nmap("<leader>gr", ":Gread<CR>")
 utils.nmap("<leader>gw", ":Gwrite<CR>")
 utils.nmap("<leader>ge", ":Gedit<CR>")
 utils.nmap("<leader>gi", ":Git add -p %<CR>")
-utils.nmap("<Leader>gl", ":DiffviewFileHistory %<CR>")
+utils.nmap("<Leader>gl", ":DiffviewFileHistory<CR>")
 -- Open visual selection in the browser
 utils.vmap("br", ":GBrowse<CR>")
 utils.vmap("b", ":GV<CR>")

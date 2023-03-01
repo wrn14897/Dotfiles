@@ -33,6 +33,7 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
     - html: tidy
     - rust: rustfmt
     - python: black
+    - sql: pgformatter
 
 
 # oh-my-zsh
