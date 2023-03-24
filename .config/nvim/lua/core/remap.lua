@@ -46,6 +46,9 @@ utils.xmap(".", ":normal .<CR>")
 -- Neo-Tree
 utils.nmap("<C-e>", ":NeoTreeFocusToggle<CR>")
 
+-- Formatter
+utils.nmap("<Leader>ff", ":Format<CR>")
+
 -- Fzf
 utils.nmap("<c-f>", ":FzfLua grep_project<CR>")
 utils.nmap("<c-p>", ":FzfLua files<CR>")
@@ -66,6 +69,7 @@ utils.nmap("<leader>gc", ":Git commit<CR>")
 utils.nmap("<leader>gb", ":Git blame<CR>")
 -- nnoremap <silent> <leader>gl :Gclog<CR>
 -- nnoremap <silent> <leader>gp :Git push<CR>
+utils.nmap("<leader>gp", ":Git -c push.default=current push<CR>")
 utils.nmap("<leader>gr", ":Gread<CR>")
 utils.nmap("<leader>gw", ":Gwrite<CR>")
 utils.nmap("<leader>ge", ":Gedit<CR>")
