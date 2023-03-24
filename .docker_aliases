@@ -1,9 +1,11 @@
 #!/bin/sh
 
+alias docker-compose='docker compose'
 alias dm='docker-machine'
 alias dmx='docker-machine ssh'
 alias dk='docker'
 alias dki='docker images'
+alias dkip='docker image prune'
 alias dks='docker service'
 alias dkrm='docker rm'
 alias dkl='docker logs'
@@ -18,7 +20,7 @@ alias dclf="docker compose logs -f"
 alias drr="docker run --rm"
 
 alias k="kubectl"
-alias mk="minikube"
+alias mk="microk8s.kubectl"
 
 dkln() {
   docker logs -f `docker ps | grep $1 | awk '{print $1}'`
