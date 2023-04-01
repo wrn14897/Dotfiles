@@ -76,12 +76,12 @@ return packer.startup(function(use)
 
 	use("lukas-reineke/indent-blankline.nvim")
 
-  use({
-    "airblade/vim-rooter",
-    config = function()
-      vim.g.rooter_patterns = { ".git" }
-    end,
-  })
+	use({
+		"airblade/vim-rooter",
+		config = function()
+			vim.g.rooter_patterns = { ".git" }
+		end,
+	})
 
 	use("romainl/vim-qf")
 
@@ -183,21 +183,7 @@ return packer.startup(function(use)
 		end,
 	})
 
-  use {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "InsertEnter",
-    config = function()
-      require("copilot").setup({})
-    end,
-  }
-  use {
-    "zbirenbaum/copilot-cmp",
-    after = { "copilot.lua" },
-    config = function ()
-      require("copilot_cmp").setup()
-    end
-  }
+	use({ "github/copilot.vim" })
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
