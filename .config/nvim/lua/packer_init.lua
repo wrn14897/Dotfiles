@@ -32,6 +32,10 @@ return packer.startup(function(use)
 	-- Packer can manage itself
 	use("wbthomason/packer.nvim")
 
+	--- Colorscheme
+	use("ellisonleao/gruvbox.nvim")
+	use("rebelot/kanagawa.nvim")
+
 	use({
 		-- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",

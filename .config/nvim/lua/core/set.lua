@@ -32,7 +32,7 @@ set.tags = "./tags,tags;$HOME"
 
 --- UI
 vim.o.background = "dark" --- or "light" for light mode
-vim.cmd([[ colorscheme gruvbox ]])
+vim.cmd([[ colorscheme kanagawa ]])
 set.tabpagemax = 15 --- Only show 15 tabs
 set.showmode = true --- Display the current mode
 set.cursorline = true --- Highlight current line

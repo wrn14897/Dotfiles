@@ -46,6 +46,9 @@ utils.xmap(".", ":normal .<CR>")
 -- Neo-Tree
 utils.nmap("<C-e>", ":NeoTreeFocusToggle<CR>")
 
+-- undotree
+utils.nmap("<leader>u", ":UndotreeToggle<CR>")
+
 -- Formatter
 utils.nmap("<Leader>ff", ":Format<CR>")
 
