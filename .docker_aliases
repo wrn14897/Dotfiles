@@ -21,6 +21,7 @@ alias drr="docker run --rm"
 
 alias k="kubectl"
 alias mk="microk8s.kubectl"
+alias k9="k9s --readonly"
 
 dkln() {
   docker logs -f `docker ps | grep $1 | awk '{print $1}'`

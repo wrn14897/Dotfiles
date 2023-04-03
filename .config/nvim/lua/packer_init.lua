@@ -32,6 +32,10 @@ return packer.startup(function(use)
 	-- Packer can manage itself
 	use("wbthomason/packer.nvim")
 
+	--- Colorscheme
+	use("ellisonleao/gruvbox.nvim")
+	use("rebelot/kanagawa.nvim")
+
 	use({
 		-- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
@@ -76,12 +80,12 @@ return packer.startup(function(use)
 
 	use("lukas-reineke/indent-blankline.nvim")
 
-  use({
-    "airblade/vim-rooter",
-    config = function()
-      vim.g.rooter_patterns = { ".git" }
-    end,
-  })
+	use({
+		"airblade/vim-rooter",
+		config = function()
+			vim.g.rooter_patterns = { ".git" }
+		end,
+	})
 
 	use("romainl/vim-qf")
 
@@ -182,6 +186,8 @@ return packer.startup(function(use)
 			vim.fn["mkdp#util#install"]()
 		end,
 	})
+
+	use({ "github/copilot.vim" })
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
