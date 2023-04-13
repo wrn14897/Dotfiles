@@ -22,11 +22,10 @@ utils.nmap("<leader>fc", "/\v^[<|=>]{7}( .*|$)<CR>")
 --- For when you forget to sudo.. Really Write the file.
 utils.cmap("w!!", "w !sudo tee % >/dev/null")
 
---- Tabs
-utils.nmap("H", "gT")
-utils.nmap("L", "gt")
-utils.nmap("tt", ":tabedit<return>::FzfLua files<CR>")
-utils.nmap("tw", ":tabclose<return>")
+--- Buffers
+utils.nmap("H", ":bprevious<CR>")
+utils.nmap("L", ":bnext<CR>")
+utils.nmap("<leader>bd", ":bd<CR>")
 
 --- Easier horizontal scrolling
 utils.nmap("zl", "zL")

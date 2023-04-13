@@ -40,16 +40,10 @@ local conditions = {
 -- Config
 local config = {
 	options = {
+		theme = "kanagawa",
 		-- Disable sections and component separators
 		component_separators = "",
 		section_separators = "",
-		theme = {
-			-- We are going to use lualine_c an lualine_x as left and
-			-- right section. Both are highlighted by c theme .  So we
-			-- are just setting default looks o statusline
-			normal = { c = { fg = colors.fg, bg = colors.bg } },
-			inactive = { c = { fg = colors.fg, bg = colors.bg } },
-		},
 	},
 	sections = {
 		-- these are to remove the defaults
@@ -70,7 +64,8 @@ local config = {
 		lualine_c = {},
 		lualine_x = {},
 	},
-	extensions = { "fugitive", "neo-tree", "fzf", "quickfix" },
+	tabline = {},
+	extensions = { "fugitive", "neo-tree", "quickfix" },
 }
 
 -- Inserts a component in lualine_c at left section
@@ -94,7 +89,7 @@ ins_left({
 ins_left({
 	-- mode component
 	function()
-		return ""
+		return "π"
 	end,
 	color = function()
 		-- auto change color according to neovims mode
@@ -126,20 +121,28 @@ ins_left({
 })
 
 ins_left({
-	-- filesize component
-	"filesize",
-	cond = conditions.buffer_not_empty,
+	"branch",
+	icon = "",
+	color = { fg = colors.blue, gui = "bold" },
+})
+
+ins_left({
+	"diff",
+	-- Is it me or the symbol for modified us really weird
+	symbols = { added = " ", modified = "柳 ", removed = " " },
+	diff_color = {
+		added = { fg = colors.green },
+		modified = { fg = colors.orange },
+		removed = { fg = colors.red },
+	},
+	cond = conditions.hide_in_width,
 })
 
 ins_left({
 	"filename",
 	cond = conditions.buffer_not_empty,
-	color = { fg = colors.orange, gui = "bold" },
+	color = { fg = colors.yellow, gui = "bold" },
 })
-
-ins_left({ "location" })
-
-ins_left({ "progress", color = { fg = colors.fg, gui = "bold" } })
 
 ins_left({
 	"diagnostics",
@@ -161,57 +164,33 @@ ins_left({
 })
 
 ins_left({
-	-- Lsp server name .
-	function()
-		local msg = "No Active Lsp"
-		local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
-		local clients = vim.lsp.get_active_clients()
-		if next(clients) == nil then
-			return msg
-		end
-		for _, client in ipairs(clients) do
-			local filetypes = client.config.filetypes
-			if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-				return client.name
-			end
-		end
-		return msg
-	end,
-	icon = " LSP:",
-	color = { fg = colors.yellow, gui = "bold" },
-})
-
--- Add components to right sections
-ins_right({
-	"o:encoding", -- option component same as &encoding in viml
-	fmt = string.upper, -- I'm not sure why it's upper case either ;)
-	cond = conditions.hide_in_width,
-	color = { fg = colors.green, gui = "bold" },
-})
-
-ins_right({
-	"fileformat",
-	fmt = string.upper,
-	icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
-	color = { fg = colors.green, gui = "bold" },
-})
-
-ins_right({
-	"branch",
-	icon = "",
-	color = { fg = colors.blue, gui = "bold" },
-})
-
-ins_right({
-	"diff",
-	-- Is it me or the symbol for modified us really weird
-	symbols = { added = " ", modified = "柳 ", removed = " " },
-	diff_color = {
-		added = { fg = colors.green },
-		modified = { fg = colors.orange },
-		removed = { fg = colors.red },
+	"buffers",
+	show_filename_only = true, -- Shows shortened relative path when set to false.
+	show_modified_status = true, -- Shows indicator when the buffer is modified.
+   -- Automatically updates active buffer color to match color of other components (will be overidden if buffers_color is set)
+  use_mode_colors = true,
+	symbols = {
+		modified = " ●", -- Text to show when the buffer is modified
+		alternate_file = "#", -- Text to show to identify the alternate file
+		directory = "", -- Text to show when the buffer is a directory
 	},
-	cond = conditions.hide_in_width,
+})
+
+ins_right({
+	"filetype",
+  colored = true,
+  icon_only = false,
+	color = { fg = colors.green, gui = "bold" },
+})
+
+ins_right({
+	"progress",
+	color = { fg = colors.green, gui = "bold" },
+})
+
+ins_right({
+	"location",
+	color = { fg = colors.green, gui = "bold" },
 })
 
 ins_right({
@@ -222,5 +201,4 @@ ins_right({
 	padding = { left = 1 },
 })
 
--- Now don't forget to initialize lualine
 lualine.setup(config)
