@@ -52,7 +52,7 @@ utils.nmap("<leader>u", ":UndotreeToggle<CR>")
 utils.nmap("<Leader>ff", ":Format<CR>")
 
 -- Fzf
-utils.nmap("<c-f>", ":FzfLua grep_project<CR>")
+utils.nmap("<c-f>", ":FzfLua live_grep<CR>")
 utils.nmap("<c-p>", ":FzfLua files<CR>")
 utils.nmap("<Leader>f/", ":FzfLua lines<CR>")
 utils.nmap("<Leader>fb", ":FzfLua buffers<CR>")

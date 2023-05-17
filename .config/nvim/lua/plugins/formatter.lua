@@ -27,6 +27,9 @@ formatter.setup({
 		json = {
 			require("formatter.filetypes.json").jq,
 		},
+		java = {
+			require("formatter.filetypes.java").clangformat,
+		},
 		lua = {
 			require("formatter.filetypes.lua").stylua,
 		},
@@ -39,8 +42,14 @@ formatter.setup({
 		rust = {
 			require("formatter.filetypes.rust").rustfmt,
 		},
-    sql = {
+    ruby = {
+			require("formatter.filetypes.ruby").rubocop,
+    },
+		sql = {
 			require("formatter.filetypes.sql").pgformat,
-    }
+		},
+		go = {
+			require("formatter.filetypes.go").gofmt,
+		},
 	},
 })

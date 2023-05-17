@@ -166,9 +166,15 @@ ins_left({
 ins_left({
 	"buffers",
 	show_filename_only = true, -- Shows shortened relative path when set to false.
+  hide_filename_extension = true,   -- Hide filename extension when set to true.
 	show_modified_status = true, -- Shows indicator when the buffer is modified.
-   -- Automatically updates active buffer color to match color of other components (will be overidden if buffers_color is set)
-  use_mode_colors = true,
+	mode = 0, -- 0: Shows buffer name
+            -- 1: Shows buffer index
+            -- 2: Shows buffer name + buffer index
+            -- 3: Shows buffer number
+            -- 4: Shows buffer name + buffer number
+	-- Automatically updates active buffer color to match color of other components (will be overidden if buffers_color is set)
+	use_mode_colors = true,
 	symbols = {
 		modified = " ●", -- Text to show when the buffer is modified
 		alternate_file = "#", -- Text to show to identify the alternate file
@@ -178,8 +184,8 @@ ins_left({
 
 ins_right({
 	"filetype",
-  colored = true,
-  icon_only = false,
+	colored = true,
+	icon_only = false,
 	color = { fg = colors.green, gui = "bold" },
 })
 
