@@ -42,9 +42,9 @@ formatter.setup({
 		rust = {
 			require("formatter.filetypes.rust").rustfmt,
 		},
-    ruby = {
+		ruby = {
 			require("formatter.filetypes.ruby").rubocop,
-    },
+		},
 		sql = {
 			require("formatter.filetypes.sql").pgformat,
 		},
