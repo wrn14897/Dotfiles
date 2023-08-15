@@ -20,4 +20,7 @@ vim.g.copilot_filetypes = {
   ["ruby"] = true,
   ["html"] = true,
   ["dockerfile"] = true,
+  ["swift"] = true,
+  ["sh"] = true,
+  ["json"] = true
 }
