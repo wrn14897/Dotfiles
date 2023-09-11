@@ -30,9 +30,10 @@ mini_starter.setup({
 	}, "\n"),
 	query_updaters = [[abcdefghilmoqrstuvwxyz0123456789_-,.ABCDEFGHIJKLMOQRSTUVWXYZ]],
 	items = {
+		mini_starter.sections.builtin_actions(),
+		mini_starter.sections.recent_files(10, false),
+		mini_starter.sections.recent_files(10, true),
 		{ action = "PackerSync", name = "U: Update Plugins", section = "Plugins" },
-		{ action = "enew", name = "E: New Buffer", section = "Builtin actions" },
-		{ action = "qall!", name = "Q: Quit Neovim", section = "Builtin actions" },
 	},
 })
 vim.cmd([[
