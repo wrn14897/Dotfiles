@@ -33,7 +33,6 @@ return packer.startup(function(use)
 	use("wbthomason/packer.nvim")
 
 	--- Colorscheme
-	use("ellisonleao/gruvbox.nvim")
 	use("rebelot/kanagawa.nvim")
 
 	use({
@@ -191,6 +190,13 @@ return packer.startup(function(use)
 	})
 
 	use({ "github/copilot.vim" })
+
+	use({
+		"norcalli/nvim-colorizer.lua",
+		config = function()
+			require("colorizer").setup()
+		end,
+	})
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
