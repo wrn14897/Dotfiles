@@ -81,6 +81,8 @@ utils.nmap("<Leader>gl", ":DiffviewFileHistory<CR>")
 utils.vmap("br", ":GBrowse<CR>")
 utils.vmap("b", ":GV<CR>")
 
+utils.nmap("<Leader>gha", ":GhActions<CR>")
+
 -- Vimux
 utils.nmap("<Leader>vp", ":VimuxPromptCommand<CR>")
 utils.nmap("<Leader>vs", ":VimuxInterruptRunner<CR>")

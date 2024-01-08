@@ -22,5 +22,5 @@ vim.g.copilot_filetypes = {
 	["dockerfile"] = true,
 	["swift"] = true,
 	["sh"] = true,
-	["json"] = true,
+	["json"] = true
 }

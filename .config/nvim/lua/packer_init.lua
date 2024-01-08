@@ -80,7 +80,41 @@ return packer.startup(function(use)
 
 	use("kevinhwang91/nvim-bqf")
 
-	use("lukas-reineke/indent-blankline.nvim")
+	use({
+		"lukas-reineke/indent-blankline.nvim",
+		config = function()
+			require("ibl").setup({
+				indent = {
+					char = "▏",
+					tab_char = nil,
+					highlight = "IblIndent",
+					smart_indent_cap = true,
+					priority = 1,
+				},
+				exclude = {
+					filetypes = {
+						"lspinfo",
+						"packer",
+						"checkhealth",
+						"help",
+						"man",
+						"dashboard",
+						"git",
+						"markdown",
+						"text",
+						"terminal",
+						"NvimTree",
+					},
+					buftypes = {
+						"terminal",
+						"nofile",
+						"quickfix",
+						"prompt",
+					},
+				},
+			})
+		end,
+	})
 
 	use({
 		"airblade/vim-rooter",
@@ -196,6 +230,26 @@ return packer.startup(function(use)
 		config = function()
 			require("colorizer").setup()
 		end,
+	})
+
+	use({
+		"topaxi/gh-actions.nvim",
+		requires = {
+			"nvim-lua/plenary.nvim",
+			"MunifTanjim/nui.nvim",
+		},
+		config = function(_, opts)
+			require("gh-actions").setup(opts)
+		end,
+	})
+
+	-- DAP
+	use("mfussenegger/nvim-dap")
+	use("rcarriga/nvim-dap-ui")
+	use({
+		"microsoft/vscode-js-debug",
+		opt = true,
+		run = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
 	})
 
 	-- Automatically set up your configuration after cloning packer.nvim

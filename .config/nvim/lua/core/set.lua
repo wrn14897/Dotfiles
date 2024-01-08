@@ -15,9 +15,6 @@ end
 
 --- General
 vim.g.mapleader = ","
-vim.o.t_SI = "<Esc>[6 q"
-vim.o.t_SR = "<Esc>[4 q"
-vim.o.t_EI = "<Esc>[2 q"
 
 set.encoding = "utf-8"
 set.mousehide = true
