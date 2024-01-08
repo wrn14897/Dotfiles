@@ -45,7 +45,7 @@ return packer.startup(function(use)
 			-- Useful status updates for LSP
 			{
 				"j-hui/fidget.nvim",
-				tag = "legacy",
+				tag = "v1.2.0",
 			},
 			-- Additional lua configuration, makes nvim stuff amazing
 			"folke/neodev.nvim",
