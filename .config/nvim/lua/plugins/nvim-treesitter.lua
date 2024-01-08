@@ -8,7 +8,22 @@ end
 
 treesitter.setup({
 	-- One of "all", "maintained" (parsers with maintainers), or a list of languages
-	ensure_installed = { "c", "cpp", "go", "lua", "python", "rust", "typescript", "vimdoc", "vim", "wgsl", "terraform", "sql" },
+	ensure_installed = {
+		"c",
+		"cpp",
+		"go",
+		"lua",
+		"python",
+		"rust",
+		"typescript",
+		"vimdoc",
+		"vim",
+		"wgsl",
+		"terraform",
+		"sql",
+		"markdown",
+		"markdown_inline",
+	},
 	-- Install languages synchronously (only applied to `ensure_installed`)
 	sync_install = false,
 	highlight = { enable = true },
