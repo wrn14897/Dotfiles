@@ -51,18 +51,17 @@ utils.nmap("<leader>u", ":UndotreeToggle<CR>")
 -- Formatter
 utils.nmap("<Leader>ff", ":Format<CR>")
 
--- Fzf
-utils.nmap("<c-f>", ":FzfLua live_grep<CR>")
-utils.nmap("<c-p>", ":FzfLua files<CR>")
-utils.nmap("<Leader>f/", ":FzfLua lines<CR>")
-utils.nmap("<Leader>fb", ":FzfLua buffers<CR>")
-utils.nmap("<Leader>fd", ":FzfLua diagnostics_workspace<CR>")
-utils.nmap("<Leader>fh", ":FzfLua help_tags<CR>")
-utils.nmap("<Leader>fm", ":FzfLua marks<CR>")
-utils.nmap("<Leader>fr", ":FzfLua registers<CR>")
-utils.nmap("<Leader>ft", ":FzfLua tabs<CR>")
-utils.nmap("<Leader>fw", ":FzfLua grep_cword<CR>")
-utils.nmap("<Leader>gbl", ":FzfLua git_bcommits<CR>")
+-- Telescope
+utils.nmap("<c-f>", ":Telescope live_grep<CR>")
+utils.nmap("<c-p>", ":Telescope find_files<CR>")
+utils.nmap("<Leader>ft", ":Telescope treesitter<CR>")
+utils.nmap("<Leader>fb", ":Telescope buffers<CR>")
+utils.nmap("<Leader>fd", ":Telescope diagnostics<CR>")
+utils.nmap("<Leader>fh", ":Telescope help_tags<CR>")
+utils.nmap("<Leader>fm", ":Telescope marks<CR>")
+utils.nmap("<Leader>fr", ":Telescope registers<CR>")
+utils.nmap("<Leader>fw", ":Telescope grep_string<CR>")
+utils.nmap("<Leader>fgb", ":Telescope git_bcommits<CR>")
 
 -- Git Stuff
 utils.nmap("<leader>gs", ":Git<CR>")

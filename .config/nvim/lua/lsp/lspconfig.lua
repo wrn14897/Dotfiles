@@ -14,8 +14,8 @@ if not cmp_status_ok then
 	return
 end
 
-local fzf_status_ok, fzf_lua = pcall(require, "fzf-lua")
-if not fzf_status_ok then
+local status_ok, telescope = pcall(require, "telescope.builtin")
+if not status_ok then
 	return
 end
 
@@ -43,11 +43,11 @@ local on_attach = function(_, bufnr)
 	nmap("<leader>ca", vim.lsp.buf.code_action)
 
 	nmap("<leader>D", vim.lsp.buf.type_definition)
-	nmap("<leader>ds", fzf_lua.lsp_document_symbols)
-	nmap("<leader>ws", fzf_lua.lsp_live_workspace_symbols)
+	nmap("<leader>ds", telescope.lsp_document_symbols)
+	nmap("<leader>ws", telescope.lsp_dynamic_workspace_symbols)
 	nmap("gI", vim.lsp.buf.implementation)
 	nmap("gd", vim.lsp.buf.definition)
-	nmap("gr", fzf_lua.lsp_references)
+	nmap("gr", telescope.lsp_references)
 
 	-- See `:help K` for why this keymap
 	nmap("K", vim.lsp.buf.hover)
@@ -105,5 +105,9 @@ vim.diagnostic.config({
 	signs = true,
 })
 -- Diagnostic keymaps
-vim.keymap.set("n", "<C-k>", vim.diagnostic.goto_prev, { noremap = true, silent = true })
-vim.keymap.set("n", "<C-j>", vim.diagnostic.goto_next, { noremap = true, silent = true })
+vim.keymap.set("n", "<C-k>", function()
+	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end, { noremap = true, silent = true })
+vim.keymap.set("n", "<C-j>", function()
+  vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+end, { noremap = true, silent = true })
