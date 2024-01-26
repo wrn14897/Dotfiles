@@ -163,12 +163,6 @@ return packer.startup(function(use)
 		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
 
-	-- use({
-	-- 	"ibhagwan/fzf-lua",
-	-- 	-- optional for icon support
-	-- 	requires = { "kyazdani42/nvim-web-devicons" },
-	-- })
-
 	use("tpope/vim-commentary")
 
 	use("mbbill/undotree")
@@ -224,6 +218,18 @@ return packer.startup(function(use)
 	})
 
 	use({ "github/copilot.vim" })
+
+	use({
+		"jackMort/ChatGPT.nvim",
+		config = function()
+			require("chatgpt").setup({})
+		end,
+		requires = {
+			"MunifTanjim/nui.nvim",
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope.nvim",
+		},
+	})
 
 	use({
 		"norcalli/nvim-colorizer.lua",

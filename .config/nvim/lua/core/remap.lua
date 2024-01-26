@@ -53,7 +53,7 @@ utils.nmap("<Leader>ff", ":Format<CR>")
 
 -- Telescope
 utils.nmap("<c-f>", ":Telescope live_grep<CR>")
-utils.nmap("<c-p>", ":Telescope find_files<CR>")
+utils.nmap("<c-p>", ":Telescope find_files find_command=rg,--ignore,--hidden,--files<CR>")
 utils.nmap("<Leader>ft", ":Telescope treesitter<CR>")
 utils.nmap("<Leader>fb", ":Telescope buffers<CR>")
 utils.nmap("<Leader>fd", ":Telescope diagnostics<CR>")
@@ -86,3 +86,10 @@ utils.nmap("<Leader>gha", ":GhActions<CR>")
 utils.nmap("<Leader>vp", ":VimuxPromptCommand<CR>")
 utils.nmap("<Leader>vs", ":VimuxInterruptRunner<CR>")
 utils.nmap("<Leader>vl", ":VimuxRunLastCommand<CR>")
+
+-- ChatGPT
+utils.nmap("<Leader>ch", ":ChatGPT<CR>")
+utils.vmap("che", ":ChatGPTEditWithInstructions<CR>")
+utils.vmap("chrat", ":ChatGPTRun add_tests<CR>")
+utils.vmap("chrfb", ":ChatGPTRun fix_bugs<CR>")
+utils.vmap("chro", ":ChatGPTRun optimize_code<CR>")

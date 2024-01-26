@@ -41,7 +41,7 @@ vim.cmd([[
     au!
     au User MiniStarterOpened nmap <buffer> j <Cmd>lua MiniStarter.update_current_item('next')<CR>
     au User MiniStarterOpened nmap <buffer> k <Cmd>lua MiniStarter.update_current_item('prev')<CR>
-    au User MiniStarterOpened nmap <buffer> <C-p> <Cmd>Telescope find_files<CR>
+    au User MiniStarterOpened nmap <buffer> <C-p> <Cmd>Telescope find_files find_command=rg,--ignore,--hidden,--files<CR>
     au User MiniStarterOpened nmap <buffer> <leader>gs <Cmd>Git<CR>
   augroup END
 ]])

@@ -1,7 +1,6 @@
-local status_ok, telescope = pcall(require, "telescope")
-if not status_ok then
-	return
-end
+local telescope = require 'telescope'
+local telescope_builtin = require 'telescope.builtin'
+local telescope_actions = require 'telescope.actions'
 
 telescope.setup({
 	defaults = {
@@ -12,6 +11,17 @@ telescope.setup({
 			width = 0.9, -- maximally available columns
 			prompt_position = "top",
 		},
+    mappings = {
+      -- swap default <C-q> and <M-q> mappings
+      i = {
+        ["<C-q>"] = telescope_actions.send_selected_to_qflist + telescope_actions.open_qflist,
+        ["<M-q>"] = telescope_actions.send_to_qflist + telescope_actions.open_qflist,
+      },
+      n = {
+        ["<C-q>"] = telescope_actions.send_selected_to_qflist + telescope_actions.open_qflist,
+        ["<M-q>"] = telescope_actions.send_to_qflist + telescope_actions.open_qflist,
+      },
+    }
 	},
 	extensions = {
 		fzf = {
