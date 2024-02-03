@@ -67,16 +67,14 @@ return packer.startup(function(use)
 	})
 
 	use({
-		-- Additional text objects via treesitter
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		after = "nvim-treesitter",
+		requires = "nvim-treesitter/nvim-treesitter",
 	})
 
 	use("folke/lsp-colors.nvim")
 
 	use("ryanoasis/vim-devicons")
-
-	use("andymass/vim-matchup")
 
 	use("kevinhwang91/nvim-bqf")
 
