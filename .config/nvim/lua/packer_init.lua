@@ -67,16 +67,14 @@ return packer.startup(function(use)
 	})
 
 	use({
-		-- Additional text objects via treesitter
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		after = "nvim-treesitter",
+		requires = "nvim-treesitter/nvim-treesitter",
 	})
 
 	use("folke/lsp-colors.nvim")
 
 	use("ryanoasis/vim-devicons")
-
-	use("andymass/vim-matchup")
 
 	use("kevinhwang91/nvim-bqf")
 
@@ -123,10 +121,6 @@ return packer.startup(function(use)
 		end,
 	})
 
-	use("romainl/vim-qf")
-
-	use("flazz/vim-colorschemes")
-
 	--------------------------------
 	------ Git Related Plugins -----
 	--------------------------------
@@ -157,16 +151,14 @@ return packer.startup(function(use)
 	})
 
 	use({
-		"junegunn/fzf",
-		run = function()
-			vim.fn["fzf#install"]()
-		end,
+		"nvim-telescope/telescope.nvim",
+		tag = "0.1.5",
+		requires = { { "nvim-lua/plenary.nvim" } },
 	})
 
 	use({
-		"ibhagwan/fzf-lua",
-		-- optional for icon support
-		requires = { "kyazdani42/nvim-web-devicons" },
+		"nvim-telescope/telescope-fzf-native.nvim",
+		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
 
 	use("tpope/vim-commentary")
@@ -226,6 +218,18 @@ return packer.startup(function(use)
 	use({ "github/copilot.vim" })
 
 	use({
+		"jackMort/ChatGPT.nvim",
+		config = function()
+			require("chatgpt").setup({})
+		end,
+		requires = {
+			"MunifTanjim/nui.nvim",
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope.nvim",
+		},
+	})
+
+	use({
 		"norcalli/nvim-colorizer.lua",
 		config = function()
 			require("colorizer").setup()
@@ -246,11 +250,6 @@ return packer.startup(function(use)
 	-- DAP
 	use("mfussenegger/nvim-dap")
 	use("rcarriga/nvim-dap-ui")
-	use({
-		"microsoft/vscode-js-debug",
-		opt = true,
-		run = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
-	})
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
