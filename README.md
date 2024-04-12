@@ -15,11 +15,13 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 
 6. Install node (nvm -> https://github.com/nvm-sh/nvm)
 
-7. Copy everything in `/.config/nvim`
+7. Install zoxide (https://github.com/ajeetdsouza/zoxide?tab=readme-ov-file)
 
-8. Open nvim and do `:PackerInstall`
+8. Copy everything in `/.config/nvim`
 
-9. Ready to rock !!
+9. Open nvim and do `:PackerInstall`
+
+10. Ready to rock !!
 
 
 # Linter / Formatter

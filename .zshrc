@@ -74,6 +74,7 @@ plugins=(
   python
   zsh-autosuggestions
   zsh-syntax-highlighting
+  poetry
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -111,10 +112,6 @@ fi
 if [ -f ~/.docker_aliases ]; then
     . ~/.docker_aliases
 fi
-
-
-# PTTBrain
-export DEBUG=internal
 
 # NVM
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}"  ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
@@ -154,7 +151,7 @@ if [ -d "$HOME/.local/bin" ] ; then
 fi
 
 # bat
-export BAT_THEME="gruvbox-dark"
+export BAT_THEME="Catppuccin-frappe" #TEMP: ideally we use KANAGAWA
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -163,11 +160,14 @@ export PATH="$PATH:$HOME/.rvm/bin"
 
 # github
 compctl -K _gh gh
+# rvm
+export GEM_HOME=$HOME/.gem
+export GEM_PATH=$HOME/.gem
 
 # kubectl
 source <(kubectl completion zsh)
 compdef __start_kubectl k
-source <(minikube completion zsh)
+# source <(minikube completion zsh)
 
 # aws
 autoload bashcompinit && bashcompinit
@@ -175,3 +175,27 @@ autoload -Uz compinit && compinit
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/bin/terraform terraform
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Homebrew
+export GOROOT="$(brew --prefix golang)/libexec"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+# K8s
+export KUBE_EDITOR="nvim"
+
+# chromium
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+export PUPPETEER_EXECUTABLE_PATH=`which chromium`
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+
+# zoxide
+eval "$(zoxide init --cmd cd zsh)"
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+complete -o nospace -C /opt/homebrew/bin/terraform terraform

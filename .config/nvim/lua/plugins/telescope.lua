@@ -2,6 +2,8 @@ local telescope = require 'telescope'
 local telescope_builtin = require 'telescope.builtin'
 local telescope_actions = require 'telescope.actions'
 
+local trouble = require("trouble.providers.telescope")
+
 telescope.setup({
 	defaults = {
     layout_strategy = "horizontal",
@@ -16,10 +18,12 @@ telescope.setup({
       i = {
         ["<C-q>"] = telescope_actions.send_selected_to_qflist + telescope_actions.open_qflist,
         ["<M-q>"] = telescope_actions.send_to_qflist + telescope_actions.open_qflist,
+        ["<C-t>"] = trouble.open_with_trouble,
       },
       n = {
         ["<C-q>"] = telescope_actions.send_selected_to_qflist + telescope_actions.open_qflist,
         ["<M-q>"] = telescope_actions.send_to_qflist + telescope_actions.open_qflist,
+        ["<C-t>"] = trouble.open_with_trouble,
       },
     }
 	},

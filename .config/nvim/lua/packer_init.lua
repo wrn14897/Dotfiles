@@ -55,7 +55,15 @@ return packer.startup(function(use)
 	use({
 		-- Autocompletion
 		"hrsh7th/nvim-cmp",
-		requires = { "hrsh7th/cmp-nvim-lsp", "L3MON4D3/LuaSnip", "saadparwaiz1/cmp_luasnip" },
+		requires = {
+			"L3MON4D3/LuaSnip",
+			"saadparwaiz1/cmp_luasnip",
+			-- Adds LSP completion capabilities
+			"hrsh7th/cmp-path",
+			"hrsh7th/cmp-nvim-lsp",
+			-- Adds a number of user-friendly snippets
+			"rafamadriz/friendly-snippets",
+		},
 	})
 
 	use({
@@ -74,7 +82,7 @@ return packer.startup(function(use)
 
 	use("folke/lsp-colors.nvim")
 
-	use("ryanoasis/vim-devicons")
+	use("nvim-tree/nvim-web-devicons")
 
 	use("kevinhwang91/nvim-bqf")
 
@@ -130,23 +138,15 @@ return packer.startup(function(use)
 
 	use("lewis6991/gitsigns.nvim")
 
-	use("junegunn/gv.vim")
-
 	use("tpope/vim-rhubarb")
+
+	use("rhysd/conflict-marker.vim")
 	--------------------------------
 
 	use({
 		"windwp/nvim-autopairs",
 		config = function()
 			require("nvim-autopairs").setup({})
-		end,
-	})
-
-	use({
-		"akinsho/git-conflict.nvim",
-		tag = "*",
-		config = function()
-			require("git-conflict").setup()
 		end,
 	})
 
@@ -185,21 +185,9 @@ return packer.startup(function(use)
 
 	use("powerman/vim-plugin-AnsiEsc")
 
-	use("lewis6991/impatient.nvim")
-
 	use("preservim/vimux")
 
 	use("echasnovski/mini.nvim")
-
-	use({
-		"nvim-neo-tree/neo-tree.nvim",
-		branch = "v2.x",
-		requires = {
-			"nvim-lua/plenary.nvim",
-			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-			"MunifTanjim/nui.nvim",
-		},
-	})
 
 	use({
 		"nvim-lualine/lualine.nvim",
@@ -246,6 +234,23 @@ return packer.startup(function(use)
 			require("gh-actions").setup(opts)
 		end,
 	})
+
+	use("nanotee/zoxide.vim")
+
+	use({
+		"folke/trouble.nvim",
+		requires = "nvim-tree/nvim-web-devicons",
+	})
+
+	use({
+		"stevearc/oil.nvim",
+		config = function()
+			require("oil").setup()
+		end,
+	})
+
+	-- Discord
+	use("andweeb/presence.nvim")
 
 	-- DAP
 	use("mfussenegger/nvim-dap")

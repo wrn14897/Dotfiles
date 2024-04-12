@@ -7,8 +7,10 @@ utils.nmap("N", "Nzzzv")
 utils.nmap("j", "gj")
 utils.nmap("k", "gk")
 utils.imap("jk", "<esc>")
+utils.imap("kj", "<esc>")
 utils.imap("<esc>", "<nop>")
 utils.imap("<C-c>", "<Esc>")
+
 
 --- Yank from the cursor to the end of the line, to be consistent with C and D.
 utils.nmap("Y", "y$")
@@ -22,10 +24,11 @@ utils.nmap("<leader>fc", "/\v^[<|=>]{7}( .*|$)<CR>")
 --- For when you forget to sudo.. Really Write the file.
 utils.cmap("w!!", "w !sudo tee % >/dev/null")
 
---- Buffers
+--- Buffers / Tabs
 utils.nmap("H", ":bprevious<CR>")
 utils.nmap("L", ":bnext<CR>")
-utils.nmap("<leader>bd", ":bd<CR>")
+utils.nmap("<leader>q", ":bd<CR>")
+utils.nmap("<leader>w", ":tabclose<CR>")
 
 --- Easier horizontal scrolling
 utils.nmap("zl", "zL")
@@ -41,10 +44,6 @@ utils.xmap(".", ":normal .<CR>")
 -----------------------------------------------------------
 -- Applications and Plugins shortcuts
 -----------------------------------------------------------
-
--- Neo-Tree
-utils.nmap("<C-e>", ":NeoTreeFocusToggle<CR>")
-
 -- undotree
 utils.nmap("<leader>u", ":UndotreeToggle<CR>")
 
@@ -63,6 +62,12 @@ utils.nmap("<Leader>fr", ":Telescope registers<CR>")
 utils.nmap("<Leader>fw", ":Telescope grep_string<CR>")
 utils.nmap("<Leader>fgb", ":Telescope git_bcommits<CR>")
 
+-- Trouble
+utils.nmap("<leader>xx", ":TroubleToggle<CR>")
+
+-- Oil
+utils.nmap("-", ":Oil<CR>")
+
 -- Git Stuff
 utils.nmap("<leader>gs", ":Git<CR>")
 utils.nmap("<leader>gd", ":Gvdiffsplit<CR>")
@@ -75,10 +80,10 @@ utils.nmap("<leader>gr", ":Gread<CR>")
 utils.nmap("<leader>gw", ":Gwrite<CR>")
 utils.nmap("<leader>ge", ":Gedit<CR>")
 utils.nmap("<leader>gi", ":Git add -p %<CR>")
-utils.nmap("<Leader>gl", ":DiffviewFileHistory<CR>")
+utils.nmap("<Leader>gl", ":DiffviewFileHistory %<CR>")
 -- Open visual selection in the browser
 utils.vmap("br", ":GBrowse<CR>")
-utils.vmap("b", ":GV<CR>")
+utils.vmap("<Leader>gl", ":DiffviewFileHistory<CR>")
 
 utils.nmap("<Leader>gha", ":GhActions<CR>")
 

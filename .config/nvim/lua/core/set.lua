@@ -26,6 +26,7 @@ set.spell = true --- Spell checking on
 set.hidden = true --- Allow buffer switching without saving
 set.iskeyword:remove({ ".", "#", "-" })
 set.tags = "./tags,tags;$HOME"
+set.timeoutlen = 500 --- Time to wait for a mapped sequence to complete
 
 --- UI
 vim.o.background = "dark" --- or "light" for light mode
