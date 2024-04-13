@@ -4,70 +4,70 @@
 -- For configuration see the Wiki: https://github.com/neovim/nvim-lspconfig/wiki
 -- Autocompletion settings of "nvim-cmp" are defined in plugins/nvim-cmp.lua
 
-local lsp_status_ok, lspconfig = pcall(require, "lspconfig")
-if not lsp_status_ok then
-	return
-end
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
+	callback = function(event)
+		local nmap = function(keys, func)
+			vim.keymap.set("n", keys, func, { buffer = event.buf })
+		end
 
-local cmp_status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-if not cmp_status_ok then
-	return
-end
+		nmap("<leader>rn", vim.lsp.buf.rename)
+		nmap("<leader>ca", vim.lsp.buf.code_action)
 
-local status_ok, telescope = pcall(require, "telescope.builtin")
-if not status_ok then
-	return
-end
+		nmap("<leader>D", require("telescope.builtin").lsp_type_definitions)
+		nmap("<leader>ds", require("telescope.builtin").lsp_document_symbols)
+		nmap("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols)
+		nmap("gI", require("telescope.builtin").lsp_implementations)
 
-local mason_status_ok, mason = pcall(require, "mason")
-if not mason_status_ok then
-	return
-end
+		nmap("gd", require("telescope.builtin").lsp_definitions)
+		nmap("gr", require("telescope.builtin").lsp_references)
 
-local mason_lspconfig_status_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
-if not mason_lspconfig_status_ok then
-	return
-end
+		-- See `:help K` for why this keymap
+		nmap("K", vim.lsp.buf.hover)
 
-local fidget_status_ok, fidget = pcall(require, "fidget")
-if not fidget_status_ok then
-	return
-end
+		nmap("gD", vim.lsp.buf.declaration)
 
-local on_attach = function(_, bufnr)
-	local nmap = function(keys, func)
-		vim.keymap.set("n", keys, func, { buffer = bufnr, noremap = true, silent = true })
-	end
+		-- The following two autocommands are used to highlight references of the
+		-- word under your cursor when your cursor rests there for a little while.
+		--    See `:help CursorHold` for information about when this is executed
+		--
+		-- When you move your cursor, the highlights will be cleared (the second autocommand).
+		local client = vim.lsp.get_client_by_id(event.data.client_id)
+		if client and client.server_capabilities.documentHighlightProvider then
+			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+				buffer = event.buf,
+				callback = vim.lsp.buf.document_highlight,
+			})
 
-	nmap("<leader>rn", vim.lsp.buf.rename)
-	nmap("<leader>ca", vim.lsp.buf.code_action)
-
-	nmap("<leader>D", vim.lsp.buf.type_definition)
-	nmap("<leader>ds", telescope.lsp_document_symbols)
-	nmap("<leader>ws", telescope.lsp_dynamic_workspace_symbols)
-	nmap("gI", vim.lsp.buf.implementation)
-	nmap("gd", vim.lsp.buf.definition)
-	nmap("gr", telescope.lsp_references)
-
-	-- See `:help K` for why this keymap
-	nmap("K", vim.lsp.buf.hover)
-end
+			vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+				buffer = event.buf,
+				callback = vim.lsp.buf.clear_references,
+			})
+		end
+	end,
+})
 
 -- Enable the following language servers
 local servers = {
 	clangd = {},
 	rust_analyzer = {},
+	gopls = {},
 	pyright = {},
 	tsserver = {},
 	eslint = {},
 	dockerls = {},
+  elixirls = {},
+  rubocop = {},
+  yamlls = {},
 	diagnosticls = {},
 	lua_ls = {
-		Lua = {
-			workspace = { checkThirdParty = false },
-			telemetry = { enable = false },
-			completion = {
-				callSnippet = "Replace",
+		settings = {
+			Lua = {
+				completion = {
+					callSnippet = "Replace",
+				},
+				-- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+				-- diagnostics = { disable = { 'missing-fields' } },
 			},
 		},
 	},
@@ -75,27 +75,41 @@ local servers = {
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
 -- Setup mason so it can manage external tooling
-mason.setup()
+require("mason").setup()
 
-mason_lspconfig.setup({
-	ensure_installed = vim.tbl_keys(servers),
+local ensure_installed = vim.tbl_keys(servers or {})
+vim.list_extend(ensure_installed, {
+  --- Linters
+  "eslint_d", -- Used to lint JavaScript codes
+  "markdownlint",
+  "flake8",
+  "luacheck",
+  "tflint",
+  --- Formatters
+	"stylua", -- Used to format Lua code
+  "black", -- Used to format Python code
+  "prettierd", -- Used to format JavaScript code
 })
+require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
-mason_lspconfig.setup_handlers({
-	function(server_name)
-		lspconfig[server_name].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-			settings = servers[server_name],
-		})
-	end,
+require("mason-lspconfig").setup({
+	handlers = {
+		function(server_name)
+			local server = servers[server_name] or {}
+			-- This handles overriding only values explicitly passed
+			-- by the server configuration above. Useful when disabling
+			-- certain features of an LSP (for example, turning off formatting for tsserver)
+			server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+			require("lspconfig")[server_name].setup(server)
+		end,
+	},
 })
 
 -- Turn on lsp status information
-fidget.setup()
+require("fidget").setup()
 
 -- Diagnostics
 -- Floating message
@@ -109,5 +123,5 @@ vim.keymap.set("n", "<C-k>", function()
 	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
 end, { noremap = true, silent = true })
 vim.keymap.set("n", "<C-j>", function()
-  vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+	vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
 end, { noremap = true, silent = true })
