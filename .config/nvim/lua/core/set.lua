@@ -30,7 +30,6 @@ set.timeoutlen = 500 --- Time to wait for a mapped sequence to complete
 
 --- UI
 vim.o.background = "dark" --- or "light" for light mode
-vim.cmd([[ colorscheme kanagawa ]])
 set.tabpagemax = 15 --- Only show 15 tabs
 set.showmode = true --- Display the current mode
 set.cursorline = true --- Highlight current line

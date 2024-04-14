@@ -112,7 +112,7 @@ require("mason-lspconfig").setup({
 })
 
 -- Turn on lsp status information
-require("fidget").setup()
+require("fidget").setup({})
 
 -- Diagnostics
 -- Floating message

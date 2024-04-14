@@ -48,7 +48,7 @@ utils.nmap("<leader>u", ":UndotreeToggle<CR>")
 
 -- Telescope
 utils.nmap("<c-f>", ":Telescope live_grep<CR>")
-utils.nmap("<c-p>", ":Telescope find_files find_command=rg,--ignore,--hidden,--files<CR>")
+utils.nmap("<c-p>", ":Telescope find_files hidden=true<CR>")
 utils.nmap("<Leader>ft", ":Telescope treesitter<CR>")
 utils.nmap("<Leader>fb", ":Telescope buffers<CR>")
 utils.nmap("<Leader>fd", ":Telescope diagnostics<CR>")
