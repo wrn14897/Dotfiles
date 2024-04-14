@@ -11,7 +11,6 @@ utils.imap("kj", "<esc>")
 utils.imap("<esc>", "<nop>")
 utils.imap("<C-c>", "<Esc>")
 
-
 --- Yank from the cursor to the end of the line, to be consistent with C and D.
 utils.nmap("Y", "y$")
 
@@ -46,9 +45,6 @@ utils.xmap(".", ":normal .<CR>")
 -----------------------------------------------------------
 -- undotree
 utils.nmap("<leader>u", ":UndotreeToggle<CR>")
-
--- Formatter
-utils.nmap("<Leader>ff", ":Format<CR>")
 
 -- Telescope
 utils.nmap("<c-f>", ":Telescope live_grep<CR>")

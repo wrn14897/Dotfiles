@@ -56,9 +56,9 @@ local servers = {
 	tsserver = {},
 	eslint = {},
 	dockerls = {},
-  elixirls = {},
-  rubocop = {},
-  yamlls = {},
+	elixirls = {},
+	rubocop = {},
+	yamlls = {},
 	diagnosticls = {},
 	lua_ls = {
 		settings = {
@@ -75,23 +75,26 @@ local servers = {
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+cclangformatapabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
 -- Setup mason so it can manage external tooling
 require("mason").setup()
 
 local ensure_installed = vim.tbl_keys(servers or {})
 vim.list_extend(ensure_installed, {
-  --- Linters
-  "eslint_d", -- Used to lint JavaScript codes
-  "markdownlint",
-  "flake8",
-  "luacheck",
-  "tflint",
-  --- Formatters
+	--- Linters
+	"eslint_d", -- Used to lint JavaScript codes
+	"markdownlint",
+	"flake8",
+	"luacheck",
+	"tflint",
+	--- Formatters
 	"stylua", -- Used to format Lua code
-  "black", -- Used to format Python code
-  "prettierd", -- Used to format JavaScript code
+	"black", -- Used to format Python code
+	"prettierd", -- Used to format JavaScript code
+	"jq",
+	"clang-format",
+	"yamlfmt",
 })
 require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 

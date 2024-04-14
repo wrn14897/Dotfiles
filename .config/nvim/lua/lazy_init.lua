@@ -1,13 +1,13 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -16,32 +16,32 @@ vim.g.mapleader = " " -- Make sure to set `mapleader` before lazy so your mappin
 vim.g.maplocalleader = "\\" -- Same for `maplocalleader`
 
 require("lazy").setup({
-  {
-	  "rebelot/kanagawa.nvim",
-    lazy = false,
-  },
+	{
+		"rebelot/kanagawa.nvim",
+		lazy = false,
+	},
 
-  {
+	{
 		-- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
-    dependencies = {
+		dependencies = {
 			-- Automatically install LSPs to stdpath for neovim
 			"williamboman/mason.nvim",
 			"williamboman/mason-lspconfig.nvim",
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
+			"WhoIsSethDaniel/mason-tool-installer.nvim",
 
-      -- Useful status updates for LSP.
-      -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
+			-- Useful status updates for LSP.
+			-- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
 			{
 				"j-hui/fidget.nvim",
 				tag = "v1.2.0",
 			},
 
-      -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
-      -- used for completion, annotations and signatures of Neovim apis
-     { 'folke/neodev.nvim', opts = {} },
-    }
-  },
+			-- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
+			-- used for completion, annotations and signatures of Neovim apis
+			{ "folke/neodev.nvim", opts = {} },
+		},
+	},
 
 	{
 		-- Autocompletion
@@ -60,35 +60,35 @@ require("lazy").setup({
 	{
 		-- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
+		build = ":TSUpdate",
 	},
 
 	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-    }
+			"nvim-treesitter/nvim-treesitter",
+		},
 	},
 
 	"folke/lsp-colors.nvim",
 
-  {
-	  "nvim-tree/nvim-web-devicons",
-    lazy = true,
-  },
+	{
+		"nvim-tree/nvim-web-devicons",
+		lazy = true,
+	},
 
 	"kevinhwang91/nvim-bqf",
 
 	{
 		"lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
-    opts = {},
-    config = function()
-      require("ibl").setup()
-    end,
+		main = "ibl",
+		opts = {},
+		config = function()
+			require("ibl").setup()
+		end,
 	},
 
-  {
+	{
 		"airblade/vim-rooter",
 		config = function()
 			vim.g.rooter_patterns = { ".git" }
@@ -118,12 +118,23 @@ require("lazy").setup({
 	{
 		"nvim-telescope/telescope.nvim",
 		version = "0.1.5",
-		dependencies = { { "nvim-lua/plenary.nvim" } },
-	},
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			{ -- If encountering errors, see telescope-fzf-native README for installation instructions
+				"nvim-telescope/telescope-fzf-native.nvim",
 
-	{
-		"nvim-telescope/telescope-fzf-native.nvim",
-		build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+				-- `build` is used to run some command when the plugin is installed/updated.
+				-- This is only run then, not every time Neovim starts up.
+				build = "make",
+
+				-- `cond` is a condition used to determine whether this plugin should be
+				-- installed and loaded.
+				cond = function()
+					return vim.fn.executable("make") == 1
+				end,
+			},
+			{ "nvim-telescope/telescope-ui-select.nvim" },
+		},
 	},
 
 	"tpope/vim-commentary",
@@ -159,7 +170,47 @@ require("lazy").setup({
 		dependencies = { "kyazdani42/nvim-web-devicons", opt = true },
 	},
 
-	{ "mhartington/formatter.nvim" },
+	{ -- Autoformat
+		"stevearc/conform.nvim",
+		lazy = false,
+		keys = {
+			{
+				"<leader>ff",
+				function()
+					require("conform").format({ async = true, lsp_fallback = true })
+				end,
+				mode = "",
+				desc = "[F]ormat buffer",
+			},
+		},
+		opts = {
+			notify_on_error = false,
+			format_on_save = function(bufnr)
+				-- Disable "format_on_save lsp_fallback" for languages that don't
+				-- have a well standardized coding style. You can add additional
+				-- languages here or re-enable it for the disabled ones.
+				local disable_filetypes = { c = true, cpp = true }
+				return {
+					timeout_ms = 500,
+					lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+				}
+			end,
+			formatters_by_ft = {
+				go = { "gofmt" },
+				java = { "clangformat" },
+				javascript = { "prettierd", "prettier" },
+				javscriptreact = { "prettierd", "prettier" },
+				json = { "jq" },
+				lua = { "stylua" },
+				python = { "black" },
+				ruby = { "rubocop" },
+				rust = { "rustfmt" },
+				typescript = { "prettierd", "prettier" },
+				typescriptreact = { "prettierd", "prettier" },
+				yaml = { "yamlfmt" },
+			},
+		},
+	},
 
 	{
 		"iamcco/markdown-preview.nvim",
@@ -189,7 +240,7 @@ require("lazy").setup({
 		end,
 	},
 
-  {
+	{
 		"topaxi/gh-actions.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
