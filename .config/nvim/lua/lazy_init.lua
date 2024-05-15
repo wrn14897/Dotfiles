@@ -92,25 +92,54 @@ require("lazy").setup({
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
 				callback = function(event)
-					local nmap = function(keys, func)
-						vim.keymap.set("n", keys, func, { buffer = event.buf })
+					local map = function(keys, func, desc)
+						vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 					end
 
-					nmap("<leader>rn", vim.lsp.buf.rename)
-					nmap("<leader>ca", vim.lsp.buf.code_action)
+					-- Jump to the definition of the word under your cursor.
+					--  This is where a variable was first declared, or where a function is defined, etc.
+					--  To jump back, press <C-t>.
+					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
 
-					nmap("<leader>D", require("telescope.builtin").lsp_type_definitions)
-					nmap("<leader>ds", require("telescope.builtin").lsp_document_symbols)
-					nmap("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols)
-					nmap("gI", require("telescope.builtin").lsp_implementations)
+					-- Find references for the word under your cursor.
+					map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
 
-					nmap("gd", require("telescope.builtin").lsp_definitions)
-					nmap("gr", require("telescope.builtin").lsp_references)
+					-- Jump to the implementation of the word under your cursor.
+					--  Useful when your language has ways of declaring types without an actual implementation.
+					map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
 
-					-- See `:help K` for why this keymap
-					nmap("K", vim.lsp.buf.hover)
+					-- Jump to the type of the word under your cursor.
+					--  Useful when you're not sure what type a variable is and you want to see
+					--  the definition of its *type*, not where it was *defined*.
+					map("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
 
-					nmap("gD", vim.lsp.buf.declaration)
+					-- Fuzzy find all the symbols in your current document.
+					--  Symbols are things like variables, functions, types, etc.
+					map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
+
+					-- Fuzzy find all the symbols in your current workspace.
+					--  Similar to document symbols, except searches over your entire project.
+					map(
+						"<leader>ws",
+						require("telescope.builtin").lsp_dynamic_workspace_symbols,
+						"[W]orkspace [S]ymbols"
+					)
+
+					-- Rename the variable under your cursor.
+					--  Most Language Servers support renaming across files, etc.
+					map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
+
+					-- Execute a code action, usually your cursor needs to be on top of an error
+					-- or a suggestion from your LSP for this to activate.
+					map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
+
+					-- Opens a popup that displays documentation about the word under your cursor
+					--  See `:help K` for why this keymap.
+					map("K", vim.lsp.buf.hover, "Hover Documentation")
+
+					-- WARN: This is not Goto Definition, this is Goto Declaration.
+					--  For example, in C this would take you to the header.
+					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
 					-- The following two autocommands are used to highlight references of the
 					-- word under your cursor when your cursor rests there for a little while.
@@ -128,6 +157,16 @@ require("lazy").setup({
 							buffer = event.buf,
 							callback = vim.lsp.buf.clear_references,
 						})
+					end
+
+					-- The following autocommand is used to enable inlay hints in your
+					-- code, if the language server you are using supports them
+					--
+					-- This may be unwanted, since they displace some of your code
+					if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+						map("<leader>th", function()
+							vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
+						end, "[T]oggle Inlay [H]ints")
 					end
 				end,
 			})
@@ -256,6 +295,14 @@ require("lazy").setup({
 			local luasnip = require("luasnip")
 			luasnip.config.setup({})
 
+			-- Setup vim-dadbob
+			cmp.setup.filetype({ "sql" }, {
+				sources = {
+					{ name = "vim-dadbod-completion" },
+					{ name = "buffer" },
+				},
+			})
+
 			cmp.setup({
 				snippet = {
 					expand = function(args)
@@ -322,22 +369,33 @@ require("lazy").setup({
 		-- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
+		event = { "BufRead", "BufNewFile" },
 		opts = {
 			ensure_installed = {
 				"c",
 				"cpp",
+				"dockerfile",
 				"go",
+				"java",
 				"lua",
-				"python",
-				"rust",
-				"typescript",
-				"vimdoc",
-				"vim",
-				"wgsl",
-				"terraform",
-				"sql",
+				"make",
 				"markdown",
 				"markdown_inline",
+				"python",
+				"ruby",
+				"rust",
+				"sql",
+				"terraform",
+				"typescript",
+				"vim",
+				"vimdoc",
+				"wgsl",
+				"yaml",
+				"git_config",
+				"git_rebase",
+				"gitattributes",
+				"gitcommit",
+				"gitignore",
 			},
 			-- Install languages synchronously (only applied to `ensure_installed`)
 			sync_install = false,
@@ -455,9 +513,9 @@ require("lazy").setup({
 	{
 		"tpope/vim-rhubarb",
 		config = function()
-			-- vim.api.nvim_create_user_command("Browse", function(opts)
-			-- 	vim.fn.system({ "open", opts.fargs[1] })
-			-- end, { nargs = 1 })
+			vim.api.nvim_create_user_command("Browse", function(opts)
+				vim.fn.system({ "open", opts.fargs[1] })
+			end, { nargs = 1 })
 		end,
 	},
 
@@ -573,8 +631,6 @@ require("lazy").setup({
 			})
 		end,
 	},
-
-	"rhysd/conflict-marker.vim",
 	--------------------------------
 	{
 		"windwp/nvim-autopairs",
@@ -586,7 +642,6 @@ require("lazy").setup({
 	{
 		"nvim-telescope/telescope.nvim",
 		event = "VimEnter",
-		branch = "0.1.x",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			{ -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -603,6 +658,7 @@ require("lazy").setup({
 				end,
 			},
 			{ "nvim-telescope/telescope-ui-select.nvim" },
+			{ "nvim-telescope/telescope-github.nvim" },
 		},
 		config = function()
 			local telescope_builtin = require("telescope.builtin")
@@ -650,14 +706,13 @@ require("lazy").setup({
 			-- Enable Telescope extensions if they are installed
 			pcall(require("telescope").load_extension, "fzf")
 			pcall(require("telescope").load_extension, "ui-select")
+			pcall(require("telescope").load_extension, "gh")
 		end,
 	},
 
 	"tpope/vim-commentary",
 
 	"mbbill/undotree",
-
-	"godlygeek/tabular",
 
 	"wellle/targets.vim",
 
@@ -666,8 +721,6 @@ require("lazy").setup({
 	"tpope/vim-repeat",
 
 	"christoomey/vim-sort-motion",
-
-	"gko/vim-coloresque",
 
 	"michaeljsmith/vim-indent-object",
 
@@ -715,6 +768,8 @@ require("lazy").setup({
           au User MiniStarterOpened nmap <buffer> <C-p> <Cmd>Telescope find_files find_command=rg,--ignore,--hidden,--files<CR>
           au User MiniStarterOpened nmap <buffer> - <Cmd>Oil<CR>
           au User MiniStarterOpened nmap <buffer> <leader>gs <Cmd>Git<CR>
+          au User MiniStarterOpened nmap <buffer> <leader>ghp <Cmd>Telescope gh pull_request<CR>
+          au User MiniStarterOpened nmap <buffer> <leader>gha <Cmd>Telescope gh run<CR>
         augroup END
       ]])
 		end,
@@ -966,7 +1021,7 @@ require("lazy").setup({
 				rust = { "rustfmt" },
 				typescript = { "prettierd", "prettier" },
 				typescriptreact = { "prettierd", "prettier" },
-				yaml = { "yamlfmt" },
+				-- yaml = { "yamlfmt" },
 			},
 		},
 	},
@@ -1012,12 +1067,14 @@ require("lazy").setup({
 
 	{
 		"jackMort/ChatGPT.nvim",
+		event = "VeryLazy",
 		config = function()
-			require("chatgpt").setup({})
+			require("chatgpt").setup()
 		end,
 		dependencies = {
 			"MunifTanjim/nui.nvim",
 			"nvim-lua/plenary.nvim",
+			"folke/trouble.nvim",
 			"nvim-telescope/telescope.nvim",
 		},
 	},
@@ -1026,17 +1083,6 @@ require("lazy").setup({
 		"norcalli/nvim-colorizer.lua",
 		config = function()
 			require("colorizer").setup()
-		end,
-	},
-
-	{
-		"topaxi/gh-actions.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"MunifTanjim/nui.nvim",
-		},
-		config = function(_, opts)
-			require("gh-actions").setup(opts)
 		end,
 	},
 
@@ -1050,7 +1096,30 @@ require("lazy").setup({
 	{
 		"stevearc/oil.nvim",
 		config = function()
-			require("oil").setup()
+			require("oil").setup({
+				view_options = {
+					show_hidden = true,
+				},
+			})
+		end,
+	},
+
+	-- SQL plugins
+	{
+		"kristijanhusak/vim-dadbod-ui",
+		dependencies = {
+			{ "tpope/vim-dadbod", lazy = true },
+			{ "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
+		},
+		cmd = {
+			"DBUI",
+			"DBUIToggle",
+			"DBUIAddConnection",
+			"DBUIFindBuffer",
+		},
+		init = function()
+			-- Your DBUI configuration
+			vim.g.db_ui_use_nerd_fonts = 1
 		end,
 	},
 

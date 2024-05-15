@@ -60,6 +60,7 @@ utils.nmap("<Leader>fgb", ":Telescope git_bcommits<CR>")
 
 -- Trouble
 utils.nmap("<leader>xx", ":TroubleToggle<CR>")
+utils.nmap("<leader>xw", ":TroubleToggle workspace_diagnostics<CR>")
 
 -- Oil
 utils.nmap("-", ":Oil<CR>")
@@ -69,6 +70,8 @@ utils.nmap("<leader>gs", ":Git<CR>")
 utils.nmap("<leader>gd", ":Gvdiffsplit<CR>")
 utils.nmap("<leader>gc", ":Git commit<CR>")
 utils.nmap("<leader>gb", ":Git blame<CR>")
+utils.nmap("<Leader>gha", ":Telescope gh run<CR>")
+utils.nmap("<Leader>ghp", ":Telescope gh pull_request<CR>")
 -- nnoremap <silent> <leader>gl :Gclog<CR>
 -- nnoremap <silent> <leader>gp :Git push<CR>
 utils.nmap("<leader>gp", ":Git -c push.default=current push<CR>")
@@ -81,8 +84,6 @@ utils.nmap("<Leader>gl", ":DiffviewFileHistory %<CR>")
 utils.vmap("br", ":GBrowse<CR>")
 utils.vmap("<Leader>gl", ":DiffviewFileHistory<CR>")
 
-utils.nmap("<Leader>gha", ":GhActions<CR>")
-
 -- Vimux
 utils.nmap("<Leader>vp", ":VimuxPromptCommand<CR>")
 utils.nmap("<Leader>vs", ":VimuxInterruptRunner<CR>")
@@ -92,5 +93,8 @@ utils.nmap("<Leader>vl", ":VimuxRunLastCommand<CR>")
 utils.nmap("<Leader>ch", ":ChatGPT<CR>")
 utils.vmap("che", ":ChatGPTEditWithInstructions<CR>")
 utils.vmap("chrat", ":ChatGPTRun add_tests<CR>")
+utils.vmap("chre", ":ChatGPTRun explain_code<CR>")
 utils.vmap("chrfb", ":ChatGPTRun fix_bugs<CR>")
 utils.vmap("chro", ":ChatGPTRun optimize_code<CR>")
+utils.vmap("chc", ":ChatGPTRun grammar_correction<CR>")
+utils.vmap("chrs", ":ChatGPTRun summarize<CR>")
