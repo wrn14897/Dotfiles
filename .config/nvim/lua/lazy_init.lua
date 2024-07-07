@@ -66,7 +66,21 @@ require("lazy").setup({
 			vim.cmd([[ colorscheme kanagawa ]])
 		end,
 	},
-
+	{
+		"folke/noice.nvim",
+		event = "VeryLazy",
+		opts = {
+			-- add any options here
+		},
+		dependencies = {
+			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+			"MunifTanjim/nui.nvim",
+			-- OPTIONAL:
+			--   `nvim-notify` is only needed, if you want to use the notification view.
+			--   If not available, we use `mini` as the fallback
+			"rcarriga/nvim-notify",
+		},
+	},
 	{
 		-- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
@@ -244,10 +258,10 @@ require("lazy").setup({
 				signs = true,
 			})
 			-- Diagnostic keymaps
-			vim.keymap.set("n", "<C-k>", function()
+			vim.keymap.set("n", "[g", function()
 				vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
 			end, { noremap = true, silent = true })
-			vim.keymap.set("n", "<C-j>", function()
+			vim.keymap.set("n", "]g", function()
 				vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
 			end, { noremap = true, silent = true })
 		end,
@@ -401,7 +415,18 @@ require("lazy").setup({
 			sync_install = false,
 			-- Autoinstall languages that are not installed
 			auto_install = true,
-			highlight = { enable = true },
+			highlight = {
+				enable = true,
+				additional_vim_regex_highlighting = false,
+				use_languagetree = false,
+				disable = function(lang, buf)
+					local max_filesize = 100 * 1024 -- 100 KB
+					local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+					if ok and stats and stats.size > max_filesize then
+						return true
+					end
+				end,
+			},
 			indent = { enable = true },
 			incremental_selection = {
 				enable = true,
@@ -526,49 +551,31 @@ require("lazy").setup({
 		config = function()
 			require("gitsigns").setup({
 				signs = {
-					add = { hl = "GitSignsAdd", text = "│", numhl = "GitSignsAddNr", linehl = "GitSignsAddLn" },
-					change = {
-						hl = "GitSignsChange",
-						text = "│",
-						numhl = "GitSignsChangeNr",
-						linehl = "GitSignsChangeLn",
-					},
-					delete = {
-						hl = "GitSignsDelete",
-						text = "_",
-						numhl = "GitSignsDeleteNr",
-						linehl = "GitSignsDeleteLn",
-					},
-					topdelete = {
-						hl = "GitSignsDelete",
-						text = "‾",
-						numhl = "GitSignsDeleteNr",
-						linehl = "GitSignsDeleteLn",
-					},
-					changedelete = {
-						hl = "GitSignsChange",
-						text = "~",
-						numhl = "GitSignsChangeNr",
-						linehl = "GitSignsChangeLn",
-					},
+					add = { text = "┃" },
+					change = { text = "┃" },
+					delete = { text = "_" },
+					topdelete = { text = "‾" },
+					changedelete = { text = "~" },
+					untracked = { text = "┆" },
 				},
 				signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
 				numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
 				linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
 				word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
 				watch_gitdir = {
-					interval = 1000,
 					follow_files = true,
 				},
-				attach_to_untracked = true,
-				current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+				auto_attach = true,
+				attach_to_untracked = false,
+				current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
 				current_line_blame_opts = {
 					virt_text = true,
 					virt_text_pos = "eol", -- 'eol' | 'overlay' | 'right_align'
 					delay = 1000,
 					ignore_whitespace = false,
+					virt_text_priority = 100,
 				},
-				current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
+				current_line_blame_formatter = "<author>, <author_time:%R> - <summary>",
 				sign_priority = 6,
 				update_debounce = 100,
 				status_formatter = nil, -- Use default
@@ -581,11 +588,8 @@ require("lazy").setup({
 					row = 0,
 					col = 1,
 				},
-				yadm = {
-					enable = false,
-				},
 				on_attach = function(bufnr)
-					local gs = package.loaded.gitsigns
+					local gitsigns = require("gitsigns")
 
 					local function map(mode, l, r, opts)
 						opts = opts or {}
@@ -596,34 +600,42 @@ require("lazy").setup({
 					-- Navigation
 					map("n", "]c", function()
 						if vim.wo.diff then
-							return "]c"
+							vim.cmd.normal({ "]c", bang = true })
+						else
+							gitsigns.nav_hunk("next")
 						end
-						vim.schedule(function()
-							gs.next_hunk()
-						end)
-						return "<Ignore>"
-					end, { expr = true })
+					end)
 
 					map("n", "[c", function()
 						if vim.wo.diff then
-							return "[c"
+							vim.cmd.normal({ "[c", bang = true })
+						else
+							gitsigns.nav_hunk("prev")
 						end
-						vim.schedule(function()
-							gs.prev_hunk()
-						end)
-						return "<Ignore>"
-					end, { expr = true })
+					end)
 
 					-- Actions
-					map({ "n", "v" }, "<leader>hs", ":Gitsigns stage_hunk<CR>")
-					map({ "n", "v" }, "<leader>hr", ":Gitsigns reset_hunk<CR>")
-					map("n", "<leader>hS", gs.stage_buffer)
-					map("n", "<leader>hu", gs.undo_stage_hunk)
-					map("n", "<leader>hR", gs.reset_buffer)
-					map("n", "<leader>hp", gs.preview_hunk)
-					map("n", "<leader>hb", function()
-						gs.blame_line({ full = true })
+					map("n", "<leader>hs", gitsigns.stage_hunk)
+					map("n", "<leader>hr", gitsigns.reset_hunk)
+					map("v", "<leader>hs", function()
+						gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 					end)
+					map("v", "<leader>hr", function()
+						gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+					end)
+					map("n", "<leader>hS", gitsigns.stage_buffer)
+					map("n", "<leader>hu", gitsigns.undo_stage_hunk)
+					map("n", "<leader>hR", gitsigns.reset_buffer)
+					map("n", "<leader>hp", gitsigns.preview_hunk)
+					map("n", "<leader>hb", function()
+						gitsigns.blame_line({ full = true })
+					end)
+					map("n", "<leader>tb", gitsigns.toggle_current_line_blame)
+					map("n", "<leader>hd", gitsigns.diffthis)
+					map("n", "<leader>hD", function()
+						gitsigns.diffthis("~")
+					end)
+					map("n", "<leader>td", gitsigns.toggle_deleted)
 
 					-- Text object
 					map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
@@ -659,12 +671,13 @@ require("lazy").setup({
 			},
 			{ "nvim-telescope/telescope-ui-select.nvim" },
 			{ "nvim-telescope/telescope-github.nvim" },
+			{ "nvim-telescope/telescope-live-grep-args.nvim" },
 		},
 		config = function()
 			local telescope_builtin = require("telescope.builtin")
 			local telescope_actions = require("telescope.actions")
 
-			local trouble = require("trouble.providers.telescope")
+			local open_with_trouble = require("trouble.sources.telescope").open
 
 			require("telescope").setup({
 				defaults = {
@@ -680,12 +693,12 @@ require("lazy").setup({
 						i = {
 							["<C-q>"] = telescope_actions.send_selected_to_qflist + telescope_actions.open_qflist,
 							["<M-q>"] = telescope_actions.send_to_qflist + telescope_actions.open_qflist,
-							["<C-t>"] = trouble.open_with_trouble,
+							["<C-t>"] = open_with_trouble,
 						},
 						n = {
 							["<C-q>"] = telescope_actions.send_selected_to_qflist + telescope_actions.open_qflist,
 							["<M-q>"] = telescope_actions.send_to_qflist + telescope_actions.open_qflist,
-							["<C-t>"] = trouble.open_with_trouble,
+							["<C-t>"] = open_with_trouble,
 						},
 					},
 				},
@@ -731,6 +744,24 @@ require("lazy").setup({
 	"powerman/vim-plugin-AnsiEsc",
 
 	"preservim/vimux",
+
+	{
+		"christoomey/vim-tmux-navigator",
+		cmd = {
+			"TmuxNavigateLeft",
+			"TmuxNavigateDown",
+			"TmuxNavigateUp",
+			"TmuxNavigateRight",
+			"TmuxNavigatePrevious",
+		},
+		keys = {
+			{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+			{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+			{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+			{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+			{ "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+		},
+	},
 
 	{
 		"echasnovski/mini.nvim",
@@ -987,6 +1018,7 @@ require("lazy").setup({
 	{ -- Autoformat
 		"stevearc/conform.nvim",
 		lazy = false,
+		tag = "v5.5.0",
 		keys = {
 			{
 				"<leader>ff",
@@ -1090,15 +1122,58 @@ require("lazy").setup({
 
 	{
 		"folke/trouble.nvim",
-		dependencies = "nvim-tree/nvim-web-devicons",
+		keys = {
+			{
+				"<leader>xx",
+				"<cmd>Trouble diagnostics toggle<cr>",
+				desc = "Diagnostics (Trouble)",
+			},
+			{
+				"<leader>xX",
+				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+				desc = "Buffer Diagnostics (Trouble)",
+			},
+			{
+				"<leader>cs",
+				"<cmd>Trouble symbols toggle focus=false<cr>",
+				desc = "Symbols (Trouble)",
+			},
+			{
+				"<leader>cl",
+				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+				desc = "LSP Definitions / references / ... (Trouble)",
+			},
+			{
+				"<leader>xL",
+				"<cmd>Trouble loclist toggle<cr>",
+				desc = "Location List (Trouble)",
+			},
+			{
+				"<leader>xQ",
+				"<cmd>Trouble qflist toggle<cr>",
+				desc = "Quickfix List (Trouble)",
+			},
+		},
+		opts = {}, -- for default options, refer to the configuration section for custom setup.
 	},
 
 	{
 		"stevearc/oil.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("oil").setup({
+				default_file_explorer = true,
+				delete_to_trash = true,
+				skip_confirm_for_simple_edits = true,
 				view_options = {
 					show_hidden = true,
+					natural_order = true,
+					is_always_hidden = function(name, _)
+						return name == ".." or name == ".git"
+					end,
+				},
+				win_options = {
+					wrap = true,
 				},
 			})
 		end,
@@ -1123,8 +1198,142 @@ require("lazy").setup({
 		end,
 	},
 
+	-- Note Taking
+	{
+		"folke/zen-mode.nvim",
+		opts = {
+			-- your configuration comes here
+			-- or leave it empty to use the default settings
+			-- refer to the configuration section below
+			window = {
+				backdrop = 0.9, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
+				-- height and width can be:
+				-- * an absolute number of cells when > 1
+				-- * a percentage of the width / height of the editor when <= 1
+				-- * a function that returns the width or the height
+				width = 120, -- width of the Zen window
+				height = 1, -- height of the Zen window
+				-- by default, no options are changed for the Zen window
+				-- uncomment any of the options below, or add other vim.wo options you want to apply
+				options = {
+					-- signcolumn = "no", -- disable signcolumn
+					-- number = false, -- disable number column
+					-- relativenumber = false, -- disable relative numbers
+					-- cursorline = false, -- disable cursorline
+					-- cursorcolumn = false, -- disable cursor column
+					-- foldcolumn = "0", -- disable fold column
+					-- list = false, -- disable whitespace characters
+				},
+			},
+			plugins = {
+				options = {
+					enabled = true,
+					ruler = false, -- disables the ruler text in the cmd line area
+					showcmd = false, -- disables the command in the last line of the screen
+					-- you may turn on/off statusline in zen mode by setting 'laststatus'
+					-- statusline will be shown only if 'laststatus' == 3
+					laststatus = 0, -- turn off the statusline in zen mode
+				},
+				gitsigns = { enabled = false }, -- disables git signs
+				tmux = { enabled = false }, -- disables the tmux statusline
+			},
+		},
+	},
+	{
+		"epwalsh/obsidian.nvim",
+		version = "*", -- recommended, use latest release instead of latest commit
+		lazy = true,
+		ft = "markdown",
+		-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+		-- event = {
+		--   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+		--   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
+		--   "BufReadPre path/to/my-vault/**.md",
+		--   "BufNewFile path/to/my-vault/**.md",
+		-- },
+		dependencies = {
+			-- Required.
+			"nvim-lua/plenary.nvim",
+
+			-- see below for full list of optional dependencies 👇
+		},
+		opts = {
+			workspaces = {
+				-- {
+				-- 	name = "personal",
+				-- 	path = "~/Library/CloudStorage/GoogleDrive-warren@hyperdx.io/My Drive/Obsidian/Personal",
+				-- },
+				{
+					name = "work",
+					path = "~/Library/CloudStorage/GoogleDrive-warren@hyperdx.io/My Drive/Obsidian/HyperDX",
+				},
+			},
+
+			-- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
+			completion = {
+				-- Set to false to disable completion.
+				nvim_cmp = true,
+				-- Trigger completion at 2 chars.
+				min_chars = 2,
+			},
+			templates = {
+				folder = "templates",
+				date_format = "%Y-%m-%d-%a",
+				time_format = "%H:%M",
+			},
+			daily_notes = {
+				-- Optional, if you keep daily notes in a separate directory.
+				folder = "notes/dailies",
+				-- Optional, if you want to change the date format for the ID of daily notes.
+				date_format = "%Y-%m-%d",
+				-- Optional, if you want to change the date format of the default alias of daily notes.
+				alias_format = "%B %-d, %Y",
+				-- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
+				template = nil,
+			},
+			picker = {
+				-- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', or 'mini.pick'.
+				name = "telescope.nvim",
+				-- Optional, configure key mappings for the picker. These are the defaults.
+				-- Not all pickers support all mappings.
+				mappings = {
+					-- Create a new note from your query.
+					new = "<C-x>",
+					-- Insert a link to the selected note.
+					insert_link = "<C-l>",
+				},
+			},
+		},
+	},
+
 	-- Discord
-	"andweeb/presence.nvim",
+	{
+		"andweeb/presence.nvim",
+		config = function()
+			require("presence").setup({
+				-- General options
+				auto_update = true, -- Update activity based on autocmd events (if `false`, map or manually execute `:lua package.loaded.presence:update()`)
+				neovim_image_text = "The One True Text Editor", -- Text displayed when hovered over the Neovim image
+				main_image = "neovim", -- Main image display (either "neovim" or "file")
+				log_level = nil, -- Log messages at or above this level (one of the following: "debug", "info", "warn", "error")
+				debounce_timeout = 10, -- Number of seconds to debounce events (or calls to `:lua package.loaded.presence:update(<filename>, true)`)
+				enable_line_number = false, -- Displays the current line number instead of the current project
+				blacklist = {}, -- A list of strings or Lua patterns that disable Rich Presence if the current file name, path, or workspace matches
+				buttons = false, -- Configure Rich Presence button(s), either a boolean to enable/disable, a static table (`{{ label = "<label>", url = "<url>" }, ...}`, or a function(buffer: string, repo_url: string|nil): table)
+				file_assets = {}, -- Custom file asset definitions keyed by file names and extensions (see default config at `lua/presence/file_assets.lua` for reference)
+				show_time = false, -- Show the timer
+
+				-- Rich Presence text options
+				editing_text = "Editing", -- Format string rendered when an editable file is loaded in the buffer (either string or function(filename: string): string)
+				file_explorer_text = "Browsing", -- Format string rendered when browsing a file explorer (either string or function(file_explorer_name: string): string)
+				git_commit_text = "Committing changes", -- Format string rendered when committing changes in git (either string or function(filename: string): string)
+				plugin_manager_text = "Managing plugins", -- Format string rendered when managing plugins (either string or function(plugin_manager_name: string): string)
+				reading_text = "Reading", -- Format string rendered when a read-only or unmodifiable file is loaded in the buffer (either string or function(filename: string): string)
+				workspace_text = "Working on %s", -- Format string rendered when in a git repository (either string or function(project_name: string|nil, filename: string): string)
+				line_number_text = "Line %s out of %s", -- Format string rendered when `enable_line_number` is set to true (either string or function(line_number: number, line_count: number): string)
+			})
+		end,
+	},
 
 	-- DAP
 	"mfussenegger/nvim-dap",

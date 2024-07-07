@@ -49,18 +49,14 @@ utils.nmap("<leader>u", ":UndotreeToggle<CR>")
 -- Telescope
 utils.nmap("<c-f>", ":Telescope live_grep<CR>")
 utils.nmap("<c-p>", ":Telescope find_files hidden=true<CR>")
+utils.nmap("<c-e>", ":Telescope buffers<CR>")
 utils.nmap("<Leader>ft", ":Telescope treesitter<CR>")
-utils.nmap("<Leader>fb", ":Telescope buffers<CR>")
 utils.nmap("<Leader>fd", ":Telescope diagnostics<CR>")
 utils.nmap("<Leader>fh", ":Telescope help_tags<CR>")
 utils.nmap("<Leader>fm", ":Telescope marks<CR>")
 utils.nmap("<Leader>fr", ":Telescope registers<CR>")
 utils.nmap("<Leader>fw", ":Telescope grep_string<CR>")
 utils.nmap("<Leader>fgb", ":Telescope git_bcommits<CR>")
-
--- Trouble
-utils.nmap("<leader>xx", ":TroubleToggle<CR>")
-utils.nmap("<leader>xw", ":TroubleToggle workspace_diagnostics<CR>")
 
 -- Oil
 utils.nmap("-", ":Oil<CR>")
@@ -98,3 +94,6 @@ utils.vmap("chrfb", ":ChatGPTRun fix_bugs<CR>")
 utils.vmap("chro", ":ChatGPTRun optimize_code<CR>")
 utils.vmap("chc", ":ChatGPTRun grammar_correction<CR>")
 utils.vmap("chrs", ":ChatGPTRun summarize<CR>")
+
+-- Zen Mode
+utils.nmap("<Leader>zm", ":ZenMode<CR>")

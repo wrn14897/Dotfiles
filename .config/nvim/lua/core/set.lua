@@ -51,6 +51,7 @@ set.scrolloff = 8 --- Minimum lines to keep above and below cursor
 set.foldenable = true --- Auto fold code
 set.list = true
 set.listchars.extends = "tab:› ,trail:•,extends:#,nbsp:."
+set.conceallevel = 1
 
 --- Formatting
 set.wrap = false --- Do not wrap long lines
