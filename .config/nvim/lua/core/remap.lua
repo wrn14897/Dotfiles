@@ -81,19 +81,19 @@ utils.vmap("br", ":GBrowse<CR>")
 utils.vmap("<Leader>gl", ":DiffviewFileHistory<CR>")
 
 -- Vimux
+utils.nmap("<Leader>vl", ":VimuxRunLastCommand<CR>")
 utils.nmap("<Leader>vp", ":VimuxPromptCommand<CR>")
 utils.nmap("<Leader>vs", ":VimuxInterruptRunner<CR>")
-utils.nmap("<Leader>vl", ":VimuxRunLastCommand<CR>")
 
 -- ChatGPT
 utils.nmap("<Leader>ch", ":ChatGPT<CR>")
-utils.vmap("che", ":ChatGPTEditWithInstructions<CR>")
-utils.vmap("chrat", ":ChatGPTRun add_tests<CR>")
-utils.vmap("chre", ":ChatGPTRun explain_code<CR>")
-utils.vmap("chrfb", ":ChatGPTRun fix_bugs<CR>")
-utils.vmap("chro", ":ChatGPTRun optimize_code<CR>")
 utils.vmap("chc", ":ChatGPTRun grammar_correction<CR>")
-utils.vmap("chrs", ":ChatGPTRun summarize<CR>")
+utils.vmap("chd", ":ChatGPTRun docstring<CR>")
+utils.vmap("che", ":ChatGPTRun explain_code<CR>")
+utils.vmap("chfb", ":ChatGPTRun fix_bugs<CR>")
+utils.vmap("chi", ":ChatGPTEditWithInstructions<CR>")
+utils.vmap("choc", ":ChatGPTRun optimize_code<CR>")
+utils.vmap("chs", ":ChatGPTRun summarize<CR>")
 
 -- Zen Mode
 utils.nmap("<Leader>zm", ":ZenMode<CR>")

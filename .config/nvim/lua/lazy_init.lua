@@ -72,6 +72,29 @@ require("lazy").setup({
 		opts = {
 			-- add any options here
 		},
+		config = function()
+			require("noice").setup({
+				presets = {
+					-- you can enable a preset by setting it to true, or a table that will override the preset config
+					-- you can also add custom presets that you can enable/disable with enabled=true
+					bottom_search = true, -- use a classic bottom cmdline for search
+					command_palette = true, -- position the cmdline and popupmenu together
+					long_message_to_split = false, -- long messages will be sent to a split
+					inc_rename = false, -- enables an input dialog for inc-rename.nvim
+				},
+				-- Hide write message
+				routes = {
+					{
+						filter = {
+							event = "msg_show",
+							kind = "",
+							find = "written",
+						},
+						opts = { skip = true },
+					},
+				},
+			})
+		end,
 		dependencies = {
 			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 			"MunifTanjim/nui.nvim",
@@ -257,6 +280,17 @@ require("lazy").setup({
 				virtual_text = false,
 				signs = true,
 			})
+			-- FIXME a hack to make sign looks good
+			local signs = {
+				Error = "󰅙",
+				Info = "󰋼",
+				Hint = "󰌵",
+				Warn = "",
+			}
+			for type, icon in pairs(signs) do
+				local hl = "DiagnosticSign" .. type
+				vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+			end
 			-- Diagnostic keymaps
 			vim.keymap.set("n", "[g", function()
 				vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
@@ -857,7 +891,14 @@ require("lazy").setup({
 					lualine_z = {},
 					-- These will be filled later
 					lualine_c = {},
-					lualine_x = {},
+					lualine_x = {
+						-- Config noice
+						{
+							require("noice").api.statusline.mode.get,
+							cond = require("noice").api.statusline.mode.has,
+							color = { fg = colors.orange },
+						},
+					},
 				},
 				inactive_sections = {
 					-- these are to remove the defaults
@@ -1101,7 +1142,11 @@ require("lazy").setup({
 		"jackMort/ChatGPT.nvim",
 		event = "VeryLazy",
 		config = function()
-			require("chatgpt").setup()
+			require("chatgpt").setup({
+				openai_params = {
+					model = "gpt-4o-mini",
+				},
+			})
 		end,
 		dependencies = {
 			"MunifTanjim/nui.nvim",
