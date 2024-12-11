@@ -66,60 +66,88 @@ require("lazy").setup({
 			vim.cmd([[ colorscheme kanagawa ]])
 		end,
 	},
+	-- {
+	-- 	"folke/noice.nvim",
+	-- 	event = "VeryLazy",
+	-- 	opts = {
+	-- 		-- add any options here
+	-- 	},
+	-- 	config = function()
+	-- 		require("noice").setup({
+	-- 			lsp = {
+	-- 				message = {
+	-- 					-- Messages shown by lsp servers
+	-- 					enabled = false,
+	-- 					view = "notify",
+	-- 					opts = {},
+	-- 				},
+	-- 			},
+	-- 			presets = {
+	-- 				-- you can enable a preset by setting it to true, or a table that will override the preset config
+	-- 				-- you can also add custom presets that you can enable/disable with enabled=true
+	-- 				bottom_search = true, -- use a classic bottom cmdline for search
+	-- 				command_palette = true, -- position the cmdline and popupmenu together
+	-- 				long_message_to_split = false, -- long messages will be sent to a split
+	-- 				inc_rename = false, -- enables an input dialog for inc-rename.nvim
+	-- 			},
+	-- 			-- Hide write message
+	-- 			routes = {
+	-- 				{
+	-- 					filter = {
+	-- 						event = "msg_show",
+	-- 						kind = "",
+	-- 						find = "written",
+	-- 					},
+	-- 					opts = { skip = true },
+	-- 				},
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- 	dependencies = {
+	-- 		-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+	-- 		"MunifTanjim/nui.nvim",
+	-- 		-- OPTIONAL:
+	-- 		--   `nvim-notify` is only needed, if you want to use the notification view.
+	-- 		--   If not available, we use `mini` as the fallback
+	-- 		"rcarriga/nvim-notify",
+	-- 	},
+	-- },
+	-- LSP Plugins
 	{
-		"folke/noice.nvim",
-		event = "VeryLazy",
+		-- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
+		-- used for completion, annotations and signatures of Neovim apis
+		"folke/lazydev.nvim",
+		ft = "lua",
 		opts = {
-			-- add any options here
+			library = {
+				-- Load luvit types when the `vim.uv` word is found
+				{ path = "luvit-meta/library", words = { "vim%.uv" } },
+			},
 		},
-		config = function()
-			require("noice").setup({
-				presets = {
-					-- you can enable a preset by setting it to true, or a table that will override the preset config
-					-- you can also add custom presets that you can enable/disable with enabled=true
-					bottom_search = true, -- use a classic bottom cmdline for search
-					command_palette = true, -- position the cmdline and popupmenu together
-					long_message_to_split = false, -- long messages will be sent to a split
-					inc_rename = false, -- enables an input dialog for inc-rename.nvim
-				},
-				-- Hide write message
-				routes = {
-					{
-						filter = {
-							event = "msg_show",
-							kind = "",
-							find = "written",
-						},
-						opts = { skip = true },
-					},
-				},
-			})
-		end,
-		dependencies = {
-			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-			"MunifTanjim/nui.nvim",
-			-- OPTIONAL:
-			--   `nvim-notify` is only needed, if you want to use the notification view.
-			--   If not available, we use `mini` as the fallback
-			"rcarriga/nvim-notify",
+	},
+	{ "Bilal2453/luvit-meta", lazy = true },
+	{
+		-- Bug from this PR ? https://github.com/williamboman/mason-lspconfig.nvim/pull/448
+		"williamboman/mason-lspconfig.nvim",
+		tag = "v1.30.0",
+	},
+	{
+		"j-hui/fidget.nvim",
+		opts = {
+			notification = {
+				override_vim_notify = true, -- Automatically override vim.notify() with Fidget
+			},
 		},
 	},
 	{
-		-- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
 		dependencies = {
-			-- Automatically install LSPs to stdpath for neovim
-			"williamboman/mason.nvim",
-			"williamboman/mason-lspconfig.nvim",
+			-- Automatically install LSPs and related tools to stdpath for Neovim
+			{ "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
+			-- "williamboman/mason-lspconfig.nvim",
 			"WhoIsSethDaniel/mason-tool-installer.nvim",
-
-			-- Useful status updates for LSP.
-			-- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-			{ "j-hui/fidget.nvim", opts = {} },
-
-			-- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
-			-- used for completion, annotations and signatures of Neovim apis
-			{ "folke/neodev.nvim", opts = {} },
+			-- Allows extra capabilities provided by nvim-cmp
+			"hrsh7th/cmp-nvim-lsp",
 		},
 		config = function()
 			--  This function gets run when an LSP attaches to a particular buffer.
@@ -234,10 +262,12 @@ require("lazy").setup({
 				},
 			}
 
-			-- nvim-cmp supports additional completion capabilities, so broadcast that to servers
+			-- LSP servers and clients are able to communicate to each other what features they support.
+			--  By default, Neovim doesn't support everything that is in the LSP specification.
+			--  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
+			--  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			cclangformatapabilities =
-				vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+			capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
 			-- Setup mason so it can manage external tooling
 			require("mason").setup()
@@ -263,6 +293,9 @@ require("lazy").setup({
 			require("mason-lspconfig").setup({
 				handlers = {
 					function(server_name)
+						if server_name == "tsserver" then
+							server_name = "ts_ls"
+						end
 						local server = servers[server_name] or {}
 						-- This handles overriding only values explicitly passed
 						-- by the server configuration above. Useful when disabling
@@ -300,7 +333,6 @@ require("lazy").setup({
 			end, { noremap = true, silent = true })
 		end,
 	},
-
 	{
 		-- Autocompletion
 		"hrsh7th/nvim-cmp",
@@ -523,6 +555,12 @@ require("lazy").setup({
 			---@diagnostic disable-next-line: missing-fields
 			require("nvim-treesitter.configs").setup(opts)
 
+			-- Register the mdx filetype
+			vim.filetype.add({ extension = { mdx = "mdx" } })
+
+			-- Configure treesitter to use the markdown parser for mdx files
+			vim.treesitter.language.register("markdown", "mdx")
+
 			-- There are additional nvim-treesitter modules that you can use to interact
 			-- with nvim-treesitter. You should go explore a few and see what interests you:
 			--
@@ -705,7 +743,6 @@ require("lazy").setup({
 			},
 			{ "nvim-telescope/telescope-ui-select.nvim" },
 			{ "nvim-telescope/telescope-github.nvim" },
-			{ "nvim-telescope/telescope-live-grep-args.nvim" },
 		},
 		config = function()
 			local telescope_builtin = require("telescope.builtin")
@@ -891,14 +928,7 @@ require("lazy").setup({
 					lualine_z = {},
 					-- These will be filled later
 					lualine_c = {},
-					lualine_x = {
-						-- Config noice
-						{
-							require("noice").api.statusline.mode.get,
-							cond = require("noice").api.statusline.mode.has,
-							color = { fg = colors.orange },
-						},
-					},
+					lualine_x = {},
 				},
 				inactive_sections = {
 					-- these are to remove the defaults
@@ -1058,30 +1088,44 @@ require("lazy").setup({
 
 	{ -- Autoformat
 		"stevearc/conform.nvim",
-		lazy = false,
-		tag = "v5.5.0",
+		event = { "BufWritePre" },
+		cmd = { "ConformInfo" },
 		keys = {
 			{
 				"<leader>ff",
 				function()
-					require("conform").format({ async = true, lsp_fallback = true })
+					require("conform").format({ async = true })
 				end,
 				mode = "",
 				desc = "[F]ormat buffer",
 			},
 		},
 		opts = {
-			notify_on_error = false,
-			format_on_save = function(bufnr)
-				-- Disable "format_on_save lsp_fallback" for languages that don't
-				-- have a well standardized coding style. You can add additional
-				-- languages here or re-enable it for the disabled ones.
-				local disable_filetypes = { c = true, cpp = true }
-				return {
-					timeout_ms = 500,
-					lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-				}
-			end,
+			-- Set this to change the default values when calling conform.format()
+			-- This will also affect the default values for format_on_save/format_after_save
+			default_format_opts = {
+				lsp_format = "fallback",
+			},
+			-- If this is set, Conform will run the formatter on save.
+			-- It will pass the table to conform.format().
+			-- This can also be a function that returns the table.
+			format_on_save = {
+				-- I recommend these options. See :help conform.format for details.
+				lsp_format = "fallback",
+				timeout_ms = 500,
+			},
+			-- -- If this is set, Conform will run the formatter asynchronously after save.
+			-- -- It will pass the table to conform.format().
+			-- -- This can also be a function that returns the table.
+			-- format_after_save = {
+			-- 	lsp_format = "fallback",
+			-- },
+			-- Set the log level. Use `:ConformInfo` to see the location of the log file.
+			log_level = vim.log.levels.ERROR,
+			-- Conform will notify you when a formatter errors
+			notify_on_error = true,
+			-- Conform will notify you when no formatters are available for the buffer
+			notify_no_formatters = true,
 			formatters_by_ft = {
 				go = { "gofmt" },
 				java = { "clangformat" },
@@ -1094,9 +1138,13 @@ require("lazy").setup({
 				rust = { "rustfmt" },
 				typescript = { "prettierd", "prettier" },
 				typescriptreact = { "prettierd", "prettier" },
-				-- yaml = { "yamlfmt" },
+				yaml = { "yamlfmt" },
 			},
 		},
+		init = function()
+			-- If you want the formatexpr, here is the place to set it
+			vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+		end,
 	},
 
 	{
@@ -1114,26 +1162,28 @@ require("lazy").setup({
 			vim.api.nvim_set_keymap("i", "<C-H>", "copilot#Previous()", { silent = true, expr = true })
 			vim.api.nvim_set_keymap("i", "<C-L>", "copilot#Next()", { silent = true, expr = true })
 			vim.g.copilot_filetypes = {
-				["*"] = false,
-				["c"] = true,
-				["c++"] = true,
-				["go"] = true,
-				["java"] = true,
-				["javascript"] = true,
-				["lua"] = true,
-				["python"] = true,
-				["rust"] = true,
-				["toml"] = true,
-				["typescript"] = true,
-				["typescriptreact"] = true,
-				["yaml"] = true,
-				["markdown"] = true,
-				["ruby"] = true,
-				["html"] = true,
-				["dockerfile"] = true,
-				["swift"] = true,
-				["sh"] = true,
-				["json"] = true,
+				["*"] = true,
+				-- ["c"] = true,
+				-- ["c++"] = true,
+				-- ["go"] = true,
+				-- ["java"] = true,
+				-- ["javascript"] = true,
+				-- ["lua"] = true,
+				-- ["python"] = true,
+				-- ["rust"] = true,
+				-- ["toml"] = true,
+				-- ["typescript"] = true,
+				-- ["typescriptreact"] = true,
+				-- ["yaml"] = true,
+				-- ["markdown"] = true,
+				-- ["ruby"] = true,
+				-- ["html"] = true,
+				-- ["dockerfile"] = true,
+				-- ["swift"] = true,
+				-- ["sh"] = true,
+				-- ["json"] = true,
+				-- ["mdx"] = true,
+				-- ["make"] = true,
 			}
 		end,
 	},
@@ -1144,7 +1194,7 @@ require("lazy").setup({
 		config = function()
 			require("chatgpt").setup({
 				openai_params = {
-					model = "gpt-4o-mini",
+					model = "gpt-4o",
 				},
 			})
 		end,
@@ -1164,6 +1214,20 @@ require("lazy").setup({
 	},
 
 	"nanotee/zoxide.vim",
+
+	-- Spell Checking
+	{
+		"psliwka/vim-dirtytalk",
+		build = ":DirtytalkUpdate",
+		config = function()
+			vim.opt.spelllang = { "en", "programming" }
+		end,
+	},
+	{
+		"ravibrock/spellwarn.nvim",
+		event = "VeryLazy",
+		config = true,
+	},
 
 	{
 		"folke/trouble.nvim",

@@ -52,6 +52,7 @@ set.foldenable = true --- Auto fold code
 set.list = true
 set.listchars.extends = "tab:› ,trail:•,extends:#,nbsp:."
 set.conceallevel = 1
+set.laststatus = 3 -- views can only be fully collapsed with the global statusline
 
 --- Formatting
 set.wrap = false --- Do not wrap long lines

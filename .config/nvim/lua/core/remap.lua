@@ -47,7 +47,7 @@ utils.xmap(".", ":normal .<CR>")
 utils.nmap("<leader>u", ":UndotreeToggle<CR>")
 
 -- Telescope
-utils.nmap("<c-f>", ":Telescope live_grep<CR>")
+utils.nmap("<c-f>", ":lua require('config.telescope.multigrep').find()<CR>")
 utils.nmap("<c-p>", ":Telescope find_files hidden=true<CR>")
 utils.nmap("<c-e>", ":Telescope buffers<CR>")
 utils.nmap("<Leader>ft", ":Telescope treesitter<CR>")
@@ -90,9 +90,9 @@ utils.nmap("<Leader>ch", ":ChatGPT<CR>")
 utils.vmap("chc", ":ChatGPTRun grammar_correction<CR>")
 utils.vmap("chd", ":ChatGPTRun docstring<CR>")
 utils.vmap("che", ":ChatGPTRun explain_code<CR>")
-utils.vmap("chfb", ":ChatGPTRun fix_bugs<CR>")
+utils.vmap("chf", ":ChatGPTRun fix_bugs<CR>")
 utils.vmap("chi", ":ChatGPTEditWithInstructions<CR>")
-utils.vmap("choc", ":ChatGPTRun optimize_code<CR>")
+utils.vmap("cho", ":ChatGPTRun optimize_code<CR>")
 utils.vmap("chs", ":ChatGPTRun summarize<CR>")
 
 -- Zen Mode
