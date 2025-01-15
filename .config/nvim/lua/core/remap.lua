@@ -29,6 +29,10 @@ utils.nmap("L", ":bnext<CR>")
 utils.nmap("<leader>q", ":bd<CR>")
 utils.nmap("<leader>w", ":tabclose<CR>")
 
+--- QuickFix
+utils.nmap("<c-q>j", ":cnext<CR>")
+utils.nmap("<c-q>k", ":cprev<CR>")
+
 --- Easier horizontal scrolling
 utils.nmap("zl", "zL")
 utils.nmap("zh", "zH")

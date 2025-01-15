@@ -728,28 +728,14 @@ require("lazy").setup({
 		event = "VimEnter",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			{ -- If encountering errors, see telescope-fzf-native README for installation instructions
+			{
 				"nvim-telescope/telescope-fzf-native.nvim",
-
-				-- `build` is used to run some command when the plugin is installed/updated.
-				-- This is only run then, not every time Neovim starts up.
-				build = "make",
-
-				-- `cond` is a condition used to determine whether this plugin should be
-				-- installed and loaded.
-				cond = function()
-					return vim.fn.executable("make") == 1
-				end,
+				build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
 			},
 			{ "nvim-telescope/telescope-ui-select.nvim" },
 			{ "nvim-telescope/telescope-github.nvim" },
 		},
 		config = function()
-			local telescope_builtin = require("telescope.builtin")
-			local telescope_actions = require("telescope.actions")
-
-			local open_with_trouble = require("trouble.sources.telescope").open
-
 			require("telescope").setup({
 				defaults = {
 					layout_strategy = "horizontal",
@@ -758,19 +744,6 @@ require("lazy").setup({
 						height = 0.9, -- maximally available lines
 						width = 0.9, -- maximally available columns
 						prompt_position = "top",
-					},
-					mappings = {
-						-- swap default <C-q> and <M-q> mappings
-						i = {
-							["<C-q>"] = telescope_actions.send_selected_to_qflist + telescope_actions.open_qflist,
-							["<M-q>"] = telescope_actions.send_to_qflist + telescope_actions.open_qflist,
-							["<C-t>"] = open_with_trouble,
-						},
-						n = {
-							["<C-q>"] = telescope_actions.send_selected_to_qflist + telescope_actions.open_qflist,
-							["<M-q>"] = telescope_actions.send_to_qflist + telescope_actions.open_qflist,
-							["<C-t>"] = open_with_trouble,
-						},
 					},
 				},
 				extensions = {
@@ -788,9 +761,9 @@ require("lazy").setup({
 			})
 
 			-- Enable Telescope extensions if they are installed
-			pcall(require("telescope").load_extension, "fzf")
-			pcall(require("telescope").load_extension, "ui-select")
-			pcall(require("telescope").load_extension, "gh")
+			require("telescope").load_extension("fzf")
+			require("telescope").load_extension("ui-select")
+			require("telescope").load_extension("gh")
 		end,
 	},
 
@@ -837,6 +810,7 @@ require("lazy").setup({
 	{
 		"echasnovski/mini.nvim",
 		config = function()
+			require("mini.ai").setup()
 			require("mini.cursorword").setup()
 			require("mini.starter").setup({
 				content_hooks = {
@@ -846,18 +820,26 @@ require("lazy").setup({
 				evaluate_single = true,
 				footer = os.date(),
 				header = table.concat({
-					[[                                     ]],
-					[[      __                _            ]],
-					[[   /\ \ \___  ___/\   /(_)_ __ ___   ]],
-					[[  /  \/ / _ \/ _ \ \ / | | '_ ` _ \  ]],
-					[[ / /\  |  __| (_) \ V /| | | | | | | ]],
-					[[ \_\ \/ \___|\___/ \_/ |_|_| |_| |_| ]],
-					[[                                     ]],
+					[[                        ]],
+					[[                        ]],
+					[[         ------         ]],
+					[[      ------------      ]],
+					[[   ----------+#------   ]],
+					[[ -----------#@+-------- ]],
+					[[ ---------+@@%=-------- ]],
+					[[ --------+@@@*--------- ]],
+					[[ ------=%@@@@@@%=------ ]],
+					[[ -------==*@@@*-------- ]],
+					[[ ---------%@@=--------- ]],
+					[[ --------+@#----------- ]],
+					[[   ------#+----------   ]],
+					[[      ------------      ]],
+					[[         ------         ]],
 				}, "\n"),
 				query_updaters = [[abcdefghilmoqrstuvwxyz0123456789_-,.ABCDEFGHIJKLMOQRSTUVWXYZ]],
 				items = {
 					require("mini.starter").sections.builtin_actions(),
-					require("mini.starter").sections.recent_files(10, false),
+					-- require("mini.starter").sections.recent_files(10, false),
 					require("mini.starter").sections.recent_files(10, true),
 					{ action = "Lazy update", name = "U: Update Plugins", section = "Plugins" },
 				},

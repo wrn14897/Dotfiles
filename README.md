@@ -1,4 +1,4 @@
-# nvim
+# nvim + CLIs
 1. Install nvim-packer
 ```
 git clone --depth 1 https://github.com/wbthomason/packer.nvim\
@@ -17,11 +17,13 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 
 7. Install zoxide (https://github.com/ajeetdsouza/zoxide?tab=readme-ov-file)
 
-8. Copy everything in `/.config/nvim`
+8. Install Nerd Fonts (https://github.com/ryanoasis/nerd-fonts)
 
-9. Open nvim and do `:PackerInstall`
+9. Copy everything in `/.config/nvim`
 
-10. Ready to rock !!
+10. Open nvim and do `:PackerInstall`
+
+11. Ready to rock !!
 
 
 # Linter / Formatter
