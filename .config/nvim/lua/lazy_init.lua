@@ -164,31 +164,27 @@ require("lazy").setup({
 					-- Jump to the definition of the word under your cursor.
 					--  This is where a variable was first declared, or where a function is defined, etc.
 					--  To jump back, press <C-t>.
-					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+					map("gd", require("fzf-lua").lsp_definitions, "[G]oto [D]efinition")
 
 					-- Find references for the word under your cursor.
-					map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+					map("gr", require("fzf-lua").lsp_references, "[G]oto [R]eferences")
 
 					-- Jump to the implementation of the word under your cursor.
 					--  Useful when your language has ways of declaring types without an actual implementation.
-					map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+					map("gI", require("fzf-lua").lsp_implementations, "[G]oto [I]mplementation")
 
 					-- Jump to the type of the word under your cursor.
 					--  Useful when you're not sure what type a variable is and you want to see
 					--  the definition of its *type*, not where it was *defined*.
-					map("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
+					map("<leader>D", require("fzf-lua").lsp_typedefs, "Type [D]efinition")
 
 					-- Fuzzy find all the symbols in your current document.
 					--  Symbols are things like variables, functions, types, etc.
-					map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
+					map("<leader>ds", require("fzf-lua").lsp_document_symbols, "[D]ocument [S]ymbols")
 
 					-- Fuzzy find all the symbols in your current workspace.
 					--  Similar to document symbols, except searches over your entire project.
-					map(
-						"<leader>ws",
-						require("telescope.builtin").lsp_dynamic_workspace_symbols,
-						"[W]orkspace [S]ymbols"
-					)
+					map("<leader>ws", require("fzf-lua").lsp_live_workspace_symbols, "[W]orkspace [S]ymbols")
 
 					-- Rename the variable under your cursor.
 					--  Most Language Servers support renaming across files, etc.
@@ -724,46 +720,22 @@ require("lazy").setup({
 	},
 
 	{
-		"nvim-telescope/telescope.nvim",
-		event = "VimEnter",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			{
-				"nvim-telescope/telescope-fzf-native.nvim",
-				build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
-			},
-			{ "nvim-telescope/telescope-ui-select.nvim" },
-			{ "nvim-telescope/telescope-github.nvim" },
-		},
+		"ibhagwan/fzf-lua",
+		-- optional for icon support
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		-- or if using mini.icons/mini.nvim
+		-- dependencies = { "echasnovski/mini.icons" },
+		opts = {},
 		config = function()
-			require("telescope").setup({
-				defaults = {
-					layout_strategy = "horizontal",
-					sorting_strategy = "ascending",
-					layout_config = {
-						height = 0.9, -- maximally available lines
-						width = 0.9, -- maximally available columns
-						prompt_position = "top",
-					},
-				},
-				extensions = {
-					fzf = {
-						fuzzy = true, -- false will only do exact matching
-						override_generic_sorter = true, -- override the generic sorter
-						override_file_sorter = true, -- override the file sorter
-						case_mode = "smart_case", -- or "ignore_case" or "respect_case"
-						-- the default case_mode is "smart_case"
-					},
-					["ui-select"] = {
-						require("telescope.themes").get_dropdown(),
+			require("fzf-lua").setup({
+				keymap = {
+					builtin = {
+						["ctrl-d"] = "preview-page-down",
+						-- optionally, you can also add:
+						["ctrl-u"] = "preview-page-up",
 					},
 				},
 			})
-
-			-- Enable Telescope extensions if they are installed
-			require("telescope").load_extension("fzf")
-			require("telescope").load_extension("ui-select")
-			require("telescope").load_extension("gh")
 		end,
 	},
 
@@ -849,11 +821,11 @@ require("lazy").setup({
           au!
           au User MiniStarterOpened nmap <buffer> j <Cmd>lua MiniStarter.update_current_item('next')<CR>
           au User MiniStarterOpened nmap <buffer> k <Cmd>lua MiniStarter.update_current_item('prev')<CR>
-          au User MiniStarterOpened nmap <buffer> <C-p> <Cmd>Telescope find_files find_command=rg,--ignore,--hidden,--files<CR>
+          au User MiniStarterOpened nmap <buffer> <C-p> <Cmd>FzfLua files<CR>
           au User MiniStarterOpened nmap <buffer> - <Cmd>Oil<CR>
           au User MiniStarterOpened nmap <buffer> <leader>gs <Cmd>Git<CR>
-          au User MiniStarterOpened nmap <buffer> <leader>ghp <Cmd>Telescope gh pull_request<CR>
-          au User MiniStarterOpened nmap <buffer> <leader>gha <Cmd>Telescope gh run<CR>
+          au User MiniStarterOpened nmap <buffer> <leader>ghp <Cmd>FzfLua gh pull_request<CR>
+          au User MiniStarterOpened nmap <buffer> <leader>gha <Cmd>FzfLua gh run<CR>
         augroup END
       ]])
 		end,
@@ -1171,21 +1143,49 @@ require("lazy").setup({
 	},
 
 	{
-		"jackMort/ChatGPT.nvim",
-		event = "VeryLazy",
+		"olimorris/codecompanion.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-treesitter/nvim-treesitter",
+		},
 		config = function()
-			require("chatgpt").setup({
-				openai_params = {
-					model = "gpt-4o",
+			require("codecompanion").setup({
+				strategies = {
+					-- Change the default chat adapter
+					chat = {
+						-- adapter = "anthropic",
+						adapter = "openai",
+					},
+					inline = {
+						-- adapter = "anthropic",
+						adapter = "openai",
+					},
+				},
+				adapter = {
+					openai = {
+						api_key = os.getenv("OPENAI_API_KEY"),
+						model = "o3-mini-high",
+					},
+					anthropic = {
+						api_key = os.getenv("ANTHROPIC_API_KEY"),
+						model = "claude-3.7",
+					},
+				},
+				opts = {
+					-- Set debug logging
+					log_level = "DEBUG",
 				},
 			})
 		end,
+	},
+	{
+		"greggh/claude-code.nvim",
 		dependencies = {
-			"MunifTanjim/nui.nvim",
-			"nvim-lua/plenary.nvim",
-			"folke/trouble.nvim",
-			"nvim-telescope/telescope.nvim",
+			"nvim-lua/plenary.nvim", -- Required for git operations
 		},
+		config = function()
+			require("claude-code").setup()
+		end,
 	},
 
 	{
@@ -1327,72 +1327,6 @@ require("lazy").setup({
 				},
 				gitsigns = { enabled = false }, -- disables git signs
 				tmux = { enabled = false }, -- disables the tmux statusline
-			},
-		},
-	},
-	{
-		"epwalsh/obsidian.nvim",
-		version = "*", -- recommended, use latest release instead of latest commit
-		lazy = true,
-		ft = "markdown",
-		-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-		-- event = {
-		--   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-		--   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
-		--   "BufReadPre path/to/my-vault/**.md",
-		--   "BufNewFile path/to/my-vault/**.md",
-		-- },
-		dependencies = {
-			-- Required.
-			"nvim-lua/plenary.nvim",
-
-			-- see below for full list of optional dependencies 👇
-		},
-		opts = {
-			workspaces = {
-				-- {
-				-- 	name = "personal",
-				-- 	path = "~/Library/CloudStorage/GoogleDrive-warren@hyperdx.io/My Drive/Obsidian/Personal",
-				-- },
-				{
-					name = "work",
-					path = "~/Library/CloudStorage/GoogleDrive-warren@hyperdx.io/My Drive/Obsidian/HyperDX",
-				},
-			},
-
-			-- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
-			completion = {
-				-- Set to false to disable completion.
-				nvim_cmp = true,
-				-- Trigger completion at 2 chars.
-				min_chars = 2,
-			},
-			templates = {
-				folder = "templates",
-				date_format = "%Y-%m-%d-%a",
-				time_format = "%H:%M",
-			},
-			daily_notes = {
-				-- Optional, if you keep daily notes in a separate directory.
-				folder = "notes/dailies",
-				-- Optional, if you want to change the date format for the ID of daily notes.
-				date_format = "%Y-%m-%d",
-				-- Optional, if you want to change the date format of the default alias of daily notes.
-				alias_format = "%B %-d, %Y",
-				-- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
-				template = nil,
-			},
-			picker = {
-				-- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', or 'mini.pick'.
-				name = "telescope.nvim",
-				-- Optional, configure key mappings for the picker. These are the defaults.
-				-- Not all pickers support all mappings.
-				mappings = {
-					-- Create a new note from your query.
-					new = "<C-x>",
-					-- Insert a link to the selected note.
-					insert_link = "<C-l>",
-				},
 			},
 		},
 	},
