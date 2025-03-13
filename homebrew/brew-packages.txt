@@ -30,7 +30,6 @@ deno
 doctl
 double-conversion
 dtc
-e1s
 edencommon
 eksctl
 elixir
@@ -43,7 +42,6 @@ findutils
 fish
 fizz
 flamegraph
-flog
 flux
 flyctl
 fmt
@@ -154,8 +152,6 @@ mecab
 mecab-ipadic
 minikube
 mkcert
-mongodb-database-tools
-mongosh
 mpdecimal
 mpfr
 msgpack
@@ -202,7 +198,6 @@ readline
 reattach-to-user-namespace
 rebar3
 redis
-redpanda
 ripgrep
 rtmpdump
 snappy
@@ -210,7 +205,6 @@ spotify_player
 sqlite
 stern
 stripe
-supabase
 telnet
 terraform
 terraformer

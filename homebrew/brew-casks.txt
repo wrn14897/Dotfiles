@@ -1,8 +1,6 @@
 1password-cli
 android-platform-tools
-arc
 chromium
-dotnet-sdk
 font-0xproto-nerd-font
 font-3270-nerd-font
 font-agave-nerd-font
@@ -75,7 +73,4 @@ font-victor-mono-nerd-font
 font-zed-mono-nerd-font
 ghostty
 meetingbar
-wezterm
 wireshark
-zulu11
-zulu@11
