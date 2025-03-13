@@ -16,11 +16,12 @@ alias dkt='docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t
 alias dkps="docker ps --format '{{.ID}} ~ {{.Names}} ~ {{.Status}} ~ {{.Image}}'"
 alias dc='docker compose'
 alias dcl="docker compose logs"
-alias dclf="docker compose logs -f"
+alias dclf="docker compose logs --tail 30 -f"
 alias drr="docker run --rm"
+alias dsp="docker system prune -f --volumes"
 
 alias k="kubectl"
-alias mk="microk8s.kubectl"
+alias mk="minikube"
 alias k9="k9s --readonly"
 
 dkln() {
