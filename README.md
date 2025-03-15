@@ -1,29 +1,7 @@
-# nvim + CLIs
-1. Install nvim-packer
-```
-git clone --depth 1 https://github.com/wbthomason/packer.nvim\
- ~/.local/share/nvim/site/pack/packer/start/packer.nvim
-```
+# nvim
+1. Copy everything in `/.config/nvim`
 
-2. Install ripgrep (https://github.com/BurntSushi/ripgrep)
-
-3. Install fzf (https://github.com/junegunn/fzf) and bat (https://github.com/sharkdp/bat)
-
-4. Install git-delta (https://github.com/dandavison/delta)
-
-5. Install fd (https://github.com/sharkdp/fd)
-
-6. Install node (nvm -> https://github.com/nvm-sh/nvm)
-
-7. Install zoxide (https://github.com/ajeetdsouza/zoxide?tab=readme-ov-file)
-
-8. Install Nerd Fonts (https://github.com/ryanoasis/nerd-fonts)
-
-9. Copy everything in `/.config/nvim`
-
-10. Open nvim and do `:PackerInstall`
-
-11. Ready to rock !!
+2. Ready to rock !!
 
 
 # Linter / Formatter
@@ -50,13 +28,20 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 4. Install 3rd party plugins 
   - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
   - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
-  - [zsh-autojump](https://github.com/wting/autojump) (brew)
 5. Copy alias files (`.bash_aliases`, `.docker_aliases`) to $HOME
 
 
 # tmux
 1. Install tmux
 2. Copy .tmux.conf to $HOME
+
+
+# OSX
+1. Install homebrew (https://brew.sh/)
+2. Install packages
+```
+brew bundle --file=./homebrew/Brewfile
+```
 
 
 # alacritty
