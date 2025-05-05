@@ -824,8 +824,7 @@ require("lazy").setup({
           au User MiniStarterOpened nmap <buffer> <C-p> <Cmd>FzfLua files<CR>
           au User MiniStarterOpened nmap <buffer> - <Cmd>Oil<CR>
           au User MiniStarterOpened nmap <buffer> <leader>gs <Cmd>Git<CR>
-          au User MiniStarterOpened nmap <buffer> <leader>ghp <Cmd>FzfLua gh pull_request<CR>
-          au User MiniStarterOpened nmap <buffer> <leader>gha <Cmd>FzfLua gh run<CR>
+          au User MiniStarterOpened nmap <buffer> <leader>fg <Cmd>FzfLua git_commits<CR>
         augroup END
       ]])
 		end,
@@ -1092,7 +1091,7 @@ require("lazy").setup({
 				rust = { "rustfmt" },
 				typescript = { "prettierd", "prettier" },
 				typescriptreact = { "prettierd", "prettier" },
-				yaml = { "yamlfmt" },
+				-- yaml = { "yamlfmt" },
 			},
 		},
 		init = function()
@@ -1102,51 +1101,74 @@ require("lazy").setup({
 	},
 
 	{
-		"iamcco/markdown-preview.nvim",
-		build = function()
-			vim.fn["mkdp#util#install"]()
-		end,
+		"MeanderingProgrammer/render-markdown.nvim",
+		dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
+		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+		---@module 'render-markdown'
+		---@type render.md.UserConfig
+		opts = {},
 	},
 
+	-- {
+	-- 	"github/copilot.vim",
+	-- 	config = function()
+	-- 		vim.g.copilot_no_tab_map = true
+	-- 		vim.api.nvim_set_keymap("i", "<C-K>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+	-- 		vim.api.nvim_set_keymap("i", "<C-H>", "copilot#Previous()", { silent = true, expr = true })
+	-- 		vim.api.nvim_set_keymap("i", "<C-L>", "copilot#Next()", { silent = true, expr = true })
+	-- 		vim.g.copilot_filetypes = {
+	-- 			["*"] = true,
+	-- 			-- ["c"] = true,
+	-- 			-- ["c++"] = true,
+	-- 			-- ["go"] = true,
+	-- 			-- ["java"] = true,
+	-- 			-- ["javascript"] = true,
+	-- 			-- ["lua"] = true,
+	-- 			-- ["python"] = true,
+	-- 			-- ["rust"] = true,
+	-- 			-- ["toml"] = true,
+	-- 			-- ["typescript"] = true,
+	-- 			-- ["typescriptreact"] = true,
+	-- 			-- ["yaml"] = true,
+	-- 			-- ["markdown"] = true,
+	-- 			-- ["ruby"] = true,
+	-- 			-- ["html"] = true,
+	-- 			-- ["dockerfile"] = true,
+	-- 			-- ["swift"] = true,
+	-- 			-- ["sh"] = true,
+	-- 			-- ["json"] = true,
+	-- 			-- ["mdx"] = true,
+	-- 			-- ["make"] = true,
+	-- 		}
+	-- 	end,
+	-- },
 	{
-		"github/copilot.vim",
+		"Exafunction/windsurf.vim",
+		event = "BufEnter",
 		config = function()
-			vim.g.copilot_no_tab_map = true
-			vim.api.nvim_set_keymap("i", "<C-K>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-			vim.api.nvim_set_keymap("i", "<C-H>", "copilot#Previous()", { silent = true, expr = true })
-			vim.api.nvim_set_keymap("i", "<C-L>", "copilot#Next()", { silent = true, expr = true })
-			vim.g.copilot_filetypes = {
-				["*"] = true,
-				-- ["c"] = true,
-				-- ["c++"] = true,
-				-- ["go"] = true,
-				-- ["java"] = true,
-				-- ["javascript"] = true,
-				-- ["lua"] = true,
-				-- ["python"] = true,
-				-- ["rust"] = true,
-				-- ["toml"] = true,
-				-- ["typescript"] = true,
-				-- ["typescriptreact"] = true,
-				-- ["yaml"] = true,
-				-- ["markdown"] = true,
-				-- ["ruby"] = true,
-				-- ["html"] = true,
-				-- ["dockerfile"] = true,
-				-- ["swift"] = true,
-				-- ["sh"] = true,
-				-- ["json"] = true,
-				-- ["mdx"] = true,
-				-- ["make"] = true,
-			}
+			vim.g.codeium_enabled = true
+			vim.g.codeium_disable_bindings = 1
+			vim.keymap.set("i", "<C-k>", function()
+				return vim.fn["codeium#Accept"]()
+			end, { expr = true, silent = true })
+			vim.keymap.set("i", "<C-l>", function()
+				return vim.fn["codeium#CycleCompletions"](1)
+			end, { expr = true, silent = true })
+			vim.keymap.set("i", "<C-h>", function()
+				return vim.fn["codeium#CycleCompletions"](-1)
+			end, { expr = true, silent = true })
+			vim.keymap.set("i", "<C-c>", function()
+				return vim.fn["codeium#Clear"]()
+			end, { expr = true, silent = true })
 		end,
 	},
-
 	{
 		"olimorris/codecompanion.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-treesitter/nvim-treesitter",
+			"j-hui/fidget.nvim",
 		},
 		config = function()
 			require("codecompanion").setup({
@@ -1157,8 +1179,8 @@ require("lazy").setup({
 						adapter = "openai",
 					},
 					inline = {
-						-- adapter = "anthropic",
-						adapter = "openai",
+						adapter = "anthropic",
+						-- adapter = "openai",
 					},
 				},
 				adapter = {
@@ -1175,16 +1197,10 @@ require("lazy").setup({
 					-- Set debug logging
 					log_level = "DEBUG",
 				},
+				init = function()
+					require("plugins.codecompanion.fidget-spinner"):init()
+				end,
 			})
-		end,
-	},
-	{
-		"greggh/claude-code.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim", -- Required for git operations
-		},
-		config = function()
-			require("claude-code").setup()
 		end,
 	},
 

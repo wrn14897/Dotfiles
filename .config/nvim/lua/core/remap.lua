@@ -41,6 +41,9 @@ utils.nmap("zh", "zH")
 utils.nmap("<leader>ev", ":vsplit $MYVIMRC<CR>")
 utils.nmap("<leader>sv", ":source $MYVIMRC<CR>")
 
+--- Diagnostics
+utils.nmap("<leader>dl", ':lua vim.diagnostic.open_float(0, {scope="line"})<CR>')
+
 --- Macro
 utils.xmap(".", ":normal .<CR>")
 
@@ -61,6 +64,7 @@ utils.nmap("<Leader>fm", ":FzfLua marks<CR>")
 utils.nmap("<Leader>fr", ":FzfLua registers<CR>")
 utils.nmap("<Leader>fw", ":FzfLua grep_cword<CR>")
 utils.nmap("<Leader>fgb", ":FzfLua git_bcommits<CR>")
+utils.nmap("<Leader>fg", ":FzfLua git_commits<CR>")
 
 -- Oil
 utils.nmap("-", ":Oil<CR>")
