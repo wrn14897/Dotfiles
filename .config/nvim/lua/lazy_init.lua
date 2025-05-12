@@ -127,11 +127,6 @@ require("lazy").setup({
 	},
 	{ "Bilal2453/luvit-meta", lazy = true },
 	{
-		-- Bug from this PR ? https://github.com/williamboman/mason-lspconfig.nvim/pull/448
-		"williamboman/mason-lspconfig.nvim",
-		tag = "v1.30.0",
-	},
-	{
 		"j-hui/fidget.nvim",
 		opts = {
 			notification = {
@@ -143,8 +138,10 @@ require("lazy").setup({
 		"neovim/nvim-lspconfig",
 		dependencies = {
 			-- Automatically install LSPs and related tools to stdpath for Neovim
-			{ "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
-			-- "williamboman/mason-lspconfig.nvim",
+			-- Mason must be loaded before its dependents so we need to set it up here.
+			-- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
+			{ "mason-org/mason.nvim", opts = {} },
+			"mason-org/mason-lspconfig.nvim",
 			"WhoIsSethDaniel/mason-tool-installer.nvim",
 			-- Allows extra capabilities provided by nvim-cmp
 			"hrsh7th/cmp-nvim-lsp",
@@ -238,7 +235,7 @@ require("lazy").setup({
 				rust_analyzer = {},
 				gopls = {},
 				pyright = {},
-				tsserver = {},
+				ts_ls = {},
 				eslint = {},
 				dockerls = {},
 				elixirls = {},
@@ -284,14 +281,12 @@ require("lazy").setup({
 				"clang-format",
 				"yamlfmt",
 			})
+
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 			require("mason-lspconfig").setup({
 				handlers = {
 					function(server_name)
-						if server_name == "tsserver" then
-							server_name = "ts_ls"
-						end
 						local server = servers[server_name] or {}
 						-- This handles overriding only values explicitly passed
 						-- by the server configuration above. Useful when disabling
