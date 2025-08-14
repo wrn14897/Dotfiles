@@ -134,6 +134,7 @@ require("lazy").setup({
 			},
 		},
 	},
+	{ "qvalentin/helm-ls.nvim", ft = "helm" },
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -237,6 +238,11 @@ require("lazy").setup({
 				pyright = {},
 				ts_ls = {},
 				eslint = {},
+				helm_ls = {
+					yamlls = {
+						path = "yaml-language-server",
+					},
+				},
 				dockerls = {},
 				elixirls = {},
 				rubocop = {},
@@ -1171,7 +1177,7 @@ require("lazy").setup({
 					-- Change the default chat adapter
 					chat = {
 						-- adapter = "anthropic",
-						adapter = "openai",
+						adapter = "anthropic",
 					},
 					inline = {
 						adapter = "anthropic",
@@ -1185,7 +1191,7 @@ require("lazy").setup({
 					},
 					anthropic = {
 						api_key = os.getenv("ANTHROPIC_API_KEY"),
-						model = "claude-3.7",
+						model = "claude-4-opus-20240522",
 					},
 				},
 				opts = {
