@@ -1,3 +1,3 @@
-require("lazy_init")
-require("core/set")
-require("core/remap")
+require("config.options")
+require("plugins.lazy")
+require("config.mappings")
