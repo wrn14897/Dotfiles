@@ -1,5 +1,6 @@
 local utils = require("config.utils")
 
+utils.nmap("<C-s>", ":w<CR>")
 utils.nmap("<C-d>", "<C-d>zz")
 utils.nmap("<C-u>", "<C-u>zz")
 utils.nmap("n", "nzzzv")

@@ -241,7 +241,6 @@ require("lazy").setup({
 				},
 				dockerls = {},
 				elixirls = {},
-				rubocop = {},
 				yamlls = {},
 				diagnosticls = {},
 				lua_ls = {
@@ -579,14 +578,7 @@ require("lazy").setup({
 
 	"kevinhwang91/nvim-bqf",
 
-	{
-		"lukas-reineke/indent-blankline.nvim",
-		main = "ibl",
-		opts = {},
-		config = function()
-			require("ibl").setup()
-		end,
-	},
+	{ "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
 
 	{
 		"airblade/vim-rooter",
@@ -731,6 +723,9 @@ require("lazy").setup({
 						-- optionally, you can also add:
 						["ctrl-u"] = "preview-page-up",
 					},
+				},
+				grep = {
+					rg_opts = "--column --line-number --no-heading --color=always --smart-case --no-ignore",
 				},
 			})
 		end,
@@ -1084,7 +1079,7 @@ require("lazy").setup({
 				json = { "jq" },
 				lua = { "stylua" },
 				python = { "black" },
-				ruby = { "rubocop" },
+				-- ruby = { "rubocop" },
 				rust = { "rustfmt" },
 				typescript = { "prettierd", "prettier" },
 				typescriptreact = { "prettierd", "prettier" },
@@ -1101,65 +1096,65 @@ require("lazy").setup({
 		"MeanderingProgrammer/render-markdown.nvim",
 		dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
 		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+		dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" }, -- if you prefer nvim-web-devicons
 		---@module 'render-markdown'
 		---@type render.md.UserConfig
 		opts = {},
 	},
-
-	-- {
-	-- 	"github/copilot.vim",
-	-- 	config = function()
-	-- 		vim.g.copilot_no_tab_map = true
-	-- 		vim.api.nvim_set_keymap("i", "<C-K>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-	-- 		vim.api.nvim_set_keymap("i", "<C-H>", "copilot#Previous()", { silent = true, expr = true })
-	-- 		vim.api.nvim_set_keymap("i", "<C-L>", "copilot#Next()", { silent = true, expr = true })
-	-- 		vim.g.copilot_filetypes = {
-	-- 			["*"] = true,
-	-- 			-- ["c"] = true,
-	-- 			-- ["c++"] = true,
-	-- 			-- ["go"] = true,
-	-- 			-- ["java"] = true,
-	-- 			-- ["javascript"] = true,
-	-- 			-- ["lua"] = true,
-	-- 			-- ["python"] = true,
-	-- 			-- ["rust"] = true,
-	-- 			-- ["toml"] = true,
-	-- 			-- ["typescript"] = true,
-	-- 			-- ["typescriptreact"] = true,
-	-- 			-- ["yaml"] = true,
-	-- 			-- ["markdown"] = true,
-	-- 			-- ["ruby"] = true,
-	-- 			-- ["html"] = true,
-	-- 			-- ["dockerfile"] = true,
-	-- 			-- ["swift"] = true,
-	-- 			-- ["sh"] = true,
-	-- 			-- ["json"] = true,
-	-- 			-- ["mdx"] = true,
-	-- 			-- ["make"] = true,
-	-- 		}
-	-- 	end,
-	-- },
 	{
-		"Exafunction/windsurf.vim",
-		event = "BufEnter",
+		"github/copilot.vim",
 		config = function()
-			vim.g.codeium_enabled = true
-			vim.g.codeium_disable_bindings = 1
-			vim.keymap.set("i", "<C-k>", function()
-				return vim.fn["codeium#Accept"]()
-			end, { expr = true, silent = true })
-			vim.keymap.set("i", "<C-l>", function()
-				return vim.fn["codeium#CycleCompletions"](1)
-			end, { expr = true, silent = true })
-			vim.keymap.set("i", "<C-h>", function()
-				return vim.fn["codeium#CycleCompletions"](-1)
-			end, { expr = true, silent = true })
-			vim.keymap.set("i", "<C-c>", function()
-				return vim.fn["codeium#Clear"]()
-			end, { expr = true, silent = true })
+			vim.g.copilot_no_tab_map = true
+			vim.api.nvim_set_keymap("i", "<C-K>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+			vim.api.nvim_set_keymap("i", "<C-H>", "copilot#Previous()", { silent = true, expr = true })
+			vim.api.nvim_set_keymap("i", "<C-L>", "copilot#Next()", { silent = true, expr = true })
+			vim.g.copilot_filetypes = {
+				["*"] = true,
+				-- ["c"] = true,
+				-- ["c++"] = true,
+				-- ["go"] = true,
+				-- ["java"] = true,
+				-- ["javascript"] = true,
+				-- ["lua"] = true,
+				-- ["python"] = true,
+				-- ["rust"] = true,
+				-- ["toml"] = true,
+				-- ["typescript"] = true,
+				-- ["typescriptreact"] = true,
+				-- ["yaml"] = true,
+				-- ["markdown"] = true,
+				-- ["ruby"] = true,
+				-- ["html"] = true,
+				-- ["dockerfile"] = true,
+				-- ["swift"] = true,
+				-- ["sh"] = true,
+				-- ["json"] = true,
+				-- ["mdx"] = true,
+				-- ["make"] = true,
+			}
 		end,
 	},
+	-- {
+	-- 	"Exafunction/windsurf.vim",
+	-- 	event = "BufEnter",
+	-- 	config = function()
+	-- 		vim.g.codeium_enabled = true
+	-- 		vim.g.codeium_disable_bindings = 1
+	-- 		vim.keymap.set("i", "<C-k>", function()
+	-- 			return vim.fn["codeium#Accept"]()
+	-- 		end, { expr = true, silent = true })
+	-- 		vim.keymap.set("i", "<C-l>", function()
+	-- 			return vim.fn["codeium#CycleCompletions"](1)
+	-- 		end, { expr = true, silent = true })
+	-- 		vim.keymap.set("i", "<C-h>", function()
+	-- 			return vim.fn["codeium#CycleCompletions"](-1)
+	-- 		end, { expr = true, silent = true })
+	-- 		vim.keymap.set("i", "<C-c>", function()
+	-- 			return vim.fn["codeium#Clear"]()
+	-- 		end, { expr = true, silent = true })
+	-- 	end,
+	-- },
+
 	{
 		"olimorris/codecompanion.nvim",
 		dependencies = {
@@ -1169,29 +1164,26 @@ require("lazy").setup({
 		},
 		config = function()
 			require("codecompanion").setup({
+				adapters = {
+					copilot = function()
+						return require("codecompanion.adapters").extend("copilot", {
+							schema = {
+								model = {
+									default = "claude-opus-4-5",
+								},
+							},
+						})
+					end,
+				},
 				strategies = {
-					-- Change the default chat adapter
 					chat = {
-						-- adapter = "anthropic",
-						adapter = "anthropic",
+						adapter = "copilot",
 					},
 					inline = {
-						adapter = "anthropic",
-						-- adapter = "openai",
-					},
-				},
-				adapter = {
-					openai = {
-						api_key = os.getenv("OPENAI_API_KEY"),
-						model = "o3-mini-high",
-					},
-					anthropic = {
-						api_key = os.getenv("ANTHROPIC_API_KEY"),
-						model = "claude-4-opus-20240522",
+						adapter = "copilot",
 					},
 				},
 				opts = {
-					-- Set debug logging
 					log_level = "DEBUG",
 				},
 				init = function()
@@ -1247,65 +1239,65 @@ require("lazy").setup({
 	},
 
 	-- SQL plugins
-	{
-		"kristijanhusak/vim-dadbod-ui",
-		dependencies = {
-			{ "tpope/vim-dadbod", lazy = true },
-			{ "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
-		},
-		cmd = {
-			"DBUI",
-			"DBUIToggle",
-			"DBUIAddConnection",
-			"DBUIFindBuffer",
-		},
-		init = function()
-			-- Your DBUI configuration
-			vim.g.db_ui_use_nerd_fonts = 1
-		end,
-	},
+	-- {
+	-- 	"kristijanhusak/vim-dadbod-ui",
+	-- 	dependencies = {
+	-- 		{ "tpope/vim-dadbod", lazy = true },
+	-- 		{ "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
+	-- 	},
+	-- 	cmd = {
+	-- 		"DBUI",
+	-- 		"DBUIToggle",
+	-- 		"DBUIAddConnection",
+	-- 		"DBUIFindBuffer",
+	-- 	},
+	-- 	init = function()
+	-- 		-- Your DBUI configuration
+	-- 		vim.g.db_ui_use_nerd_fonts = 1
+	-- 	end,
+	-- },
 
 	-- Note Taking
-	{
-		"folke/zen-mode.nvim",
-		opts = {
-			-- your configuration comes here
-			-- or leave it empty to use the default settings
-			-- refer to the configuration section below
-			window = {
-				backdrop = 0.9, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
-				-- height and width can be:
-				-- * an absolute number of cells when > 1
-				-- * a percentage of the width / height of the editor when <= 1
-				-- * a function that returns the width or the height
-				width = 120, -- width of the Zen window
-				height = 1, -- height of the Zen window
-				-- by default, no options are changed for the Zen window
-				-- uncomment any of the options below, or add other vim.wo options you want to apply
-				options = {
-					-- signcolumn = "no", -- disable signcolumn
-					-- number = false, -- disable number column
-					-- relativenumber = false, -- disable relative numbers
-					-- cursorline = false, -- disable cursorline
-					-- cursorcolumn = false, -- disable cursor column
-					-- foldcolumn = "0", -- disable fold column
-					-- list = false, -- disable whitespace characters
-				},
-			},
-			plugins = {
-				options = {
-					enabled = true,
-					ruler = false, -- disables the ruler text in the cmd line area
-					showcmd = false, -- disables the command in the last line of the screen
-					-- you may turn on/off statusline in zen mode by setting 'laststatus'
-					-- statusline will be shown only if 'laststatus' == 3
-					laststatus = 0, -- turn off the statusline in zen mode
-				},
-				gitsigns = { enabled = false }, -- disables git signs
-				tmux = { enabled = false }, -- disables the tmux statusline
-			},
-		},
-	},
+	-- {
+	-- 	"folke/zen-mode.nvim",
+	-- 	opts = {
+	-- 		-- your configuration comes here
+	-- 		-- or leave it empty to use the default settings
+	-- 		-- refer to the configuration section below
+	-- 		window = {
+	-- 			backdrop = 0.9, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
+	-- 			-- height and width can be:
+	-- 			-- * an absolute number of cells when > 1
+	-- 			-- * a percentage of the width / height of the editor when <= 1
+	-- 			-- * a function that returns the width or the height
+	-- 			width = 120, -- width of the Zen window
+	-- 			height = 1, -- height of the Zen window
+	-- 			-- by default, no options are changed for the Zen window
+	-- 			-- uncomment any of the options below, or add other vim.wo options you want to apply
+	-- 			options = {
+	-- 				-- signcolumn = "no", -- disable signcolumn
+	-- 				-- number = false, -- disable number column
+	-- 				-- relativenumber = false, -- disable relative numbers
+	-- 				-- cursorline = false, -- disable cursorline
+	-- 				-- cursorcolumn = false, -- disable cursor column
+	-- 				-- foldcolumn = "0", -- disable fold column
+	-- 				-- list = false, -- disable whitespace characters
+	-- 			},
+	-- 		},
+	-- 		plugins = {
+	-- 			options = {
+	-- 				enabled = true,
+	-- 				ruler = false, -- disables the ruler text in the cmd line area
+	-- 				showcmd = false, -- disables the command in the last line of the screen
+	-- 				-- you may turn on/off statusline in zen mode by setting 'laststatus'
+	-- 				-- statusline will be shown only if 'laststatus' == 3
+	-- 				laststatus = 0, -- turn off the statusline in zen mode
+	-- 			},
+	-- 			gitsigns = { enabled = false }, -- disables git signs
+	-- 			tmux = { enabled = false }, -- disables the tmux statusline
+	-- 		},
+	-- 	},
+	-- },
 
 	-- Discord
 	{
