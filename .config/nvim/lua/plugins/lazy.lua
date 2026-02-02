@@ -1183,6 +1183,68 @@ require("lazy").setup({
 						adapter = "copilot",
 					},
 				},
+				display = {
+					action_palette = {
+						opts = {
+							show_default_actions = true,
+							show_default_prompt_library = true,
+						},
+					},
+				},
+				prompt_library = {
+					["Send to Agent"] = {
+						strategy = "chat",
+						description = "Send selection to Claude Code agent in tmux",
+						opts = {
+							index = 1,
+							is_slash_cmd = false,
+							modes = { "v" },
+							short_name = "agent",
+							auto_submit = false,
+						},
+						prompts = {
+							{
+								role = "user",
+								opts = {
+									contains_code = true,
+								},
+								content = function(context)
+									local filepath = vim.fn.expand("%:p")
+									local filename = vim.fn.expand("%:t")
+									local filetype = vim.bo.filetype
+									local start_line = context.start_line
+									local end_line = context.end_line
+									local lines =
+										vim.api.nvim_buf_get_lines(context.bufnr, start_line - 1, end_line, false)
+									local text = table.concat(lines, "\n")
+									local prompt = "File: "
+										.. filepath
+										.. " ("
+										.. filename
+										.. ")\n\nCode:\n```"
+										.. filetype
+										.. "\n"
+										.. text
+										.. "\n```"
+									prompt = prompt:gsub("'", "'\\''")
+									vim.fn.system("tmux send-keys -t '{right-of}' '" .. prompt .. "'")
+									vim.notify("Sent to Claude Code agent", vim.log.levels.INFO)
+									-- Close the CodeCompanion chat buffer after a short delay
+									vim.defer_fn(function()
+										local buffers = vim.api.nvim_list_bufs()
+										for _, buf in ipairs(buffers) do
+											local name = vim.api.nvim_buf_get_name(buf)
+											if name:match("%[CodeCompanion%]") then
+												vim.api.nvim_buf_delete(buf, { force = true })
+											end
+										end
+									end, 100)
+									return ""
+								end,
+							},
+						},
+					},
+				},
 				opts = {
 					log_level = "DEBUG",
 				},
