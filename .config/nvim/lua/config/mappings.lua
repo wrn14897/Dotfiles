@@ -72,7 +72,7 @@ utils.nmap("-", ":Oil<CR>")
 
 -- Git Stuff
 utils.nmap("<leader>gs", ":Git<CR>")
-utils.nmap("<leader>gd", ":Gvdiffsplit<CR>")
+utils.nmap("<leader>gd", ":Gvdiffsplit!<CR>")
 utils.nmap("<leader>gc", ":Git commit<CR>")
 utils.nmap("<leader>gb", ":Git blame<CR>")
 -- nnoremap <silent> <leader>gl :Gclog<CR>
