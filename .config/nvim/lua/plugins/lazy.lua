@@ -1194,11 +1194,11 @@ require("lazy").setup({
 				prompt_library = {
 					["Send to Agent"] = {
 						strategy = "chat",
-						description = "Send selection to Claude Code agent in tmux",
+						description = "Send file path or selection to Claude Code agent in tmux",
 						opts = {
 							index = 1,
 							is_slash_cmd = false,
-							modes = { "v" },
+							modes = { "n", "v" },
 							short_name = "agent",
 							auto_submit = false,
 						},
@@ -1210,22 +1210,29 @@ require("lazy").setup({
 								},
 								content = function(context)
 									local filepath = vim.fn.expand("%:p")
-									local filename = vim.fn.expand("%:t")
-									local filetype = vim.bo.filetype
-									local start_line = context.start_line
-									local end_line = context.end_line
-									local lines =
-										vim.api.nvim_buf_get_lines(context.bufnr, start_line - 1, end_line, false)
-									local text = table.concat(lines, "\n")
-									local prompt = "File: "
-										.. filepath
-										.. " ("
-										.. filename
-										.. ")\n\nCode:\n```"
-										.. filetype
-										.. "\n"
-										.. text
-										.. "\n```"
+									local prompt
+
+									-- Check if we have a visual selection
+									if context.is_visual and context.start_line and context.end_line then
+										local filename = vim.fn.expand("%:t")
+										local filetype = vim.bo.filetype
+										local lines =
+											vim.api.nvim_buf_get_lines(context.bufnr, context.start_line - 1, context.end_line, false)
+										local text = table.concat(lines, "\n")
+										prompt = "File: "
+											.. filepath
+											.. " ("
+											.. filename
+											.. ")\n\nCode:\n```"
+											.. filetype
+											.. "\n"
+											.. text
+											.. "\n```"
+									else
+										-- Normal mode: just send file path
+										prompt = filepath
+									end
+
 									prompt = prompt:gsub("'", "'\\''")
 									vim.fn.system("tmux send-keys -t '{right-of}' '" .. prompt .. "'")
 									vim.notify("Sent to Claude Code agent", vim.log.levels.INFO)
