@@ -1156,111 +1156,145 @@ require("lazy").setup({
 	-- },
 
 	{
-		"olimorris/codecompanion.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-treesitter/nvim-treesitter",
-			"j-hui/fidget.nvim",
+		"coder/claudecode.nvim",
+		dependencies = { "folke/snacks.nvim" },
+		config = true,
+		keys = {
+			{ "<leader>a", nil, desc = "AI/Claude Code" },
+			{ "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+			{ "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+			{ "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+			{ "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+			{ "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+			{ "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+			{ "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+			{
+				"<leader>as",
+				"<cmd>ClaudeCodeTreeAdd<cr>",
+				desc = "Add file",
+				ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+			},
+			-- Diff management
+			{ "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+			{ "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
 		},
-		config = function()
-			require("codecompanion").setup({
-				adapters = {
-					copilot = function()
-						return require("codecompanion.adapters").extend("copilot", {
-							schema = {
-								model = {
-									default = "claude-opus-4-5",
-								},
-							},
-						})
-					end,
-				},
-				strategies = {
-					chat = {
-						adapter = "copilot",
-					},
-					inline = {
-						adapter = "copilot",
-					},
-				},
-				display = {
-					action_palette = {
-						opts = {
-							show_default_actions = true,
-							show_default_prompt_library = true,
-						},
-					},
-				},
-				prompt_library = {
-					["Send to Agent"] = {
-						strategy = "chat",
-						description = "Send file path or selection to Claude Code agent in tmux",
-						opts = {
-							index = 1,
-							is_slash_cmd = false,
-							modes = { "n", "v" },
-							short_name = "agent",
-							auto_submit = false,
-						},
-						prompts = {
-							{
-								role = "user",
-								opts = {
-									contains_code = true,
-								},
-								content = function(context)
-									local filepath = vim.fn.expand("%:p")
-									local prompt
-
-									-- Check if we have a visual selection
-									if context.is_visual and context.start_line and context.end_line then
-										local filename = vim.fn.expand("%:t")
-										local filetype = vim.bo.filetype
-										local lines =
-											vim.api.nvim_buf_get_lines(context.bufnr, context.start_line - 1, context.end_line, false)
-										local text = table.concat(lines, "\n")
-										prompt = "File: "
-											.. filepath
-											.. " ("
-											.. filename
-											.. ")\n\nCode:\n```"
-											.. filetype
-											.. "\n"
-											.. text
-											.. "\n```"
-									else
-										-- Normal mode: just send file path
-										prompt = filepath
-									end
-
-									prompt = prompt:gsub("'", "'\\''")
-									vim.fn.system("tmux send-keys -t '{right-of}' '" .. prompt .. "'")
-									vim.notify("Sent to Claude Code agent", vim.log.levels.INFO)
-									-- Close the CodeCompanion chat buffer after a short delay
-									vim.defer_fn(function()
-										local buffers = vim.api.nvim_list_bufs()
-										for _, buf in ipairs(buffers) do
-											local name = vim.api.nvim_buf_get_name(buf)
-											if name:match("%[CodeCompanion%]") then
-												vim.api.nvim_buf_delete(buf, { force = true })
-											end
-										end
-									end, 100)
-									return ""
-								end,
-							},
-						},
-					},
-				},
-				opts = {
-					log_level = "DEBUG",
-				},
-				init = function()
-					require("plugins.codecompanion.fidget-spinner"):init()
-				end,
-			})
-		end,
+		opts = {
+			terminal = {
+				provider = "none",
+			},
+		},
 	},
+
+	-- {
+	-- 	"olimorris/codecompanion.nvim",
+	-- 	dependencies = {
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		"nvim-treesitter/nvim-treesitter",
+	-- 		"j-hui/fidget.nvim",
+	-- 	},
+	-- 	config = function()
+	-- 		require("codecompanion").setup({
+	-- 			adapters = {
+	-- 				copilot = function()
+	-- 					return require("codecompanion.adapters").extend("copilot", {
+	-- 						schema = {
+	-- 							model = {
+	-- 								default = "claude-opus-4-5",
+	-- 							},
+	-- 						},
+	-- 					})
+	-- 				end,
+	-- 			},
+	-- 			strategies = {
+	-- 				chat = {
+	-- 					adapter = "copilot",
+	-- 				},
+	-- 				inline = {
+	-- 					adapter = "copilot",
+	-- 				},
+	-- 			},
+	-- 			display = {
+	-- 				action_palette = {
+	-- 					opts = {
+	-- 						show_default_actions = true,
+	-- 						show_default_prompt_library = true,
+	-- 					},
+	-- 				},
+	-- 			},
+	-- 			prompt_library = {
+	-- 				["Send to Agent"] = {
+	-- 					strategy = "chat",
+	-- 					description = "Send file path or selection to Claude Code agent in tmux",
+	-- 					opts = {
+	-- 						index = 1,
+	-- 						is_slash_cmd = false,
+	-- 						modes = { "n", "v" },
+	-- 						short_name = "agent",
+	-- 						auto_submit = false,
+	-- 					},
+	-- 					prompts = {
+	-- 						{
+	-- 							role = "user",
+	-- 							opts = {
+	-- 								contains_code = true,
+	-- 							},
+	-- 							content = function(context)
+	-- 								local filepath = vim.fn.expand("%:p")
+	-- 								local prompt
+
+	-- 								-- Check if we have a visual selection
+	-- 								if context.is_visual and context.start_line and context.end_line then
+	-- 									local filename = vim.fn.expand("%:t")
+	-- 									local filetype = vim.bo.filetype
+	-- 									local lines = vim.api.nvim_buf_get_lines(
+	-- 										context.bufnr,
+	-- 										context.start_line - 1,
+	-- 										context.end_line,
+	-- 										false
+	-- 									)
+	-- 									local text = table.concat(lines, "\n")
+	-- 									prompt = "File: "
+	-- 										.. filepath
+	-- 										.. " ("
+	-- 										.. filename
+	-- 										.. ")\n\nCode:\n```"
+	-- 										.. filetype
+	-- 										.. "\n"
+	-- 										.. text
+	-- 										.. "\n```"
+	-- 								else
+	-- 									-- Normal mode: just send file path
+	-- 									prompt = filepath
+	-- 								end
+
+	-- 								prompt = prompt:gsub("'", "'\\''")
+	-- 								vim.fn.system("tmux send-keys -t '{right-of}' '" .. prompt .. "'")
+	-- 								vim.notify("Sent to Claude Code agent", vim.log.levels.INFO)
+	-- 								-- Close the CodeCompanion chat buffer after a short delay
+	-- 								vim.defer_fn(function()
+	-- 									local buffers = vim.api.nvim_list_bufs()
+	-- 									for _, buf in ipairs(buffers) do
+	-- 										local name = vim.api.nvim_buf_get_name(buf)
+	-- 										if name:match("%[CodeCompanion%]") then
+	-- 											vim.api.nvim_buf_delete(buf, { force = true })
+	-- 										end
+	-- 									end
+	-- 								end, 100)
+	-- 								return ""
+	-- 							end,
+	-- 						},
+	-- 					},
+	-- 				},
+	-- 			},
+	-- 			opts = {
+	-- 				log_level = "DEBUG",
+	-- 			},
+	-- 			init = function()
+	-- 				require("plugins.codecompanion.fidget-spinner"):init()
+	-- 			end,
+	-- 		})
+	-- 	end,
+	-- },
 
 	{
 		"norcalli/nvim-colorizer.lua",
