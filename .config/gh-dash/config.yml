@@ -90,9 +90,6 @@ keybindings:
       name: view changed files
       command: >
         open "https://github.com/{{.RepoName}}/pull/{{.PrNumber}}/files"
-repoPaths:
-  DeploySentinel/hyperdx-ee: /Users/warren/Codes/hyperdx/hyperdx-ee
-  hyperdxio/hyperdx: /Users/warren/Codes/hyperdx/hyperdx-oss
 theme:
   colors:
     text:

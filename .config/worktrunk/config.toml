@@ -40,5 +40,6 @@ opencode session list --format json | \
 """
 
 [commit.generation]
-command = "opencode run -m anthropic/claude-haiku-4-5 --variant fast"
+command = "CLAUDECODE= MAX_THINKING_TOKENS=0 claude -p --no-session-persistence --model=haiku --tools='' --disable-slash-commands --setting-sources='' --system-prompt=''"
+
 
