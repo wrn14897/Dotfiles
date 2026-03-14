@@ -24,6 +24,11 @@ alias tf='terraform'
 # htb
 alias htbConnectVPN='sudo openvpn --config $HOME/vpn/lab_warrenjo.ovpn'
 
+# AI
+alias c='claude'
+alias oc='opencode'
+alias wso='wt switch -c -x opencode'
+
 # system
 alias xx='xmodmap ~/.Xmodmap'
 alias xc='setxkbmap -option'
