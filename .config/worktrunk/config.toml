@@ -1,0 +1,45 @@
+[post-create]
+env = "wt step copy-ignored"
+install = """
+# Skip install for PR review (branch already exists on remote)
+if git rev-parse --verify "origin/$(git rev-parse --abbrev-ref HEAD)" >/dev/null 2>&1; then
+  echo "Existing remote branch — skipping install"
+  exit 0
+fi
+
+if [ -f Makefile ]; then
+  make
+elif [ -f pnpm-lock.yaml ]; then
+  pnpm install
+elif [ -f package-lock.json ]; then
+  npm ci
+elif [ -f yarn.lock ]; then
+  yarn install
+elif [ -f bun.lockb ]; then
+  bun install
+elif [ -f Cargo.toml ]; then
+  cargo build
+elif [ -f go.mod ]; then
+  go mod download
+elif [ -f pyproject.toml ]; then
+  uv sync
+elif [ -f requirements.txt ]; then
+  pip install -r requirements.txt
+fi
+"""
+
+[pre-remove]
+cleanup-opencode = """
+worktree_dir=$(pwd)
+opencode session list --format json | \
+  jq -r --arg dir "$worktree_dir" '.[] | select(.directory == $dir) | .id' | \
+  while read id; do
+    echo "Deleting OpenCode session: $id"
+    opencode session delete "$id"
+  done
+"""
+
+[commit.generation]
+command = "CLAUDECODE= MAX_THINKING_TOKENS=0 claude -p --no-session-persistence --model=haiku --tools='' --disable-slash-commands --setting-sources='' --system-prompt=''"
+
+
