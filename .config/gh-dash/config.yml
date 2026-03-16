@@ -81,7 +81,7 @@ defaults:
   refetchIntervalMinutes: 30
 keybindings:
   prs:
-    - key: "C"
+    - key: C
       name: "code review"
       command: >
         tmux new-window -n "{{.RepoName}}-PR-{{.PrNumber}}"
@@ -90,6 +90,8 @@ keybindings:
       name: view changed files
       command: >
         open "https://github.com/{{.RepoName}}/pull/{{.PrNumber}}/files"
+    - key: T
+      command: gh enhance -R {{.RepoName}} {{.PrNumber}}
 theme:
   colors:
     text:
