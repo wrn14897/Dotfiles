@@ -194,6 +194,24 @@ export PATH="$PATH:$HOME/.rvm/bin"
 # zoxide
 eval "$(zoxide init --cmd cd zsh)"
 
+# custom functions
+wt-linear() {
+    local branch="$1"
+    tmux new-window -n "$branch" "wt switch -c '$branch' -x \"opencode --prompt '/do-linear $branch'\""
+}
+wt-plan-linear() {
+    local branch="$1"
+    tmux new-window -n "$branch" "wt switch -c '$branch' -x \"opencode --prompt '/plan-linear $branch'\""
+}
+wt-continue() {
+    local branch="$1"
+    tmux new-window -n "$branch" "wt switch '$branch' -x 'opencode-continue'"
+}
+wt-open() {
+    local branch="$1"
+    tmux new-window -n "$branch" "wt switch -c '$branch' -x 'opencode'"
+}
+
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
