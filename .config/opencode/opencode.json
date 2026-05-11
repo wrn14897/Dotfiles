@@ -8,11 +8,19 @@
     "build": {
       "tools": {
         "task": false
+      },
+      "options": {},
+      "permission": {
+        "task": "deny"
       }
     },
     "plan": {
       "tools": {
         "task": false
+      },
+      "options": {},
+      "permission": {
+        "task": "deny"
       }
     }
   },
@@ -24,10 +32,6 @@
     "notion": {
       "type": "remote",
       "url": "https://mcp.notion.com/mcp"
-    },
-    "clickhouse": {
-      "type": "remote",
-      "url": "https://mcp.clickhouse.cloud/mcp"
     }
   },
   "plugin": [

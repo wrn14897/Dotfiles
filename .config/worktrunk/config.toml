@@ -1,5 +1,29 @@
-[post-create]
-env = "wt step copy-ignored"
+[[pre-start]]
+setup = """
+echo '🔧 Setting up worktree...'
+
+# Symlink .env.local from primary worktree
+if [ -f {{ primary_worktree_path }}/.env.local ]; then
+  ln -sf {{ primary_worktree_path }}/.env.local {{ worktree_path }}/.env.local
+  echo '✅ Symlinked .env.local'
+fi
+
+# Symlink node_modules
+if [ -d {{ primary_worktree_path }}/node_modules ]; then
+  ln -sf {{ primary_worktree_path }}/node_modules {{ worktree_path }}/node_modules
+  echo '✅ Symlinked node_modules'
+fi
+
+# Symlink .volumes from primary worktree
+if [ -d {{ primary_worktree_path }}/.volumes ]; then
+  ln -sf {{ primary_worktree_path }}/.volumes {{ worktree_path }}/.volumes
+  echo '✅ Symlinked .volumes'
+fi
+
+echo '🚀 Worktree ready!'
+"""
+
+[[pre-start]]
 install = """
 # Skip install for PR review (branch already exists on remote)
 if git rev-parse --verify "origin/$(git rev-parse --abbrev-ref HEAD)" >/dev/null 2>&1; then
@@ -30,13 +54,20 @@ fi
 
 [pre-remove]
 cleanup-opencode = """
-worktree_dir=$(pwd)
-opencode session list --format json | \
-  jq -r --arg dir "$worktree_dir" '.[] | select(.directory == $dir) | .id' | \
-  while read id; do
-    echo "Deleting OpenCode session: $id"
-    opencode session delete "$id"
-  done
+set -euo pipefail
+worktree_dir="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "{{ worktree_path }}")"
+opencode session list --format json \
+  | jq -r --arg dir "$worktree_dir" '
+      .[]
+      | select(
+          (.directory | sub("/+$"; "")) == $dir
+          or (.directory | startswith($dir + "/"))
+        )
+      | .id' \
+  | while read -r id; do
+      echo "Deleting OpenCode session: $id (worktree=$worktree_dir)"
+      opencode session delete "$id" || { echo "FAILED to delete $id" >&2; exit 1; }
+    done
 """
 
 [commit.generation]

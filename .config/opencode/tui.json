@@ -61,7 +61,7 @@
     "input_select_right": "shift+right",
     "input_select_up": "shift+up",
     "input_select_down": "shift+down",
-    "input_line_home": "ctrl+a",
+    "input_line_home": "none",
     "input_line_end": "ctrl+e",
     "input_select_line_home": "ctrl+shift+a",
     "input_select_line_end": "ctrl+shift+e",

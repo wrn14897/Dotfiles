@@ -1,0 +1,12 @@
+[projects."github.com/DeploySentinel/hyperdx-ee"]
+approved-commands = [
+    "ln -sf {{ primary_worktree_path }}/node_modules {{ worktree_path }}/node_modules",
+    "cp {{ primary_worktree_path }}/.env.local {{ worktree_path }}/.env.local 2>/dev/null && echo 'Copied .env.local' || true",
+]
+
+[projects."github.com/hyperdxio/hyperdx"]
+approved-commands = [
+    "make dev-down 2>/dev/null || true",
+    "make dev-int-down 2>/dev/null || true",
+    "make dev-e2e-down 2>/dev/null || true",
+]
