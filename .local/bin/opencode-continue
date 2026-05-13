@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+dir="$(pwd)"
+session_id=$(opencode session list --format json | jq -r --arg dir "$dir" '
+  map(select(.directory == $dir)) | sort_by(.updated) | last | .id // empty
+')
+
+if [ -z "$session_id" ]; then
+  echo "No opencode session found for $dir, starting new session..."
+  exec opencode
+else
+  exec opencode --session "$session_id"
+fi
