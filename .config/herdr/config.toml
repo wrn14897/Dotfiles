@@ -1,0 +1,24 @@
+onboarding = false
+[theme]
+name = "kanagawa"
+auto_switch = false
+[update]
+channel = "stable"
+version_check = true
+manifest_check = true
+[keys]
+prefix = "ctrl+b"
+focus_pane_left = "ctrl+h"
+focus_pane_down = "ctrl+j"
+focus_pane_up = "ctrl+k"
+focus_pane_right = "ctrl+l"
+split_vertical = "prefix+|"
+split_horizontal = "prefix+-"
+previous_workspace = "prefix+["
+next_workspace = "prefix+]"
+
+[experimental]
+switch_ascii_input_source_in_prefix = true
+
+[ui.toast]
+delivery = "herdr"

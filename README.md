@@ -36,6 +36,18 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 2. Copy .tmux.conf to $HOME
 
 
+# herdr
+1. Install herdr (https://herdr.dev/docs/install/)
+```
+brew install herdr
+```
+2. Copy `.config/herdr/config.toml` to `~/.config/herdr/`
+3. Reload if a server is already running
+```
+herdr server reload-config
+```
+
+
 # OSX
 1. Install homebrew (https://brew.sh/)
 2. Install packages
