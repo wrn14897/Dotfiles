@@ -24,11 +24,12 @@
 ```
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
-3. Copy .zshrc to $HOME
-4. Install 3rd party plugins 
+3. Copy `zsh/.zshrc` to `~/.zshrc`
+4. Put API keys / tokens in `~/.zshrc.secrets` (sourced at the end of `.zshrc`, never committed)
+5. Install 3rd party plugins 
   - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
   - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
-5. Copy alias files (`.bash_aliases`, `.docker_aliases`) to $HOME
+6. Copy alias files (`.bash_aliases`, `.docker_aliases`) to $HOME
 
 
 # tmux
@@ -41,7 +42,7 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 ```
 brew install herdr
 ```
-2. Copy `.config/herdr/config.toml` to `~/.config/herdr/`
+2. Copy `herdr/config.toml` and `herdr/plugins.json` to `~/.config/herdr/` (plugins reinstall from the manifest)
 3. Reload if a server is already running
 ```
 herdr server reload-config

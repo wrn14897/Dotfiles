@@ -1,0 +1,39 @@
+onboarding = false
+[theme]
+name = "kanagawa"
+auto_switch = false
+[update]
+channel = "stable"
+version_check = true
+manifest_check = true
+[keys]
+prefix = "ctrl+b"
+focus_pane_left = "ctrl+h"
+focus_pane_down = "ctrl+j"
+focus_pane_up = "ctrl+k"
+focus_pane_right = "ctrl+l"
+split_vertical = "prefix+|"
+split_horizontal = "prefix+-"
+previous_workspace = "prefix+["
+next_workspace = "prefix+]"
+
+[experimental]
+switch_ascii_input_source_in_prefix = true
+
+[ui]
+agent_panel_sort = "spaces"
+
+[ui.toast]
+delivery = "herdr"
+
+[ui.sidebar.spaces]
+row_gap = 1
+rows = [
+  ["state_icon", { token = "workspace", bold = true }],
+  [{ token = "branch", fg = "#89b4fa", dim = false }, "git_status"],
+]
+
+[[keys.command]]
+key = "cmd+r"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle"   # <plugin_id>.<action_id> — note the id, not the name
