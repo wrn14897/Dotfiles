@@ -68,9 +68,12 @@ ZSH_THEME="avit"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+# Lazy-load nvm: defers sourcing nvm.sh until nvm/node/npm/etc. is first used
+zstyle ':omz:plugins:nvm' lazy yes
 plugins=(
   docker
   git
+  nvm
   python
   zsh-autosuggestions
   zsh-syntax-highlighting
@@ -113,12 +116,10 @@ if [ -f ~/.docker_aliases ]; then
     . ~/.docker_aliases
 fi
 
-# NVM
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}"  ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh"  ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+# NVM is loaded lazily via the oh-my-zsh nvm plugin (see plugins array above)
 
 # Go
-export GOROOT=/usr/local/go
+export GOROOT="/opt/homebrew/opt/go/libexec"
 export GOPATH=$HOME/Codes/Go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
@@ -159,30 +160,29 @@ export BAT_THEME="Catppuccin-frappe" #TEMP: ideally we use KANAGAWA
 compctl -K _gh gh
 # eval "$(gh copilot alias -- zsh)" VERY SLOW...
 
+# openai
+
 # anthropic
 export ANTHROPIC_ENABLE_1M_CONTEXT=true
 export ANTHROPIC_CLI_VERSION=2.1.81
 
-# kubectl
-source <(kubectl completion zsh)
-compdef __start_kubectl k
+# kubectl (completion cached to a file; regenerated when kubectl binary is newer)
+if command -v kubectl >/dev/null 2>&1; then
+  _kubectl_comp=~/.cache/kubectl-completion.zsh
+  if [[ ! -f $_kubectl_comp || $_kubectl_comp -ot ${commands[kubectl]} ]]; then
+    mkdir -p ~/.cache && kubectl completion zsh > $_kubectl_comp
+  fi
+  source $_kubectl_comp
+  compdef __start_kubectl k
+  unset _kubectl_comp
+fi
 # source <(minikube completion zsh)
 
-# AWS + ClickHouse
-autoload -U compinit; compinit
-
 # Homebrew
-export GOROOT="$(brew --prefix golang)/libexec"
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # K8s
 export KUBE_EDITOR="nvim"
-
-# Java
-export M2_HOME="$HOME/Codes/apache-maven-3.9.1"
-export PATH="${M2_HOME}/bin:${PATH}"
-# export JAVA_TOOL_OPTIONS="-javaagent:$HOME/Codes/otel/opentelemetry-javaagent.jar"
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
 
 # RN
 export ANDROID_HOME=$HOME/Library/Android/sdk
@@ -191,14 +191,14 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 # chromium
 export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-export PUPPETEER_EXECUTABLE_PATH=`which chromium`
+(( $+commands[chromium] )) && export PUPPETEER_EXECUTABLE_PATH="$commands[chromium]"
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
 
 # zoxide
 if [[ $- == *i* ]]; then
-    eval "$(zoxide init bash --cmd cd)"  # or 'zsh' for zsh
+    eval "$(zoxide init zsh --cmd cd)"
 else
     # For non-interactive shells, use standard cd
     unalias cd 2>/dev/null
@@ -328,5 +328,5 @@ esac
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
 
-# Secrets (API keys, tokens) live outside this repo
+# Secrets (API keys, tokens) live outside dotfiles repo
 [ -f ~/.zshrc.secrets ] && source ~/.zshrc.secrets
