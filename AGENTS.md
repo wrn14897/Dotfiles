@@ -8,9 +8,7 @@ Configs are **copied** between this repo and `$HOME` / `~/.config`, per README i
 
 ## Canonical paths — duplicates exist
 
-Two configs have stale duplicates in the repo. Edit the canonical one:
-
-- zsh: canonical is `zsh/.zshrc` (README references it; newer). Root `.zshrc` is an older copy.
+- zsh: the only copy is `zsh/.zshrc` (README references it).
 - herdr: canonical is `herdr/` at repo root (README references it; newer). `.config/herdr/config.toml` is an older copy.
 
 ## Layout facts
